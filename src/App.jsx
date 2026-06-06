@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ComposedChart, Area, ReferenceLine } from "recharts";
 
-
-// ── VERIFIED DATA: May 22, 2026 Forecaster + May 26, 2026 (4th Week) Waterfall ──
-const RAW = `313~172~BHV3000-315~CyFair~Enrolling~Enrolling~Biohaven~Synteract~Migraine~General Medicine~2~3~5~25443~1.0~120659~120659~40799~0~10024~30775~0,10024,18093,12682~Non-Vaccine~No Priority~Dr. Kashif Ali~Biohaven-DMCR-BHV3000-315~Active~May26:10024|Jun26:6000|Jul26:6890|Aug26:5203|Sep26:4560|Oct26:4130|Nov26:3992|Dec26:40799
+const RAW=`313~172~BHV3000-315~CyFair~Enrolling~Enrolling~Biohaven~Synteract~Migraine~General Medicine~2~3~5~25443~1.0~120659~120659~40799~0~10024~30775~0,10024,18093,12682~Non-Vaccine~No Priority~Dr. Kashif Ali~Biohaven-DMCR-BHV3000-315~Active~May26:10024|Jun26:6000|Jul26:6890|Aug26:5203|Sep26:4560|Oct26:4130|Nov26:3992|Dec26:40799
 312~37~3110-306-002~CyFair~Enrolling~Enrolling~AbbVie~None~Migraine~CNS/Psychiatry~4~4~8~16841~1.0~122147~122147~24490~0~1316~23174~0,1316,9641,13534~Non-Vaccine~No Priority~Dr. Khozema Palanpurwala~AbbVie-DMCR-3110-306-002~Active~May26:1316|Jul26:7886|Aug26:1754|Sep26:4041|Oct26:7299|Nov26:2193|Dec26:24490
 291~36~3110-305-002~CyFair~Enrolling~Enrolling~AbbVie~None~Migraine~General Medicine~3~3~6~7313~1.0~74490~74490~16311~0~3201~13110~0,3201,6789,6320~Non-Vaccine~No Priority~Dr. Muhammad Irfan~AbbVie-DMCR-3110-305-002 (Pedi~Active~May26:3201|Jul26:3837|Aug26:2952|Sep26:517|Oct26:3869|Nov26:1934|Dec26:16311
 1289~1580~ITI-007-505~Bellaire~Enrolling~Enrolling~Intra-Cellular Therapies~IQVIA~Major Depressive Disorder~Psychiatry~10~9~19~24714~1.0~365971~365971~207894~0~0~207894~0,0,55665,152229~Non-Vaccine~No Priority~Dr. Shonna Piegari~Intra-Cellular Therapies: ITI-~Active~Jul26:14460|Aug26:41205|Sep26:59347|Oct26:49783|Nov26:43099|Dec26:207894
@@ -513,48 +511,42 @@ const RAW = `313~172~BHV3000-315~CyFair~Enrolling~Enrolling~Biohaven~Synteract~M
 2094~5192~No information~NOVA~Pipeline~Pre-award~No Information~ICON~Obesity~General Medicine~0~50~50~20000~0.0~1000000~0~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Mustafa Alibhai~ICON-ERN 7656-Obesity~In-Active~
 2088~5190~No information~Sugarland~Pipeline~Pre-award~No Information~ICON~Obesity~General Medicine~0~50~50~20000~0.0~1000000~0~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Kecia Leigh~ICON-ERN 7650-Obesity~In-Active~
 2088~5189~No information~NOVA~Pipeline~Pre-award~No Information~ICON~Obesity~General Medicine~0~50~50~20000~0.0~1000000~0~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Mustafa Alibhai~ICON-ERN 7650-Obesity~In-Active~`;
-const AI_CTX = "=== ENROLLING (83) ===\nLID:313 ATOM:172 Protocol:BHV3000-315 Site:CyFair Sponsor:Biohaven Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:3 BPS:$25443 FCV:$120659 Rev2026:$40799 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:312 ATOM:37 Protocol:3110-306-002 Site:CyFair Sponsor:AbbVie Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:4 BPS:$16841 FCV:$122147 Rev2026:$24490 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Khozema Palanpurwala\nLID:291 ATOM:36 Protocol:3110-305-002 Site:CyFair Sponsor:AbbVie Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:3 BPS:$7313 FCV:$74490 Rev2026:$16311 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:1289 ATOM:1580 Protocol:ITI-007-505 Site:Bellaire Sponsor:Intra-Cellular Therapies Status:Enrolling/Enrolling CL:1.0 ActRando:10 Goals:9 BPS:$24714 FCV:$365971 Rev2026:$207894 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1771 ATOM:3359 Protocol:D6934C00001 Site:CyFair Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$28548 FCV:$17169 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:1853 ATOM:3706 Protocol:42847922MDD3003 Site:Bellaire Sponsor:Janssen Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:0 BPS:$36864 FCV:$105076 Rev2026:$11575 ActualYTD:$11575 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1976 ATOM:4428 Protocol:ALTO-100-211 Site:Bellaire Sponsor:Alto Neuroscience Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:1 BPS:$20320 FCV:$37604 Rev2026:$19049 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1853 ATOM:4344 Protocol:42847922MDD3003 Site:Bellaire Sponsor:Janssen Status:Enrolling/Greenlight Received CL:1.0 ActRando:4 Goals:0 BPS:$51390 FCV:$33692 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1724 ATOM:3088 Protocol:VNS 20-001 Site:CyFair Sponsor:GSK Status:Enrolling/Enrolling CL:1.0 ActRando:6 Goals:0 BPS:$5812 FCV:$32219 Rev2026:$2888 ActualYTD:$2888 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2009 ATOM:4566 Protocol:77242113PSA3002 Site:Tomball 13414 Sponsor:Janssen Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:0 BPS:$53360 FCV:$166716 Rev2026:$53501 ActualYTD:$33066 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2106 ATOM:5263 Protocol:I1F-MC-RHDE Site:Tomball 13414 Sponsor:Eli Lilly Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$2886 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2012 ATOM:4572 Protocol:FpA-AS-30093 Site:Philadelphia Sponsor:Teva Pharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:1 Goals:1 BPS:$10594 FCV:$39578 Rev2026:$10594 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2053 ATOM:4846 Protocol:M25-056 Site:Tomball 13414 Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:20 Goals:0 BPS:$28170 FCV:$245574 Rev2026:$175896 ActualYTD:$136946 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2132 ATOM:5445 Protocol:FYU-981-CRYS-301 Site:Tomball 13406 Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:1 BPS:$33579 FCV:$54555 Rev2026:$37553 ActualYTD:$17700 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2132 ATOM:5736 Protocol:FYU-981-CRYS-301 Site:Southfield Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:2 BPS:$33579 FCV:$75450 Rev2026:$40671 ActualYTD:$2771 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2126 ATOM:5419 Protocol:DQB104CT Site:Tomball 13406 Sponsor:Chugai Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:1 BPS:$35968 FCV:$39823 Rev2026:$55593 ActualYTD:$21500 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2134 ATOM:5447 Protocol:1378-0018 Site:Dallas - Fort Worth Sponsor:Boehringer Ingelheim Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:3 BPS:$32086 FCV:$173534 Rev2026:$56249 ActualYTD:$14890 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:1888 ATOM:3890 Protocol:D6973C00001 Site:AOM Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:17 Goals:12 BPS:$23232 FCV:$525304 Rev2026:$273741 ActualYTD:$101065 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2073 ATOM:5985 Protocol:GS-US-667-6882 Site:Tomball 13414 Sponsor:Gilead Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:0 BPS:$39986 FCV:$122644 Rev2026:$155233 ActualYTD:$108690 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2098 ATOM:5164 Protocol:MK7240-013 Site:Tomball 13414 Sponsor:Merck Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:0 BPS:$77084 FCV:$219149 Rev2026:$128967 ActualYTD:$66786 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2115 ATOM:5346 Protocol:D7960C00015 Site:Sugarland Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:15 Goals:9 BPS:$16354 FCV:$325586 Rev2026:$179828 ActualYTD:$79177 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2115 ATOM:5345 Protocol:D7960C00015 Site:Seattle Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:5 BPS:$16354 FCV:$130085 Rev2026:$74665 ActualYTD:$29590 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2115 ATOM:5344 Protocol:D7960C00015 Site:San Antonio Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:14 BPS:$16354 FCV:$271652 Rev2026:$128473 ActualYTD:$12101 Vax:Non-Vaccine PI:Dr. Hilario Alvarado\nLID:2115 ATOM:5341 Protocol:D7960C00015 Site:Dallas - Fort Worth Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:17 Goals:19 BPS:$16354 FCV:$493854 Rev2026:$290274 ActualYTD:$103778 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2115 ATOM:5342 Protocol:D7960C00015 Site:Southfield Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:7 BPS:$16354 FCV:$253927 Rev2026:$150260 ActualYTD:$83333 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:1888 ATOM:3941 Protocol:D6973C00001 Site:Dominion Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:7 Goals:11 BPS:$23232 FCV:$371722 Rev2026:$238822 ActualYTD:$79002 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2211 ATOM:5854 Protocol:WA45846 Site:Tomball 13414 Sponsor:Roche Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:3 BPS:$15868 FCV:$101172 Rev2026:$113331 ActualYTD:$71073 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2242 ATOM:6043 Protocol:PARA_OA_012 Site:CyFair Sponsor:Paradigm Biopharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:42 Goals:5 BPS:$30308 FCV:$497087 Rev2026:$558073 ActualYTD:$359861 Vax:Non-Vaccine PI:Dr. Tiffany Huynh\nLID:2244 ATOM:6048 Protocol:IMVT-1402-2503 Site:Miami Sponsor:Immuvonant Sciences GmbH Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:0 BPS:$39089 FCV:$45993 Rev2026:$46419 ActualYTD:$34728 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2287 ATOM:6315 Protocol:NN9838-4968 Site:CyFair Sponsor:Novo Norsdisk Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:4 BPS:$111135 FCV:$787574 Rev2026:$321358 ActualYTD:$109690 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:2115 ATOM:5340 Protocol:D7960C00015 Site:Tomball 13406 Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:9 Goals:15 BPS:$16354 FCV:$324839 Rev2026:$141609 ActualYTD:$18039 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2115 ATOM:5338 Protocol:D7960C00015 Site:Brookline Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:7 BPS:$16354 FCV:$142745 Rev2026:$67657 ActualYTD:$5473 Vax:Non-Vaccine PI:Dr. Basmah Jalil\nLID:2304 ATOM:6423 Protocol:VP-VYV-683-3102 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:3 BPS:$20488 FCV:$65397 Rev2026:$83464 ActualYTD:$22000 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2307 ATOM:6426 Protocol:GSBR-1290-10 Site:Tomball 13406 Sponsor:Gasherbrum Bio, Inc. Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:0 BPS:$40475 FCV:$33092 Rev2026:$44096 ActualYTD:$37912 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2298 ATOM:6387 Protocol:VP-VHX-896-3201 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:4 Goals:4 BPS:$39354 FCV:$242791 Rev2026:$171573 ActualYTD:$66488 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1888 ATOM:3889 Protocol:D6973C00001 Site:Tomball 13406 Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:10 Goals:7 BPS:$23232 FCV:$257274 Rev2026:$177509 ActualYTD:$76336 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2168 ATOM:5653 Protocol:301160 Site:Tomball 13406 Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:38 Goals:3 BPS:$94390 FCV:$374470 Rev2026:$81267 ActualYTD:$44404 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2169 ATOM:5671 Protocol:306246 Site:Tomball 13406 Sponsor:No Information Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:4 BPS:$32198 FCV:$128792 Rev2026:$39497 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2507 ATOM:6698 Protocol:2019nCoV-420 Site:CyFair Sponsor:Novavax Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$4202 FCV:$397570 Rev2026:$332386 ActualYTD:$271636 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2133 ATOM:5446 Protocol:FYU-981-CRYS-302 Site:Tomball 13406 Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:0 BPS:$37521 FCV:$3380 Rev2026:$4938 ActualYTD:$4938 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2187 ATOM:5748 Protocol:C4771002 Site:River Forest Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:12 Goals:90 BPS:$9766 FCV:$1001505 Rev2026:$418974 ActualYTD:$68850 Vax:Vaccine PI:Dr. Mary Brown\nLID:2187 ATOM:5749 Protocol:C4771002 Site:CyFair Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:35 Goals:69 BPS:$9766 FCV:$1015682 Rev2026:$502126 ActualYTD:$140767 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2187 ATOM:5750 Protocol:C4771002 Site:Southfield Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:27 Goals:70 BPS:$9766 FCV:$949996 Rev2026:$458441 ActualYTD:$116606 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2187 ATOM:5752 Protocol:C4771002 Site:Philadelphia Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:69 BPS:$9766 FCV:$751995 Rev2026:$320273 ActualYTD:$45222 Vax:Vaccine PI:Dr. David Wheeler\nLID:2187 ATOM:5753 Protocol:C4771002 Site:Tomball 13406 Sponsor:Pfizer Status:Enrolling/Greenlight Received CL:1.0 ActRando:9 Goals:70 BPS:$9766 FCV:$771527 Rev2026:$354473 ActualYTD:$75445 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2115 ATOM:5339 Protocol:D7960C00015 Site:River Forest Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:10 Goals:13 BPS:$16354 FCV:$375395 Rev2026:$236728 ActualYTD:$100930 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2552 ATOM:6950 Protocol:J3R-MC-YDAF Site:Indianapolis Sponsor:Eli Lilly Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:0 BPS:$58229 FCV:$266048 Rev2026:$271557 ActualYTD:$173377 Vax:Non-Vaccine PI:Brandon Essink\nLID:2217 ATOM:5899 Protocol:K9531-3103 (OAB58025) Site:Tomball 13406 Sponsor:Kailera Therapeutics Status:Enrolling/Enrolling CL:1.0 ActRando:21 Goals:15 BPS:$32650 FCV:$1092104 Rev2026:$711907 ActualYTD:$310878 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2218 ATOM:5911 Protocol:K9531-3104 (PAB77690) Site:Tomball 13406 Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:10 Goals:3 BPS:$35035 FCV:$344570 Rev2026:$248235 ActualYTD:$140884 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2291 ATOM:6337 Protocol:VP-VQW-765-3201 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:6 BPS:$6449 FCV:$48473 Rev2026:$50394 ActualYTD:$11700 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2218 ATOM:6422 Protocol:K9531-3104 (PAB77690) Site:Phoenix Sponsor:Kailera Therapeutics Status:Enrolling/Screening only CL:1.0 ActRando:1 Goals:1 BPS:$35035 FCV:$50429 Rev2026:$43455 ActualYTD:$28564 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2508 ATOM:6700 Protocol:ACP-211-002 Site:Bellaire Sponsor:Acadia Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:0 BPS:$58836 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2513 ATOM:6712 Protocol:K9531-3107 Site:Phoenix Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:6 Goals:10 BPS:$33077 FCV:$739151 Rev2026:$452224 ActualYTD:$168882 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2115 ATOM:7004 Protocol:D7960C00015 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:2 BPS:$16354 FCV:$81770 Rev2026:$59107 ActualYTD:$33129 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2544 ATOM:6916 Protocol:VYD2311-PREV-002 Site:Dallas - Fort Worth Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:116 Goals:0 BPS:$11302 FCV:$1345074 Rev2026:$1365149 ActualYTD:$1278740 Vax:Vaccine PI:Dr. Heather Myers\nLID:2544 ATOM:6913 Protocol:VYD2311-PREV-002 Site:Sugarland Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:137 Goals:0 BPS:$11302 FCV:$1621380 Rev2026:$1632044 ActualYTD:$1473757 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2544 ATOM:6912 Protocol:VYD2311-PREV-002 Site:Philadelphia Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:185 Goals:0 BPS:$11302 FCV:$2270796 Rev2026:$2313502 ActualYTD:$2201758 Vax:Vaccine PI:Megan Algeo\nLID:2544 ATOM:6909 Protocol:VYD2311-PREV-002 Site:CyFair Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:24 Goals:0 BPS:$11302 FCV:$266886 Rev2026:$279054 ActualYTD:$247350 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2544 ATOM:6908 Protocol:VYD2311-PREV-002 Site:Jersey City Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:125 Goals:0 BPS:$11302 FCV:$1454386 Rev2026:$1449424 ActualYTD:$1235267 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2544 ATOM:6905 Protocol:VYD2311-PREV-002 Site:CyFair Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:182 Goals:0 BPS:$11302 FCV:$1874150 Rev2026:$1914777 ActualYTD:$1691105 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2544 ATOM:6904 Protocol:VYD2311-PREV-002 Site:River Forest Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:151 Goals:0 BPS:$11302 FCV:$1738734 Rev2026:$1820966 ActualYTD:$1527918 Vax:Vaccine PI:Dr. Mary Brown\nLID:2214 ATOM:5874 Protocol:D9640C00003 Site:Tomball 13414 Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:8 BPS:$49276 FCV:$405973 Rev2026:$245912 ActualYTD:$51623 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2294 ATOM:6357 Protocol:WC45726(CT-388-106) Site:Tomball 13406 Sponsor:Roche Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:10 BPS:$39066 FCV:$396488 Rev2026:$199123 ActualYTD:$63395 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2515 ATOM:6722 Protocol:NN9490-8293 Site:FSS Sponsor:Novo Norsdisk Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:5 BPS:$53781 FCV:$268905 Rev2026:$268905 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2603 ATOM:7116 Protocol:821P203 Site:Bellaire Sponsor:Supernus Pharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:6 BPS:$21671 FCV:$156608 Rev2026:$186920 ActualYTD:$56897 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2594 ATOM:7102 Protocol:V2000103 Site:Miami Sponsor:Veru Status:Enrolling/Greenlight Received CL:1.0 ActRando:26 Goals:17 BPS:$48846 FCV:$1313458 Rev2026:$623708 ActualYTD:$175615 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2633 ATOM:7250 Protocol:C6481001 Site:Philadelphia Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:52 Goals:0 BPS:$6806 FCV:$347339 Rev2026:$384280 ActualYTD:$304350 Vax:Vaccine PI:Dr. David Wheeler\nLID:2633 ATOM:7249 Protocol:C6481001 Site:Tomball 13406 Sponsor:Pfizer Status:Enrolling/Greenlight Received CL:1.0 ActRando:52 Goals:0 BPS:$6806 FCV:$367986 Rev2026:$376996 ActualYTD:$293868 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2594 ATOM:7227 Protocol:V2000103 Site:Phoenix Sponsor:Veru Status:Enrolling/Enrolling CL:1.0 ActRando:6 Goals:11 BPS:$48846 FCV:$655041 Rev2026:$352949 ActualYTD:$121740 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2558 ATOM:6973 Protocol:TRS-018 Site:Philadelphia Sponsor:Tarsus Status:Enrolling/Greenlight Received CL:1.0 ActRando:90 Goals:15 BPS:$23045 FCV:$1526457 Rev2026:$1153510 ActualYTD:$365989 Vax:Vaccine PI:Dr. David Wheeler\nLID:2558 ATOM:6971 Protocol:TRS-018 Site:Brookline Sponsor:Tarsus Status:Enrolling/Enrolling CL:1.0 ActRando:54 Goals:15 BPS:$23045 FCV:$1107892 Rev2026:$856894 ActualYTD:$290993 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:2646 ATOM:7288 Protocol:K9531-2110 Site:Indianapolis Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:6 Goals:3 BPS:$33549 FCV:$155184 Rev2026:$135784 ActualYTD:$74954 Vax:Non-Vaccine PI:Brandon Essink\nLID:2647 ATOM:7291 Protocol:TTP399-302 Site:Indianapolis Sponsor:vTv Therapeutics Status:Enrolling/Enrolling CL:1.0 ActRando:1 Goals:2 BPS:$35122 FCV:$80520 Rev2026:$84314 ActualYTD:$28058 Vax:Non-Vaccine PI:Brandon Essink\nLID:2678 ATOM:7451 Protocol:FYU-981-CRYS-201 Site:Tomball 13406 Sponsor:Crystalys therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:2 BPS:$29181 FCV:$61862 Rev2026:$55770 ActualYTD:$14985 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:4847 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:2 BPS:$19402 FCV:$38804 Rev2026:$73066 ActualYTD:$34807 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2053 ATOM:7590 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2053 ATOM:7589 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2168 ATOM:5659 Protocol:301160 Site:Dallas - Fort Worth Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:7 BPS:$94390 FCV:$660730 Rev2026:$105721 ActualYTD:$34634 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2169 ATOM:5666 Protocol:306246 Site:Dallas - Fort Worth Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:7 BPS:$32198 FCV:$225386 Rev2026:$91143 ActualYTD:$20250 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2548 ATOM:6945 Protocol:ELV001-201 Site:Rehman Sponsor:Eisai Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:4 BPS:$34136 FCV:$136544 Rev2026:$90763 ActualYTD:$15000 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2548 ATOM:7118 Protocol:ELV001-201 Site:Tomball 13414 Sponsor:Eisai Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:2 BPS:$34136 FCV:$68272 Rev2026:$79339 ActualYTD:$25070 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:6416 Protocol:M25-056 Site:Tomball Rheumatology Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:6415 Protocol:M25-056 Site:Tomball Rheumatology Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\n\n=== AWARDED (88) ===\nLID:2141 ATOM:5838 Protocol:VRB-101-202 Site:FSS Sponsor:Verdiva Bio Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:6 BPS:$40233 FCV:$241396 Rev2026:$257899 ActualYTD:$20875 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2643 ATOM:7274 Protocol:EXPD-101-201 Site:Phoenix Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$84480 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2141 ATOM:5480 Protocol:VRB-101-202 Site:NOVA Sponsor:Verdiva Bio Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:6 BPS:$40233 FCV:$241396 Rev2026:$257899 ActualYTD:$20875 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2499 ATOM:6671 Protocol:C4931004 Site:CyFair Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$5765 FCV:$46119 Rev2026:$36911 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:2530 ATOM:6827 Protocol:MDD3011 Site:Bellaire Sponsor:Johnson&Johnson Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:5 BPS:$17707 FCV:$88535 Rev2026:$88535 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2543 ATOM:6895 Protocol:224349 Site:CyFair Sponsor:GSK Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:15 BPS:$5759 FCV:$86385 Rev2026:$89265 ActualYTD:$18250 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2630 ATOM:7245 Protocol:TAK-360-2001 Site:FSS Sponsor:Takeda Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:4 BPS:$83419 FCV:$333677 Rev2026:$358619 ActualYTD:$26663 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2643 ATOM:7277 Protocol:EXPD-101-201 Site:Tomball 13406 Sponsor:Expedition Therapeutics Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$76032 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2643 ATOM:7275 Protocol:EXPD-101-201 Site:Indianapolis Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$84480 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2497 ATOM:6669 Protocol:C4931008 Site:CyFair Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$17157 FCV:$85784 Rev2026:$44146 ActualYTD:$0 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2592 ATOM:7095 Protocol:WA46440 Site:Tomball 13414 Sponsor:Roche Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:4 BPS:$22886 FCV:$91544 Rev2026:$49702 ActualYTD:$22441 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2641 ATOM:7272 Protocol:IMVT-1402-2505 Site:Miami Sponsor:Immuvonant Sciences GmbH Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$66452 FCV:$66452 Rev2026:$34007 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2665 ATOM:7387 Protocol:K-304-P005 Site:Bellaire Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:16 BPS:$10499 FCV:$127136 Rev2026:$35394 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2664 ATOM:7383 Protocol:K-304 P003 Site:Bellaire Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:16 BPS:$5465 FCV:$87440 Rev2026:$78696 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2525 ATOM:6807 Protocol:C6511002 Site:Tomball 13406 Sponsor:Pfizer Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:21 BPS:$80661 FCV:$1693874 Rev2026:$910645 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2561 ATOM:6996 Protocol:D7266C00001 Site:Indianapolis Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$23845 FCV:$238450 Rev2026:$80796 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2569 ATOM:7018 Protocol:PIR21191 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:16 BPS:$6768 FCV:$108286 Rev2026:$53000 ActualYTD:$12352 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2607 ATOM:7135 Protocol:CD_ABX464-202 Site:Tomball 13406 Sponsor:Abivax Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$68962 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2571 ATOM:7093 Protocol:ENERGI-F703-04 Site:AOM Sponsor:BARDA Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$21352 FCV:$93997 Rev2026:$77343 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2571 ATOM:7092 Protocol:ENERGI-F703-04 Site:Phoenix Sponsor:BARDA Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$21352 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2701 ATOM:7543 Protocol:LCI699-RECAG-CL-0615 Site:Miami Sponsor:Recordati AG Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$23296 FCV:$23296 Rev2026:$14476 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2675 ATOM:7445 Protocol:C6491014 Site:Southfield Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2675 ATOM:7444 Protocol:C6491014 Site:Sugarland Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2675 ATOM:7443 Protocol:C6491014 Site:Indianapolis Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2683 ATOM:7497 Protocol:K-304-P004 Site:Tomball 13406 Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:25 BPS:$12501 FCV:$312525 Rev2026:$177847 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2685 ATOM:7491 Protocol:VCA23395 Site:Phoenix Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Danielle Armas\nLID:2685 ATOM:7490 Protocol:VCA23395 Site:CyFair Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2685 ATOM:7489 Protocol:VCA23395 Site:Southfield Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2685 ATOM:7488 Protocol:VCA23395 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2685 ATOM:7487 Protocol:VCA23395 Site:Sugarland Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2685 ATOM:7486 Protocol:VCA23395 Site:Seattle Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2685 ATOM:7485 Protocol:VCA23395 Site:San Antonio Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Danielle Coulter\nLID:2685 ATOM:7484 Protocol:VCA23395 Site:Philadelphia Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2685 ATOM:7483 Protocol:VCA23395 Site:Jersey City Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2685 ATOM:7482 Protocol:VCA23395 Site:Dominion Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:2685 ATOM:7481 Protocol:VCA23395 Site:Dallas - Fort Worth Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Mustafa Alibhai\nLID:2685 ATOM:7480 Protocol:VCA23395 Site:Bellaire Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Teresa Becker\nLID:2685 ATOM:7479 Protocol:VCA23395 Site:River Forest Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2685 ATOM:7478 Protocol:VCA23395 Site:Brookline Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. James Katz\nLID:2685 ATOM:7477 Protocol:VCA23395 Site:Albuquerque Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2683 ATOM:7459 Protocol:K-304-P004 Site:Indianapolis Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:20 BPS:$12501 FCV:$250020 Rev2026:$159451 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2683 ATOM:7514 Protocol:K-304-P004 Site:Sugarland Neurology Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:20 BPS:$12501 FCV:$250020 Rev2026:$159451 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Irfan Lalani\nLID:2675 ATOM:7591 Protocol:C6491014 Site:Albuquerque Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Sally Fisher\nLID:2685 ATOM:7752 Protocol:VCA23395 Site:Southfield Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2749 ATOM:7670 Protocol:ALV-101-1 Site:FSS Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$18776 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2749 ATOM:7666 Protocol:ALV-101-1 Site:Phoenix Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$18776 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2623 ATOM:7230 Protocol:D7260C00015 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20004 FCV:$40008 Rev2026:$8014 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2623 ATOM:7229 Protocol:D7260C00015 Site:Indianapolis Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$20004 FCV:$200040 Rev2026:$51732 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2638 ATOM:7268 Protocol:D7261C00005 Site:Sugarland Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$31296 FCV:$161278 Rev2026:$56137 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2638 ATOM:7266 Protocol:D7261C00005 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$19998 FCV:$119988 Rev2026:$44728 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2645 ATOM:7279 Protocol:223957 Site:Tomball 13406 Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20000 FCV:$160000 Rev2026:$140792 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2635 ATOM:7254 Protocol:D7261C00004 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2623 ATOM:7231 Protocol:D7260C00015 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20004 FCV:$40008 Rev2026:$8014 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2638 ATOM:7310 Protocol:D7261C00005 Site:Southfield Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$19998 FCV:$119988 Rev2026:$53163 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2648 ATOM:7296 Protocol:TAK-360-2002 Site:FSS Sponsor:Takeda Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$41967 FCV:$167868 Rev2026:$151081 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2660 ATOM:7364 Protocol:ML-007C-MA-212 Site:Bellaire Sponsor:Maplight Therapeutics Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$42065 FCV:$146599 Rev2026:$54467 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2666 ATOM:7397 Protocol:299GD201 Site:Miami Sponsor:Biogen Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$20004 FCV:$20004 Rev2026:$14758 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2643 ATOM:7276 Protocol:EXPD-101-201 Site:Philadelphia Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:4 BPS:$28160 FCV:$112640 Rev2026:$102731 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2012 ATOM:7796 Protocol:FpA-AS-30093 Site:Tomball 13406 Sponsor:Teva Pharmaceuticals Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$10594 FCV:$52972 Rev2026:$47675 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2688 ATOM:7515 Protocol:FUZ-CT-001 Site:FSS Sponsor:Fuzzle Inc. Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:40 BPS:$1048 FCV:$41920 Rev2026:$41920 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2778 ATOM:7827 Protocol:308623 Site:Dallas - Fort Worth Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$32198 FCV:$64396 Rev2026:$18008 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2696 ATOM:7526 Protocol:382-201-00034 Site:Bellaire Sponsor:Otsuka Pharmaceutical Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$20000 FCV:$100000 Rev2026:$75368 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2695 ATOM:7525 Protocol:382-201-00033 Site:Bellaire Sponsor:Otsuka Pharmaceutical Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20000 FCV:$80000 Rev2026:$69561 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2078 ATOM:5058 Protocol:NBI-1065845-MDD3025 Site:Bellaire Sponsor:Neurocrine Biosciences Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$19999 FCV:$59997 Rev2026:$52131 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1997 ATOM:4544 Protocol:NBI-1065845-MDD3028 Site:Bellaire Sponsor:No Information Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$20004 FCV:$60012 Rev2026:$40216 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1612 ATOM:2618 Protocol:218130 Site:Philadelphia Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:180 BPS:$6500 FCV:$1170000 Rev2026:$729000 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:1612 ATOM:2616 Protocol:218130 Site:Jersey City Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:1612 ATOM:2614 Protocol:218130 Site:CyFair Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:1612 ATOM:2613 Protocol:218130 Site:Brookline Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1612 ATOM:2464 Protocol:218130 Site:Bellaire Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$975000 Rev2026:$607500 ActualYTD:$0 Vax:Vaccine PI:Dr. Bonnie Colville\nLID:1612 ATOM:4996 Protocol:218130 Site:Dominion Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:105 BPS:$6500 FCV:$676500 Rev2026:$423450 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:1612 ATOM:4992 Protocol:218130 Site:Dallas - Fort Worth Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:80 BPS:$6500 FCV:$520000 Rev2026:$324000 ActualYTD:$0 Vax:Vaccine PI:Dr. Heather Myers\nLID:2561 ATOM:7002 Protocol:D7266C00001 Site:Southfield Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$23845 FCV:$238450 Rev2026:$39279 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2685 ATOM:7496 Protocol:VCA23395 Site:Albuquerque Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2685 ATOM:7495 Protocol:VCA23395 Site:Sugarland Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2685 ATOM:7493 Protocol:VCA23395 Site:Philadelphia Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2685 ATOM:7492 Protocol:VCA23395 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2685 ATOM:7632 Protocol:VCA23395 Site:River Forest Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2623 ATOM:7218 Protocol:D7260C00015 Site:NOVA Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$20004 FCV:$120024 Rev2026:$26374 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2637 ATOM:7263 Protocol:D7261C00002 Site:Dallas - Fort Worth Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2635 ATOM:7256 Protocol:D7261C00004 Site:Dominion Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2623 ATOM:7560 Protocol:D7260C00015 Site:Bellaire Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$20004 FCV:$200040 Rev2026:$26374 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2710 ATOM:7555 Protocol:R5713-5715-ALG-2556 Site:AOM Sponsor:Regeneron Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$134730 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2770 ATOM:7799 Protocol:295449 Site:Seattle Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20003 FCV:$74488 Rev2026:$38400 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2770 ATOM:7798 Protocol:295449 Site:Tomball 13406 Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20003 FCV:$160024 Rev2026:$32645 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2725 ATOM:7584 Protocol:EFC22927 Site:Tomball 13406 Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$20000 FCV:$60000 Rev2026:$46173 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2553 ATOM:6954 Protocol:306300 Site:Dallas - Fort Worth Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$11187 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2623 ATOM:8060 Protocol:D7260C00015 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$20000 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\n\n=== TOP MAINTENANCE ===\nLID:1618 ATOM:2502 Protocol:VAX31-103 Site:Philadelphia Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:243 Goals:0 BPS:$7576 FCV:$1810520 Rev2026:$1026112 ActualYTD:$871595 Vax:Vaccine PI:Dr. David Wheeler\nLID:1618 ATOM:2505 Protocol:VAX31-103 Site:Sugarland Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:223 Goals:0 BPS:$7576 FCV:$1695438 Rev2026:$943890 ActualYTD:$801626 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1621 ATOM:2535 Protocol:VAX31-106 Site:Southfield Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:61 Goals:0 BPS:$10045 FCV:$622481 Rev2026:$652173 ActualYTD:$590523 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:3692 Protocol:mRNA-1403-P301 Site:River Forest Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:148 Goals:0 BPS:$10410 FCV:$1257333 Rev2026:$617899 ActualYTD:$459027 Vax:Vaccine PI:Dr. Mary Brown\nLID:1843 ATOM:3694 Protocol:mRNA-1403-P301 Site:Sugarland Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:177 Goals:0 BPS:$10410 FCV:$1655604 Rev2026:$608337 ActualYTD:$429637 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1843 ATOM:3691 Protocol:mRNA-1403-P301 Site:Philadelphia Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:159 Goals:0 BPS:$10410 FCV:$1448562 Rev2026:$608032 ActualYTD:$461342 Vax:Vaccine PI:Dr. David Wheeler\nLID:1843 ATOM:3697 Protocol:mRNA-1403-P301 Site:Tomball 13406 Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:128 Goals:0 BPS:$10410 FCV:$1192125 Rev2026:$592579 ActualYTD:$448879 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1843 ATOM:3693 Protocol:mRNA-1403-P301 Site:Southfield Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:146 Goals:0 BPS:$10410 FCV:$1351358 Rev2026:$562620 ActualYTD:$405570 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:3688 Protocol:mRNA-1403-P301 Site:Brookline Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:148 Goals:0 BPS:$10410 FCV:$1372689 Rev2026:$552325 ActualYTD:$394365 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1843 ATOM:3687 Protocol:mRNA-1403-P301 Site:Bellaire Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:159 Goals:0 BPS:$10410 FCV:$1314435 Rev2026:$546741 ActualYTD:$409971 Vax:Vaccine PI:Dr. Bonnie Colville\nLID:1843 ATOM:3952 Protocol:mRNA-1403-P301 Site:Dallas - Fort Worth Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:186 Goals:0 BPS:$10410 FCV:$1640822 Rev2026:$526456 ActualYTD:$331636 Vax:Vaccine PI:Dr. Heather Myers\nLID:2057 ATOM:4884 Protocol:CD388.SQ.3.06 Site:Philadelphia Sponsor:Cidara Therapeutics, Inc Status:Maintenance/Maintenance CL:1.0 ActRando:105 Goals:0 BPS:$19872 FCV:$2045249 Rev2026:$473996 ActualYTD:$461117 Vax:Vaccine PI:Dr. David Wheeler\nLID:1800 ATOM:3477 Protocol:VXA-COV-202 Site:CyFair Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:96 Goals:0 BPS:$11522 FCV:$1241427 Rev2026:$460767 ActualYTD:$317704 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:258 ATOM:3845 Protocol:mRNA-1189-P101 Site:CyFair Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:5 Goals:0 BPS:$36347 FCV:$218616 Rev2026:$445224 ActualYTD:$445224 Vax:Vaccine PI:Dr. Kashif Ali\nLID:1843 ATOM:3612 Protocol:mRNA-1403-P301 Site:CyFair Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:205 Goals:0 BPS:$10410 FCV:$1820987 Rev2026:$435765 ActualYTD:$239415 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:1843 ATOM:6871 Protocol:mRNA-1403-P301 Site:River Forest Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:152 Goals:0 BPS:$7479 FCV:$1049615 Rev2026:$435704 ActualYTD:$227609 Vax:Vaccine PI:Dr. Mary Brown\nLID:2057 ATOM:6166 Protocol:CD388.SQ.3.06 Site:Tomball 13406 Sponsor:Cidara Therapeutics, Inc Status:Maintenance/Maintenance CL:1.0 ActRando:87 Goals:0 BPS:$19872 FCV:$1643347 Rev2026:$425524 ActualYTD:$407494 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:1843 ATOM:6880 Protocol:mRNA-1403-P301 Site:Tomball 13406 Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:143 Goals:0 BPS:$7479 FCV:$1014024 Rev2026:$422837 ActualYTD:$231433 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2521 ATOM:6758 Protocol:C4591081 Site:River Forest Sponsor:Pfizer Status:Maintenance/Maintenance CL:1.0 ActRando:55 Goals:0 BPS:$6319 FCV:$345631 Rev2026:$410561 ActualYTD:$344421 Vax:Vaccine PI:Dr. Mary Brown\nLID:1843 ATOM:3949 Protocol:mRNA-1403-P301 Site:Albuquerque Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:102 Goals:0 BPS:$10410 FCV:$1005431 Rev2026:$399470 ActualYTD:$260350 Vax:Vaccine PI:Dr. Sally Fisher\nLID:1800 ATOM:3486 Protocol:VXA-COV-202 Site:Tomball 13406 Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:94 Goals:0 BPS:$11522 FCV:$1175936 Rev2026:$395839 ActualYTD:$257293 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1843 ATOM:6869 Protocol:mRNA-1403-P301 Site:Bellaire Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:115 Goals:0 BPS:$7479 FCV:$846320 Rev2026:$388879 ActualYTD:$222704 Vax:Vaccine PI:Dr. Sheila E Schmidt\nLID:2114 ATOM:5335 Protocol:D7960C00012 Site:Sugarland Sponsor:AstraZeneca Status:Maintenance/Maintenance CL:1.0 ActRando:46 Goals:0 BPS:$20872 FCV:$924438 Rev2026:$380678 ActualYTD:$140464 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:1819 ATOM:5017 Protocol:C4771001 Site:Martin Diagnostic Center Sponsor:Pfizer Status:Maintenance/Maintenance CL:1.0 ActRando:43 Goals:0 BPS:$10244 FCV:$425302 Rev2026:$379737 ActualYTD:$361249 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1800 ATOM:3479 Protocol:VXA-COV-202 Site:Jersey City Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:93 Goals:0 BPS:$11522 FCV:$1105735 Rev2026:$374831 ActualYTD:$242310 Vax:Vaccine PI:Dr. Asisat Ope\nLID:1843 ATOM:3695 Protocol:mRNA-1403-P301 Site:Martin Diagnostic Center Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:155 Goals:0 BPS:$10410 FCV:$1430245 Rev2026:$356800 ActualYTD:$198520 Vax:Vaccine PI:Dr. Helen Shpats\nLID:1843 ATOM:3950 Protocol:mRNA-1403-P301 Site:Seattle Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:145 Goals:0 BPS:$10410 FCV:$1422385 Rev2026:$355976 ActualYTD:$181736 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:1843 ATOM:6873 Protocol:mRNA-1403-P301 Site:Southfield Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:118 Goals:0 BPS:$7479 FCV:$831714 Rev2026:$340653 ActualYTD:$182008 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:6870 Protocol:mRNA-1403-P301 Site:Brookline Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:98 Goals:0 BPS:$7479 FCV:$701447 Rev2026:$339253 ActualYTD:$212488 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1843 ATOM:6875 Protocol:mRNA-1403-P301 Site:Philadelphia Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:126 Goals:0 BPS:$7479 FCV:$891764 Rev2026:$310771 ActualYTD:$130372 Vax:Vaccine PI:Dr. David Wheeler\n\n=== TOP PIPELINE ===\nLID:2789 ATOM:7891 Protocol:UAB02022 Site:Tomball 13406 Sponsor: Status:Pipeline/FQ Submitted CL:0.3 ActRando:0 Goals:272 BPS:$20000 FCV:$5440000 Rev2026:$80952 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2166 ATOM:5634 Protocol:None at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$20000 FCV:$4000000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2166 ATOM:5633 Protocol:None at the moment Site:AOM Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$20000 FCV:$4000000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2295 ATOM:6370 Protocol:none at the moment Site:Jersey City Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Asisat Ope\nLID:2295 ATOM:6369 Protocol:none at the moment Site:AOM Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2295 ATOM:6367 Protocol:none at the moment Site:Sugarland Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2295 ATOM:6365 Protocol:none at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2295 ATOM:6361 Protocol:none at the moment Site:Dallas - Fort Worth Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2295 ATOM:6358 Protocol:none at the moment Site:Tomball 13406 Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2295 ATOM:6368 Protocol:none at the moment Site:CyFair Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Tiffany Huynh\nLID:2295 ATOM:6366 Protocol:none at the moment Site:Philadelphia Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2295 ATOM:6360 Protocol:none at the moment Site:River Forest Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2295 ATOM:6364 Protocol:none at the moment Site:Albuquerque Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Sally Fisher\nLID:2295 ATOM:6363 Protocol:none at the moment Site:Brookline Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Basmah Jalil\nLID:2295 ATOM:6362 Protocol:none at the moment Site:Southfield Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2295 ATOM:6359 Protocol:none at the moment Site:Seattle Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2606 ATOM:7132 Protocol:none at the moment Site:Tomball 13406 Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Helen Shpats\nLID:2606 ATOM:7131 Protocol:none at the moment Site:Sugarland Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2606 ATOM:7128 Protocol:none at the moment Site:Philadelphia Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2606 ATOM:7129 Protocol:none at the moment Site:San Antonio Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Hilario Alvarado\nLID:2606 ATOM:7124 Protocol:none at the moment Site:CyFair Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2606 ATOM:7123 Protocol:none at the moment Site:River Forest Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2606 ATOM:7121 Protocol:none at the moment Site:Bellaire Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Sheila E Schmidt\nLID:2791 ATOM:7955 Protocol:ASC30-301 Site:Dominion Sponsor:Ascletis Pharma Status:Pipeline/FQ Submitted CL:0.3 ActRando:0 Goals:64 BPS:$20000 FCV:$1280000 Rev2026:$115048 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2606 ATOM:7134 Protocol:none at the moment Site:Phoenix Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Danielle Armas\nLID:2606 ATOM:7133 Protocol:none at the moment Site:Jersey City Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2606 ATOM:7130 Protocol:none at the moment Site:Seattle Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2606 ATOM:7127 Protocol:none at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:2606 ATOM:7126 Protocol:none at the moment Site:Southfield Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2606 ATOM:7125 Protocol:none at the moment Site:Dallas - Fort Worth Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Heather Myers\nLID:2606 ATOM:7122 Protocol:none at the moment Site:Brookline Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:2606 ATOM:7120 Protocol:none at the moment Site:Albuquerque Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2074 ATOM:5011 Protocol:221847 Site:Seattle Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2538 ATOM:6863 Protocol:none at the moment Site:Miami Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:60 BPS:$20000 FCV:$1200000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2538 ATOM:6857 Protocol:none at the moment Site:Indianapolis Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:60 BPS:$20000 FCV:$1200000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:1614 ATOM:2645 Protocol:218139 Site:Tomball 13406 Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1614 ATOM:2644 Protocol:218139 Site:Sugarland Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1614 ATOM:2643 Protocol:218139 Site:Southfield Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1614 ATOM:2642 Protocol:218139 Site:River Forest Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:1614 ATOM:2641 Protocol:218139 Site:Philadelphia Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Kem Yenal";
+const AI_CTX="=== ENROLLING (83) ===\nLID:313 ATOM:172 Protocol:BHV3000-315 Site:CyFair Sponsor:Biohaven Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:3 BPS:$25443 FCV:$120659 Rev2026:$40799 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:312 ATOM:37 Protocol:3110-306-002 Site:CyFair Sponsor:AbbVie Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:4 BPS:$16841 FCV:$122147 Rev2026:$24490 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Khozema Palanpurwala\nLID:291 ATOM:36 Protocol:3110-305-002 Site:CyFair Sponsor:AbbVie Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:3 BPS:$7313 FCV:$74490 Rev2026:$16311 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:1289 ATOM:1580 Protocol:ITI-007-505 Site:Bellaire Sponsor:Intra-Cellular Therapies Status:Enrolling/Enrolling CL:1.0 ActRando:10 Goals:9 BPS:$24714 FCV:$365971 Rev2026:$207894 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1771 ATOM:3359 Protocol:D6934C00001 Site:CyFair Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$28548 FCV:$17169 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:1853 ATOM:3706 Protocol:42847922MDD3003 Site:Bellaire Sponsor:Janssen Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:0 BPS:$36864 FCV:$105076 Rev2026:$11575 ActualYTD:$11575 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1976 ATOM:4428 Protocol:ALTO-100-211 Site:Bellaire Sponsor:Alto Neuroscience Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:1 BPS:$20320 FCV:$37604 Rev2026:$19049 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1853 ATOM:4344 Protocol:42847922MDD3003 Site:Bellaire Sponsor:Janssen Status:Enrolling/Greenlight Received CL:1.0 ActRando:4 Goals:0 BPS:$51390 FCV:$33692 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1724 ATOM:3088 Protocol:VNS 20-001 Site:CyFair Sponsor:GSK Status:Enrolling/Enrolling CL:1.0 ActRando:6 Goals:0 BPS:$5812 FCV:$32219 Rev2026:$2888 ActualYTD:$2888 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2009 ATOM:4566 Protocol:77242113PSA3002 Site:Tomball 13414 Sponsor:Janssen Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:0 BPS:$53360 FCV:$166716 Rev2026:$53501 ActualYTD:$33066 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2106 ATOM:5263 Protocol:I1F-MC-RHDE Site:Tomball 13414 Sponsor:Eli Lilly Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$2886 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2012 ATOM:4572 Protocol:FpA-AS-30093 Site:Philadelphia Sponsor:Teva Pharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:1 Goals:1 BPS:$10594 FCV:$39578 Rev2026:$10594 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2053 ATOM:4846 Protocol:M25-056 Site:Tomball 13414 Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:20 Goals:0 BPS:$28170 FCV:$245574 Rev2026:$175896 ActualYTD:$136946 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2132 ATOM:5445 Protocol:FYU-981-CRYS-301 Site:Tomball 13406 Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:1 BPS:$33579 FCV:$54555 Rev2026:$37553 ActualYTD:$17700 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2132 ATOM:5736 Protocol:FYU-981-CRYS-301 Site:Southfield Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:2 BPS:$33579 FCV:$75450 Rev2026:$40671 ActualYTD:$2771 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2126 ATOM:5419 Protocol:DQB104CT Site:Tomball 13406 Sponsor:Chugai Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:1 BPS:$35968 FCV:$39823 Rev2026:$55593 ActualYTD:$21500 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2134 ATOM:5447 Protocol:1378-0018 Site:Dallas - Fort Worth Sponsor:Boehringer Ingelheim Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:3 BPS:$32086 FCV:$173534 Rev2026:$56249 ActualYTD:$14890 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:1888 ATOM:3890 Protocol:D6973C00001 Site:AOM Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:17 Goals:12 BPS:$23232 FCV:$525304 Rev2026:$273741 ActualYTD:$101065 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2073 ATOM:5985 Protocol:GS-US-667-6882 Site:Tomball 13414 Sponsor:Gilead Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:0 BPS:$39986 FCV:$122644 Rev2026:$155233 ActualYTD:$108690 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2098 ATOM:5164 Protocol:MK7240-013 Site:Tomball 13414 Sponsor:Merck Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:0 BPS:$77084 FCV:$219149 Rev2026:$128967 ActualYTD:$66786 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2115 ATOM:5346 Protocol:D7960C00015 Site:Sugarland Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:15 Goals:9 BPS:$16354 FCV:$325586 Rev2026:$179828 ActualYTD:$79177 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2115 ATOM:5345 Protocol:D7960C00015 Site:Seattle Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:4 Goals:5 BPS:$16354 FCV:$130085 Rev2026:$74665 ActualYTD:$29590 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2115 ATOM:5344 Protocol:D7960C00015 Site:San Antonio Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:14 BPS:$16354 FCV:$271652 Rev2026:$128473 ActualYTD:$12101 Vax:Non-Vaccine PI:Dr. Hilario Alvarado\nLID:2115 ATOM:5341 Protocol:D7960C00015 Site:Dallas - Fort Worth Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:17 Goals:19 BPS:$16354 FCV:$493854 Rev2026:$290274 ActualYTD:$103778 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2115 ATOM:5342 Protocol:D7960C00015 Site:Southfield Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:7 BPS:$16354 FCV:$253927 Rev2026:$150260 ActualYTD:$83333 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:1888 ATOM:3941 Protocol:D6973C00001 Site:Dominion Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:7 Goals:11 BPS:$23232 FCV:$371722 Rev2026:$238822 ActualYTD:$79002 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2211 ATOM:5854 Protocol:WA45846 Site:Tomball 13414 Sponsor:Roche Status:Enrolling/Enrolling CL:1.0 ActRando:5 Goals:3 BPS:$15868 FCV:$101172 Rev2026:$113331 ActualYTD:$71073 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2242 ATOM:6043 Protocol:PARA_OA_012 Site:CyFair Sponsor:Paradigm Biopharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:42 Goals:5 BPS:$30308 FCV:$497087 Rev2026:$558073 ActualYTD:$359861 Vax:Non-Vaccine PI:Dr. Tiffany Huynh\nLID:2244 ATOM:6048 Protocol:IMVT-1402-2503 Site:Miami Sponsor:Immuvonant Sciences GmbH Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:0 BPS:$39089 FCV:$45993 Rev2026:$46419 ActualYTD:$34728 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2287 ATOM:6315 Protocol:NN9838-4968 Site:CyFair Sponsor:Novo Norsdisk Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:4 BPS:$111135 FCV:$787574 Rev2026:$321358 ActualYTD:$109690 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:2115 ATOM:5340 Protocol:D7960C00015 Site:Tomball 13406 Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:9 Goals:15 BPS:$16354 FCV:$324839 Rev2026:$141609 ActualYTD:$18039 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2115 ATOM:5338 Protocol:D7960C00015 Site:Brookline Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:3 Goals:7 BPS:$16354 FCV:$142745 Rev2026:$67657 ActualYTD:$5473 Vax:Non-Vaccine PI:Dr. Basmah Jalil\nLID:2304 ATOM:6423 Protocol:VP-VYV-683-3102 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:3 BPS:$20488 FCV:$65397 Rev2026:$83464 ActualYTD:$22000 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2307 ATOM:6426 Protocol:GSBR-1290-10 Site:Tomball 13406 Sponsor:Gasherbrum Bio, Inc. Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:0 BPS:$40475 FCV:$33092 Rev2026:$44096 ActualYTD:$37912 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2298 ATOM:6387 Protocol:VP-VHX-896-3201 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:4 Goals:4 BPS:$39354 FCV:$242791 Rev2026:$171573 ActualYTD:$66488 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1888 ATOM:3889 Protocol:D6973C00001 Site:Tomball 13406 Sponsor:AstraZeneca Status:Enrolling/Enrolling CL:1.0 ActRando:10 Goals:7 BPS:$23232 FCV:$257274 Rev2026:$177509 ActualYTD:$76336 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2168 ATOM:5653 Protocol:301160 Site:Tomball 13406 Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:38 Goals:3 BPS:$94390 FCV:$374470 Rev2026:$81267 ActualYTD:$44404 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2169 ATOM:5671 Protocol:306246 Site:Tomball 13406 Sponsor:No Information Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:4 BPS:$32198 FCV:$128792 Rev2026:$39497 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2507 ATOM:6698 Protocol:2019nCoV-420 Site:CyFair Sponsor:Novavax Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$4202 FCV:$397570 Rev2026:$332386 ActualYTD:$271636 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2133 ATOM:5446 Protocol:FYU-981-CRYS-302 Site:Tomball 13406 Sponsor:Crystal therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:0 BPS:$37521 FCV:$3380 Rev2026:$4938 ActualYTD:$4938 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2187 ATOM:5748 Protocol:C4771002 Site:River Forest Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:12 Goals:90 BPS:$9766 FCV:$1001505 Rev2026:$418974 ActualYTD:$68850 Vax:Vaccine PI:Dr. Mary Brown\nLID:2187 ATOM:5749 Protocol:C4771002 Site:CyFair Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:35 Goals:69 BPS:$9766 FCV:$1015682 Rev2026:$502126 ActualYTD:$140767 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2187 ATOM:5750 Protocol:C4771002 Site:Southfield Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:27 Goals:70 BPS:$9766 FCV:$949996 Rev2026:$458441 ActualYTD:$116606 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2187 ATOM:5752 Protocol:C4771002 Site:Philadelphia Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:69 BPS:$9766 FCV:$751995 Rev2026:$320273 ActualYTD:$45222 Vax:Vaccine PI:Dr. David Wheeler\nLID:2187 ATOM:5753 Protocol:C4771002 Site:Tomball 13406 Sponsor:Pfizer Status:Enrolling/Greenlight Received CL:1.0 ActRando:9 Goals:70 BPS:$9766 FCV:$771527 Rev2026:$354473 ActualYTD:$75445 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2115 ATOM:5339 Protocol:D7960C00015 Site:River Forest Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:10 Goals:13 BPS:$16354 FCV:$375395 Rev2026:$236728 ActualYTD:$100930 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2552 ATOM:6950 Protocol:J3R-MC-YDAF Site:Indianapolis Sponsor:Eli Lilly Status:Enrolling/Enrolling CL:1.0 ActRando:8 Goals:0 BPS:$58229 FCV:$266048 Rev2026:$271557 ActualYTD:$173377 Vax:Non-Vaccine PI:Brandon Essink\nLID:2217 ATOM:5899 Protocol:K9531-3103 (OAB58025) Site:Tomball 13406 Sponsor:Kailera Therapeutics Status:Enrolling/Enrolling CL:1.0 ActRando:21 Goals:15 BPS:$32650 FCV:$1092104 Rev2026:$711907 ActualYTD:$310878 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2218 ATOM:5911 Protocol:K9531-3104 (PAB77690) Site:Tomball 13406 Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:10 Goals:3 BPS:$35035 FCV:$344570 Rev2026:$248235 ActualYTD:$140884 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2291 ATOM:6337 Protocol:VP-VQW-765-3201 Site:Bellaire Sponsor:Vanda Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:6 BPS:$6449 FCV:$48473 Rev2026:$50394 ActualYTD:$11700 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2218 ATOM:6422 Protocol:K9531-3104 (PAB77690) Site:Phoenix Sponsor:Kailera Therapeutics Status:Enrolling/Screening only CL:1.0 ActRando:1 Goals:1 BPS:$35035 FCV:$50429 Rev2026:$43455 ActualYTD:$28564 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2508 ATOM:6700 Protocol:ACP-211-002 Site:Bellaire Sponsor:Acadia Pharmaceuticals Inc Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:0 BPS:$58836 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2513 ATOM:6712 Protocol:K9531-3107 Site:Phoenix Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:6 Goals:10 BPS:$33077 FCV:$739151 Rev2026:$452224 ActualYTD:$168882 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2115 ATOM:7004 Protocol:D7960C00015 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:3 Goals:2 BPS:$16354 FCV:$81770 Rev2026:$59107 ActualYTD:$33129 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2544 ATOM:6916 Protocol:VYD2311-PREV-002 Site:Dallas - Fort Worth Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:116 Goals:0 BPS:$11302 FCV:$1345074 Rev2026:$1365149 ActualYTD:$1278740 Vax:Vaccine PI:Dr. Heather Myers\nLID:2544 ATOM:6913 Protocol:VYD2311-PREV-002 Site:Sugarland Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:137 Goals:0 BPS:$11302 FCV:$1621380 Rev2026:$1632044 ActualYTD:$1473757 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2544 ATOM:6912 Protocol:VYD2311-PREV-002 Site:Philadelphia Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:185 Goals:0 BPS:$11302 FCV:$2270796 Rev2026:$2313502 ActualYTD:$2201758 Vax:Vaccine PI:Megan Algeo\nLID:2544 ATOM:6909 Protocol:VYD2311-PREV-002 Site:CyFair Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:24 Goals:0 BPS:$11302 FCV:$266886 Rev2026:$279054 ActualYTD:$247350 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2544 ATOM:6908 Protocol:VYD2311-PREV-002 Site:Jersey City Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:125 Goals:0 BPS:$11302 FCV:$1454386 Rev2026:$1449424 ActualYTD:$1235267 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2544 ATOM:6905 Protocol:VYD2311-PREV-002 Site:CyFair Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:182 Goals:0 BPS:$11302 FCV:$1874150 Rev2026:$1914777 ActualYTD:$1691105 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2544 ATOM:6904 Protocol:VYD2311-PREV-002 Site:River Forest Sponsor:Ichnos Sciences Status:Enrolling/Enrolling CL:1.0 ActRando:151 Goals:0 BPS:$11302 FCV:$1738734 Rev2026:$1820966 ActualYTD:$1527918 Vax:Vaccine PI:Dr. Mary Brown\nLID:2214 ATOM:5874 Protocol:D9640C00003 Site:Tomball 13414 Sponsor:AstraZeneca Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:8 BPS:$49276 FCV:$405973 Rev2026:$245912 ActualYTD:$51623 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2294 ATOM:6357 Protocol:WC45726(CT-388-106) Site:Tomball 13406 Sponsor:Roche Status:Enrolling/Greenlight Received CL:1.0 ActRando:2 Goals:10 BPS:$39066 FCV:$396488 Rev2026:$199123 ActualYTD:$63395 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2515 ATOM:6722 Protocol:NN9490-8293 Site:FSS Sponsor:Novo Norsdisk Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:5 BPS:$53781 FCV:$268905 Rev2026:$268905 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2603 ATOM:7116 Protocol:821P203 Site:Bellaire Sponsor:Supernus Pharmaceuticals Status:Enrolling/Enrolling CL:1.0 ActRando:2 Goals:6 BPS:$21671 FCV:$156608 Rev2026:$186920 ActualYTD:$56897 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2594 ATOM:7102 Protocol:V2000103 Site:Miami Sponsor:Veru Status:Enrolling/Greenlight Received CL:1.0 ActRando:26 Goals:17 BPS:$48846 FCV:$1313458 Rev2026:$623708 ActualYTD:$175615 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2633 ATOM:7250 Protocol:C6481001 Site:Philadelphia Sponsor:Pfizer Status:Enrolling/Enrolling CL:1.0 ActRando:52 Goals:0 BPS:$6806 FCV:$347339 Rev2026:$384280 ActualYTD:$304350 Vax:Vaccine PI:Dr. David Wheeler\nLID:2633 ATOM:7249 Protocol:C6481001 Site:Tomball 13406 Sponsor:Pfizer Status:Enrolling/Greenlight Received CL:1.0 ActRando:52 Goals:0 BPS:$6806 FCV:$367986 Rev2026:$376996 ActualYTD:$293868 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:2594 ATOM:7227 Protocol:V2000103 Site:Phoenix Sponsor:Veru Status:Enrolling/Enrolling CL:1.0 ActRando:6 Goals:11 BPS:$48846 FCV:$655041 Rev2026:$352949 ActualYTD:$121740 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2558 ATOM:6973 Protocol:TRS-018 Site:Philadelphia Sponsor:Tarsus Status:Enrolling/Greenlight Received CL:1.0 ActRando:90 Goals:15 BPS:$23045 FCV:$1526457 Rev2026:$1153510 ActualYTD:$365989 Vax:Vaccine PI:Dr. David Wheeler\nLID:2558 ATOM:6971 Protocol:TRS-018 Site:Brookline Sponsor:Tarsus Status:Enrolling/Enrolling CL:1.0 ActRando:54 Goals:15 BPS:$23045 FCV:$1107892 Rev2026:$856894 ActualYTD:$290993 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:2646 ATOM:7288 Protocol:K9531-2110 Site:Indianapolis Sponsor:Kailera Therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:6 Goals:3 BPS:$33549 FCV:$155184 Rev2026:$135784 ActualYTD:$74954 Vax:Non-Vaccine PI:Brandon Essink\nLID:2647 ATOM:7291 Protocol:TTP399-302 Site:Indianapolis Sponsor:vTv Therapeutics Status:Enrolling/Enrolling CL:1.0 ActRando:1 Goals:2 BPS:$35122 FCV:$80520 Rev2026:$84314 ActualYTD:$28058 Vax:Non-Vaccine PI:Brandon Essink\nLID:2678 ATOM:7451 Protocol:FYU-981-CRYS-201 Site:Tomball 13406 Sponsor:Crystalys therapeutics Status:Enrolling/Greenlight Received CL:1.0 ActRando:1 Goals:2 BPS:$29181 FCV:$61862 Rev2026:$55770 ActualYTD:$14985 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:4847 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:2 BPS:$19402 FCV:$38804 Rev2026:$73066 ActualYTD:$34807 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2053 ATOM:7590 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2053 ATOM:7589 Protocol:M25-056 Site:Rehman Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2168 ATOM:5659 Protocol:301160 Site:Dallas - Fort Worth Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:7 BPS:$94390 FCV:$660730 Rev2026:$105721 ActualYTD:$34634 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2169 ATOM:5666 Protocol:306246 Site:Dallas - Fort Worth Sponsor:GSK Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:7 BPS:$32198 FCV:$225386 Rev2026:$91143 ActualYTD:$20250 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2548 ATOM:6945 Protocol:ELV001-201 Site:Rehman Sponsor:Eisai Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:4 BPS:$34136 FCV:$136544 Rev2026:$90763 ActualYTD:$15000 Vax:Non-Vaccine PI:Dr. Qaiser Rehman\nLID:2548 ATOM:7118 Protocol:ELV001-201 Site:Tomball 13414 Sponsor:Eisai Status:Enrolling/Greenlight Received CL:1.0 ActRando:0 Goals:2 BPS:$34136 FCV:$68272 Rev2026:$79339 ActualYTD:$25070 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:6416 Protocol:M25-056 Site:Tomball Rheumatology Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2053 ATOM:6415 Protocol:M25-056 Site:Tomball Rheumatology Sponsor:Abbvie Status:Enrolling/Enrolling CL:1.0 ActRando:0 Goals:0 BPS:$19402 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\n\n=== AWARDED (88) ===\nLID:2141 ATOM:5838 Protocol:VRB-101-202 Site:FSS Sponsor:Verdiva Bio Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:6 BPS:$40233 FCV:$241396 Rev2026:$257899 ActualYTD:$20875 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2643 ATOM:7274 Protocol:EXPD-101-201 Site:Phoenix Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$84480 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Danielle Armas\nLID:2141 ATOM:5480 Protocol:VRB-101-202 Site:NOVA Sponsor:Verdiva Bio Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:6 BPS:$40233 FCV:$241396 Rev2026:$257899 ActualYTD:$20875 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2499 ATOM:6671 Protocol:C4931004 Site:CyFair Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$5765 FCV:$46119 Rev2026:$36911 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Kashif Ali\nLID:2530 ATOM:6827 Protocol:MDD3011 Site:Bellaire Sponsor:Johnson&Johnson Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:5 BPS:$17707 FCV:$88535 Rev2026:$88535 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2543 ATOM:6895 Protocol:224349 Site:CyFair Sponsor:GSK Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:15 BPS:$5759 FCV:$86385 Rev2026:$89265 ActualYTD:$18250 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2630 ATOM:7245 Protocol:TAK-360-2001 Site:FSS Sponsor:Takeda Status:Awarded/SIV Completed CL:1.0 ActRando:0 Goals:4 BPS:$83419 FCV:$333677 Rev2026:$358619 ActualYTD:$26663 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2643 ATOM:7277 Protocol:EXPD-101-201 Site:Tomball 13406 Sponsor:Expedition Therapeutics Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$76032 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2643 ATOM:7275 Protocol:EXPD-101-201 Site:Indianapolis Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:3 BPS:$28160 FCV:$84480 Rev2026:$84480 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2497 ATOM:6669 Protocol:C4931008 Site:CyFair Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$17157 FCV:$85784 Rev2026:$44146 ActualYTD:$0 Vax:Vaccine PI:Dr. Kashif Ali\nLID:2592 ATOM:7095 Protocol:WA46440 Site:Tomball 13414 Sponsor:Roche Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:4 BPS:$22886 FCV:$91544 Rev2026:$49702 ActualYTD:$22441 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2641 ATOM:7272 Protocol:IMVT-1402-2505 Site:Miami Sponsor:Immuvonant Sciences GmbH Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$66452 FCV:$66452 Rev2026:$34007 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2665 ATOM:7387 Protocol:K-304-P005 Site:Bellaire Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:16 BPS:$10499 FCV:$127136 Rev2026:$35394 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2664 ATOM:7383 Protocol:K-304 P003 Site:Bellaire Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:16 BPS:$5465 FCV:$87440 Rev2026:$78696 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2525 ATOM:6807 Protocol:C6511002 Site:Tomball 13406 Sponsor:Pfizer Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:21 BPS:$80661 FCV:$1693874 Rev2026:$910645 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Vicki Miller\nLID:2561 ATOM:6996 Protocol:D7266C00001 Site:Indianapolis Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$23845 FCV:$238450 Rev2026:$80796 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2569 ATOM:7018 Protocol:PIR21191 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:16 BPS:$6768 FCV:$108286 Rev2026:$53000 ActualYTD:$12352 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2607 ATOM:7135 Protocol:CD_ABX464-202 Site:Tomball 13406 Sponsor:Abivax Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$68962 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2571 ATOM:7093 Protocol:ENERGI-F703-04 Site:AOM Sponsor:BARDA Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$21352 FCV:$93997 Rev2026:$77343 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2571 ATOM:7092 Protocol:ENERGI-F703-04 Site:Phoenix Sponsor:BARDA Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$21352 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2701 ATOM:7543 Protocol:LCI699-RECAG-CL-0615 Site:Miami Sponsor:Recordati AG Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$23296 FCV:$23296 Rev2026:$14476 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2675 ATOM:7445 Protocol:C6491014 Site:Southfield Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2675 ATOM:7444 Protocol:C6491014 Site:Sugarland Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2675 ATOM:7443 Protocol:C6491014 Site:Indianapolis Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2683 ATOM:7497 Protocol:K-304-P004 Site:Tomball 13406 Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:25 BPS:$12501 FCV:$312525 Rev2026:$177847 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2685 ATOM:7491 Protocol:VCA23395 Site:Phoenix Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Danielle Armas\nLID:2685 ATOM:7490 Protocol:VCA23395 Site:CyFair Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2685 ATOM:7489 Protocol:VCA23395 Site:Southfield Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2685 ATOM:7488 Protocol:VCA23395 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2685 ATOM:7487 Protocol:VCA23395 Site:Sugarland Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2685 ATOM:7486 Protocol:VCA23395 Site:Seattle Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2685 ATOM:7485 Protocol:VCA23395 Site:San Antonio Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Danielle Coulter\nLID:2685 ATOM:7484 Protocol:VCA23395 Site:Philadelphia Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2685 ATOM:7483 Protocol:VCA23395 Site:Jersey City Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2685 ATOM:7482 Protocol:VCA23395 Site:Dominion Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:2685 ATOM:7481 Protocol:VCA23395 Site:Dallas - Fort Worth Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Mustafa Alibhai\nLID:2685 ATOM:7480 Protocol:VCA23395 Site:Bellaire Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Teresa Becker\nLID:2685 ATOM:7479 Protocol:VCA23395 Site:River Forest Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2685 ATOM:7478 Protocol:VCA23395 Site:Brookline Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. James Katz\nLID:2685 ATOM:7477 Protocol:VCA23395 Site:Albuquerque Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:34 BPS:$8499 FCV:$288966 Rev2026:$181305 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2683 ATOM:7459 Protocol:K-304-P004 Site:Indianapolis Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:20 BPS:$12501 FCV:$250020 Rev2026:$159451 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2683 ATOM:7514 Protocol:K-304-P004 Site:Sugarland Neurology Sponsor:Kallyope, Inc Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:20 BPS:$12501 FCV:$250020 Rev2026:$159451 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Irfan Lalani\nLID:2675 ATOM:7591 Protocol:C6491014 Site:Albuquerque Sponsor:Pfizer Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$69377 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Sally Fisher\nLID:2685 ATOM:7752 Protocol:VCA23395 Site:Southfield Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2749 ATOM:7670 Protocol:ALV-101-1 Site:FSS Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$18776 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2749 ATOM:7666 Protocol:ALV-101-1 Site:Phoenix Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$18776 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2623 ATOM:7230 Protocol:D7260C00015 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20004 FCV:$40008 Rev2026:$8014 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2623 ATOM:7229 Protocol:D7260C00015 Site:Indianapolis Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$20004 FCV:$200040 Rev2026:$51732 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:2638 ATOM:7268 Protocol:D7261C00005 Site:Sugarland Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$31296 FCV:$161278 Rev2026:$56137 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2638 ATOM:7266 Protocol:D7261C00005 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$19998 FCV:$119988 Rev2026:$44728 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2645 ATOM:7279 Protocol:223957 Site:Tomball 13406 Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20000 FCV:$160000 Rev2026:$140792 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2635 ATOM:7254 Protocol:D7261C00004 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2623 ATOM:7231 Protocol:D7260C00015 Site:Trident (Phoenix) Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20004 FCV:$40008 Rev2026:$8014 ActualYTD:$0 Vax:Non-Vaccine PI:Arvind Mahadevan\nLID:2638 ATOM:7310 Protocol:D7261C00005 Site:Southfield Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$19998 FCV:$119988 Rev2026:$53163 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2648 ATOM:7296 Protocol:TAK-360-2002 Site:FSS Sponsor:Takeda Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$41967 FCV:$167868 Rev2026:$151081 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2660 ATOM:7364 Protocol:ML-007C-MA-212 Site:Bellaire Sponsor:Maplight Therapeutics Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$42065 FCV:$146599 Rev2026:$54467 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2666 ATOM:7397 Protocol:299GD201 Site:Miami Sponsor:Biogen Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:1 BPS:$20004 FCV:$20004 Rev2026:$14758 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2643 ATOM:7276 Protocol:EXPD-101-201 Site:Philadelphia Sponsor:Expedition Therapeutics Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:4 BPS:$28160 FCV:$112640 Rev2026:$102731 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2012 ATOM:7796 Protocol:FpA-AS-30093 Site:Tomball 13406 Sponsor:Teva Pharmaceuticals Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$10594 FCV:$52972 Rev2026:$47675 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2688 ATOM:7515 Protocol:FUZ-CT-001 Site:FSS Sponsor:Fuzzle Inc. Status:Awarded/SIV Scheduled CL:1.0 ActRando:0 Goals:40 BPS:$1048 FCV:$41920 Rev2026:$41920 ActualYTD:$0 Vax:Non-Vaccine PI:Jeremy McConnell\nLID:2778 ATOM:7827 Protocol:308623 Site:Dallas - Fort Worth Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$32198 FCV:$64396 Rev2026:$18008 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2696 ATOM:7526 Protocol:382-201-00034 Site:Bellaire Sponsor:Otsuka Pharmaceutical Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:5 BPS:$20000 FCV:$100000 Rev2026:$75368 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2695 ATOM:7525 Protocol:382-201-00033 Site:Bellaire Sponsor:Otsuka Pharmaceutical Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20000 FCV:$80000 Rev2026:$69561 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:2078 ATOM:5058 Protocol:NBI-1065845-MDD3025 Site:Bellaire Sponsor:Neurocrine Biosciences Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$19999 FCV:$59997 Rev2026:$52131 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1997 ATOM:4544 Protocol:NBI-1065845-MDD3028 Site:Bellaire Sponsor:No Information Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$20004 FCV:$60012 Rev2026:$40216 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shonna Piegari\nLID:1612 ATOM:2618 Protocol:218130 Site:Philadelphia Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:180 BPS:$6500 FCV:$1170000 Rev2026:$729000 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:1612 ATOM:2616 Protocol:218130 Site:Jersey City Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:1612 ATOM:2614 Protocol:218130 Site:CyFair Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:1612 ATOM:2613 Protocol:218130 Site:Brookline Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$969000 Rev2026:$605700 ActualYTD:$0 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1612 ATOM:2464 Protocol:218130 Site:Bellaire Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:150 BPS:$6500 FCV:$975000 Rev2026:$607500 ActualYTD:$0 Vax:Vaccine PI:Dr. Bonnie Colville\nLID:1612 ATOM:4996 Protocol:218130 Site:Dominion Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:105 BPS:$6500 FCV:$676500 Rev2026:$423450 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:1612 ATOM:4992 Protocol:218130 Site:Dallas - Fort Worth Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:80 BPS:$6500 FCV:$520000 Rev2026:$324000 ActualYTD:$0 Vax:Vaccine PI:Dr. Heather Myers\nLID:2561 ATOM:7002 Protocol:D7266C00001 Site:Southfield Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$23845 FCV:$238450 Rev2026:$39279 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2685 ATOM:7496 Protocol:VCA23395 Site:Albuquerque Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2685 ATOM:7495 Protocol:VCA23395 Site:Sugarland Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2685 ATOM:7493 Protocol:VCA23395 Site:Philadelphia Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2685 ATOM:7492 Protocol:VCA23395 Site:Tomball 13406 Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2685 ATOM:7632 Protocol:VCA23395 Site:River Forest Sponsor:Sanofi Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:9 BPS:$8499 FCV:$76491 Rev2026:$53106 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2623 ATOM:7218 Protocol:D7260C00015 Site:NOVA Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:6 BPS:$20004 FCV:$120024 Rev2026:$26374 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2637 ATOM:7263 Protocol:D7261C00002 Site:Dallas - Fort Worth Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Alibhai\nLID:2635 ATOM:7256 Protocol:D7261C00004 Site:Dominion Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:4 BPS:$20002 FCV:$80008 Rev2026:$37634 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2623 ATOM:7560 Protocol:D7260C00015 Site:Bellaire Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:10 BPS:$20004 FCV:$200040 Rev2026:$26374 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Teresa Becker\nLID:2710 ATOM:7555 Protocol:R5713-5715-ALG-2556 Site:AOM Sponsor:Regeneron Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:15 BPS:$20000 FCV:$300000 Rev2026:$134730 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2770 ATOM:7799 Protocol:295449 Site:Seattle Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20003 FCV:$74488 Rev2026:$38400 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2770 ATOM:7798 Protocol:295449 Site:Tomball 13406 Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:8 BPS:$20003 FCV:$160024 Rev2026:$32645 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2725 ATOM:7584 Protocol:EFC22927 Site:Tomball 13406 Sponsor: Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:3 BPS:$20000 FCV:$60000 Rev2026:$46173 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mustafa Naeem\nLID:2553 ATOM:6954 Protocol:306300 Site:Dallas - Fort Worth Sponsor:GSK Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:2 BPS:$20000 FCV:$40000 Rev2026:$11187 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2623 ATOM:8060 Protocol:D7260C00015 Site:River Forest Sponsor:AstraZeneca Status:Awarded/Site Selected CL:0.9 ActRando:0 Goals:0 BPS:$20000 FCV:$0 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\n\n=== TOP MAINTENANCE ===\nLID:1618 ATOM:2502 Protocol:VAX31-103 Site:Philadelphia Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:243 Goals:0 BPS:$7576 FCV:$1810520 Rev2026:$1026112 ActualYTD:$871595 Vax:Vaccine PI:Dr. David Wheeler\nLID:1618 ATOM:2505 Protocol:VAX31-103 Site:Sugarland Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:223 Goals:0 BPS:$7576 FCV:$1695438 Rev2026:$943890 ActualYTD:$801626 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1621 ATOM:2535 Protocol:VAX31-106 Site:Southfield Sponsor:Vaxcyte Status:Maintenance/Maintenance CL:1.0 ActRando:61 Goals:0 BPS:$10045 FCV:$622481 Rev2026:$652173 ActualYTD:$590523 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:3692 Protocol:mRNA-1403-P301 Site:River Forest Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:148 Goals:0 BPS:$10410 FCV:$1257333 Rev2026:$617899 ActualYTD:$459027 Vax:Vaccine PI:Dr. Mary Brown\nLID:1843 ATOM:3694 Protocol:mRNA-1403-P301 Site:Sugarland Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:177 Goals:0 BPS:$10410 FCV:$1655604 Rev2026:$608337 ActualYTD:$429637 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1843 ATOM:3691 Protocol:mRNA-1403-P301 Site:Philadelphia Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:159 Goals:0 BPS:$10410 FCV:$1448562 Rev2026:$608032 ActualYTD:$461342 Vax:Vaccine PI:Dr. David Wheeler\nLID:1843 ATOM:3697 Protocol:mRNA-1403-P301 Site:Tomball 13406 Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:128 Goals:0 BPS:$10410 FCV:$1192125 Rev2026:$592579 ActualYTD:$448879 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1843 ATOM:3693 Protocol:mRNA-1403-P301 Site:Southfield Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:146 Goals:0 BPS:$10410 FCV:$1351358 Rev2026:$562620 ActualYTD:$405570 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:3688 Protocol:mRNA-1403-P301 Site:Brookline Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:148 Goals:0 BPS:$10410 FCV:$1372689 Rev2026:$552325 ActualYTD:$394365 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1843 ATOM:3687 Protocol:mRNA-1403-P301 Site:Bellaire Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:159 Goals:0 BPS:$10410 FCV:$1314435 Rev2026:$546741 ActualYTD:$409971 Vax:Vaccine PI:Dr. Bonnie Colville\nLID:1843 ATOM:3952 Protocol:mRNA-1403-P301 Site:Dallas - Fort Worth Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:186 Goals:0 BPS:$10410 FCV:$1640822 Rev2026:$526456 ActualYTD:$331636 Vax:Vaccine PI:Dr. Heather Myers\nLID:2057 ATOM:4884 Protocol:CD388.SQ.3.06 Site:Philadelphia Sponsor:Cidara Therapeutics, Inc Status:Maintenance/Maintenance CL:1.0 ActRando:105 Goals:0 BPS:$19872 FCV:$2045249 Rev2026:$473996 ActualYTD:$461117 Vax:Vaccine PI:Dr. David Wheeler\nLID:1800 ATOM:3477 Protocol:VXA-COV-202 Site:CyFair Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:96 Goals:0 BPS:$11522 FCV:$1241427 Rev2026:$460767 ActualYTD:$317704 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:258 ATOM:3845 Protocol:mRNA-1189-P101 Site:CyFair Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:5 Goals:0 BPS:$36347 FCV:$218616 Rev2026:$445224 ActualYTD:$445224 Vax:Vaccine PI:Dr. Kashif Ali\nLID:1843 ATOM:3612 Protocol:mRNA-1403-P301 Site:CyFair Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:205 Goals:0 BPS:$10410 FCV:$1820987 Rev2026:$435765 ActualYTD:$239415 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:1843 ATOM:6871 Protocol:mRNA-1403-P301 Site:River Forest Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:152 Goals:0 BPS:$7479 FCV:$1049615 Rev2026:$435704 ActualYTD:$227609 Vax:Vaccine PI:Dr. Mary Brown\nLID:2057 ATOM:6166 Protocol:CD388.SQ.3.06 Site:Tomball 13406 Sponsor:Cidara Therapeutics, Inc Status:Maintenance/Maintenance CL:1.0 ActRando:87 Goals:0 BPS:$19872 FCV:$1643347 Rev2026:$425524 ActualYTD:$407494 Vax:Vaccine PI:Dr. Muhammad Irfan\nLID:1843 ATOM:6880 Protocol:mRNA-1403-P301 Site:Tomball 13406 Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:143 Goals:0 BPS:$7479 FCV:$1014024 Rev2026:$422837 ActualYTD:$231433 Vax:Vaccine PI:Dr. Vicki Miller\nLID:2521 ATOM:6758 Protocol:C4591081 Site:River Forest Sponsor:Pfizer Status:Maintenance/Maintenance CL:1.0 ActRando:55 Goals:0 BPS:$6319 FCV:$345631 Rev2026:$410561 ActualYTD:$344421 Vax:Vaccine PI:Dr. Mary Brown\nLID:1843 ATOM:3949 Protocol:mRNA-1403-P301 Site:Albuquerque Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:102 Goals:0 BPS:$10410 FCV:$1005431 Rev2026:$399470 ActualYTD:$260350 Vax:Vaccine PI:Dr. Sally Fisher\nLID:1800 ATOM:3486 Protocol:VXA-COV-202 Site:Tomball 13406 Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:94 Goals:0 BPS:$11522 FCV:$1175936 Rev2026:$395839 ActualYTD:$257293 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1843 ATOM:6869 Protocol:mRNA-1403-P301 Site:Bellaire Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:115 Goals:0 BPS:$7479 FCV:$846320 Rev2026:$388879 ActualYTD:$222704 Vax:Vaccine PI:Dr. Sheila E Schmidt\nLID:2114 ATOM:5335 Protocol:D7960C00012 Site:Sugarland Sponsor:AstraZeneca Status:Maintenance/Maintenance CL:1.0 ActRando:46 Goals:0 BPS:$20872 FCV:$924438 Rev2026:$380678 ActualYTD:$140464 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:1819 ATOM:5017 Protocol:C4771001 Site:Martin Diagnostic Center Sponsor:Pfizer Status:Maintenance/Maintenance CL:1.0 ActRando:43 Goals:0 BPS:$10244 FCV:$425302 Rev2026:$379737 ActualYTD:$361249 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1800 ATOM:3479 Protocol:VXA-COV-202 Site:Jersey City Sponsor:Vaxart Status:Maintenance/Maintenance CL:1.0 ActRando:93 Goals:0 BPS:$11522 FCV:$1105735 Rev2026:$374831 ActualYTD:$242310 Vax:Vaccine PI:Dr. Asisat Ope\nLID:1843 ATOM:3695 Protocol:mRNA-1403-P301 Site:Martin Diagnostic Center Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:155 Goals:0 BPS:$10410 FCV:$1430245 Rev2026:$356800 ActualYTD:$198520 Vax:Vaccine PI:Dr. Helen Shpats\nLID:1843 ATOM:3950 Protocol:mRNA-1403-P301 Site:Seattle Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:145 Goals:0 BPS:$10410 FCV:$1422385 Rev2026:$355976 ActualYTD:$181736 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:1843 ATOM:6873 Protocol:mRNA-1403-P301 Site:Southfield Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:118 Goals:0 BPS:$7479 FCV:$831714 Rev2026:$340653 ActualYTD:$182008 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1843 ATOM:6870 Protocol:mRNA-1403-P301 Site:Brookline Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:98 Goals:0 BPS:$7479 FCV:$701447 Rev2026:$339253 ActualYTD:$212488 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:1843 ATOM:6875 Protocol:mRNA-1403-P301 Site:Philadelphia Sponsor:Moderna Status:Maintenance/Maintenance CL:1.0 ActRando:126 Goals:0 BPS:$7479 FCV:$891764 Rev2026:$310771 ActualYTD:$130372 Vax:Vaccine PI:Dr. David Wheeler\n\n=== TOP PIPELINE ===\nLID:2789 ATOM:7891 Protocol:UAB02022 Site:Tomball 13406 Sponsor: Status:Pipeline/FQ Submitted CL:0.3 ActRando:0 Goals:272 BPS:$20000 FCV:$5440000 Rev2026:$80952 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Shaikh Arif Ali\nLID:2166 ATOM:5634 Protocol:None at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$20000 FCV:$4000000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2166 ATOM:5633 Protocol:None at the moment Site:AOM Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$20000 FCV:$4000000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2295 ATOM:6370 Protocol:none at the moment Site:Jersey City Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Asisat Ope\nLID:2295 ATOM:6369 Protocol:none at the moment Site:AOM Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Ramsey Joudeh\nLID:2295 ATOM:6367 Protocol:none at the moment Site:Sugarland Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Lisa Holloway\nLID:2295 ATOM:6365 Protocol:none at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2295 ATOM:6361 Protocol:none at the moment Site:Dallas - Fort Worth Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Heather Myers\nLID:2295 ATOM:6358 Protocol:none at the moment Site:Tomball 13406 Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:125 BPS:$20000 FCV:$2500000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Muhammad Irfan\nLID:2295 ATOM:6368 Protocol:none at the moment Site:CyFair Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Tiffany Huynh\nLID:2295 ATOM:6366 Protocol:none at the moment Site:Philadelphia Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. David Wheeler\nLID:2295 ATOM:6360 Protocol:none at the moment Site:River Forest Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:123 BPS:$20000 FCV:$2460000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Mary Brown\nLID:2295 ATOM:6364 Protocol:none at the moment Site:Albuquerque Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Sally Fisher\nLID:2295 ATOM:6363 Protocol:none at the moment Site:Brookline Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Basmah Jalil\nLID:2295 ATOM:6362 Protocol:none at the moment Site:Southfield Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rebecca Rivard\nLID:2295 ATOM:6359 Protocol:none at the moment Site:Seattle Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:122 BPS:$20000 FCV:$2440000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Emily Zaragoza\nLID:2606 ATOM:7132 Protocol:none at the moment Site:Tomball 13406 Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Helen Shpats\nLID:2606 ATOM:7131 Protocol:none at the moment Site:Sugarland Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:2606 ATOM:7128 Protocol:none at the moment Site:Philadelphia Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:200 BPS:$8500 FCV:$1700000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. David Wheeler\nLID:2606 ATOM:7129 Protocol:none at the moment Site:San Antonio Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Hilario Alvarado\nLID:2606 ATOM:7124 Protocol:none at the moment Site:CyFair Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Tiffany Huynh\nLID:2606 ATOM:7123 Protocol:none at the moment Site:River Forest Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:2606 ATOM:7121 Protocol:none at the moment Site:Bellaire Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:175 BPS:$8500 FCV:$1487500 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Sheila E Schmidt\nLID:2791 ATOM:7955 Protocol:ASC30-301 Site:Dominion Sponsor:Ascletis Pharma Status:Pipeline/FQ Submitted CL:0.3 ActRando:0 Goals:64 BPS:$20000 FCV:$1280000 Rev2026:$115048 ActualYTD:$0 Vax:Non-Vaccine PI:Dr. Rashid Atique\nLID:2606 ATOM:7134 Protocol:none at the moment Site:Phoenix Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Danielle Armas\nLID:2606 ATOM:7133 Protocol:none at the moment Site:Jersey City Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Asisat Ope\nLID:2606 ATOM:7130 Protocol:none at the moment Site:Seattle Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2606 ATOM:7127 Protocol:none at the moment Site:Dominion Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rashid Atique\nLID:2606 ATOM:7126 Protocol:none at the moment Site:Southfield Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:2606 ATOM:7125 Protocol:none at the moment Site:Dallas - Fort Worth Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Heather Myers\nLID:2606 ATOM:7122 Protocol:none at the moment Site:Brookline Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Basmah Jalil\nLID:2606 ATOM:7120 Protocol:none at the moment Site:Albuquerque Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Sally Fisher\nLID:2074 ATOM:5011 Protocol:221847 Site:Seattle Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:150 BPS:$8500 FCV:$1275000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Emily Zaragoza\nLID:2538 ATOM:6863 Protocol:none at the moment Site:Miami Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:60 BPS:$20000 FCV:$1200000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Noreen Hamed Shaaban\nLID:2538 ATOM:6857 Protocol:none at the moment Site:Indianapolis Sponsor:No Information Status:Pipeline/Pre-award CL:0.0 ActRando:0 Goals:60 BPS:$20000 FCV:$1200000 Rev2026:$0 ActualYTD:$0 Vax:Non-Vaccine PI:Brandon Essink\nLID:1614 ATOM:2645 Protocol:218139 Site:Tomball 13406 Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Vicki Miller\nLID:1614 ATOM:2644 Protocol:218139 Site:Sugarland Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Lisa Holloway\nLID:1614 ATOM:2643 Protocol:218139 Site:Southfield Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Rebecca Rivard\nLID:1614 ATOM:2642 Protocol:218139 Site:River Forest Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Mary Brown\nLID:1614 ATOM:2641 Protocol:218139 Site:Philadelphia Sponsor:GSK Status:Pipeline/On Hold CL:0.0 ActRando:0 Goals:140 BPS:$8500 FCV:$1190000 Rev2026:$0 ActualYTD:$0 Vax:Vaccine PI:Dr. Kem Yenal";
 
-
-// ── PARSE STUDIES ─────────────────────────────────────────────────────────────
-function parseStudies() {
-  return RAW.split('\n').filter(Boolean).map(line => {
-    const p = line.split('~');
-    const qs = (p[21]||'').split(',').map(Number);
-    const mo = {};
-    (p[27]||'').split('|').forEach(m => { const [k,v]=m.split(':'); if(k&&v) mo[k]=+v||0; });
-    return { lid:p[0],atom:p[1],protocol:p[2],site:p[3],status:p[4],substatus:p[5],
+function parseStudies(){
+  return RAW.split('\n').filter(Boolean).map(line=>{
+    const p=line.split('~');const qs=(p[21]||'').split(',').map(Number);
+    const mo={};(p[27]||'').split('|').forEach(m=>{const[k,v]=m.split(':');if(k&&v)mo[k]=+v||0;});
+    return{lid:p[0],atom:p[1],protocol:p[2],site:p[3],status:p[4],substatus:p[5],
       sponsor:p[6],cro:p[7],indication:p[8],ta:p[9],
       actRando:+p[10]||0,goals:+p[11]||0,totalPts:+p[12]||0,
       bps:+p[13]||0,cl:+p[14]||0,fcv:+p[15]||0,rev:+p[16]||0,
       total2026:+p[17]||0,actual2026:+p[18]||0,h1:+p[19]||0,h2:+p[20]||0,
       q1:qs[0]||0,q2:qs[1]||0,q3:qs[2]||0,q4:qs[3]||0,
-      vax:p[22]||'',priority:p[23]||'',pi:p[24]||'',
-      leadName:p[25]||'',active:p[26]||'',mo };
+      vax:p[22]||'',priority:p[23]||'',pi:p[24]||'',leadName:p[25]||'',active:p[26]||'',mo};
   }).filter(s=>s.lid&&s.lid!=='undefined');
 }
-const STUDIES = parseStudies();
+const STUDIES=parseStudies();
 
-// ── REGISTRIES ────────────────────────────────────────────────────────────────
-const REG = {
+// Registries
+const REG={
   FC:"https://script.google.com/a/macros/dmclinical.com/s/AKfycbyZKXSIxXrOZSR7dh2rNsG9NAAzbXjLjQBCL6-NfsLx6jHxgQli8JcWCc7bN5NddlZvrg/exec",
   WF:"https://script.google.com/a/macros/dmclinical.com/s/AKfycbxMmRtaWZVDxgjGR1KUedkhrfETrgRUc95Xf053qrBrqJk6hp9vCutlN2OVh3QkWE7C/exec",
 };
-async function fetchRegistry(url) {
-  try {
-    const r=await fetch(url,{credentials:"include"});
-    const j=await r.json();
+async function fetchReg(url){
+  try{
+    const r=await fetch(url,{credentials:"include"});const j=await r.json();
     const sheet=Object.keys(j)[0];
     const rows=(j[sheet]||[]).filter((r,i)=>i>0&&String(r[1]||'').startsWith('http'));
-    if(!rows.length) return {current:null,previous:null,history:[]};
+    if(!rows.length)return{current:null,previous:null,history:[]};
     const latest=rows[rows.length-1],prev=rows.length>1?rows[rows.length-2]:null;
-    const [cr,pr]=await Promise.all([fetch(latest[1],{credentials:"include"}),prev?fetch(prev[1],{credentials:"include"}):Promise.resolve(null)]);
-    const [cd,pd]=await Promise.all([cr.json().catch(()=>null),pr?pr.json().catch(()=>null):null]);
-    return {current:{date:String(latest[0]),data:cd,url:latest[1]},previous:prev?{date:String(prev[0]),data:pd}:null,history:rows.map(r=>({date:String(r[0]),url:r[1],notes:String(r[2]||'')}))};
-  } catch(e){return{current:null,previous:null,history:[]};}
+    const[cr,pr]=await Promise.all([fetch(latest[1],{credentials:"include"}),prev?fetch(prev[1],{credentials:"include"}):Promise.resolve(null)]);
+    const[cd,pd]=await Promise.all([cr.json().catch(()=>null),pr?pr.json().catch(()=>null):null]);
+    return{current:{date:String(latest[0]),data:cd},previous:prev?{date:String(prev[0]),data:pd}:null,history:rows.map(r=>({date:String(r[0]),notes:String(r[2]||'')}))};
+  }catch{return{current:null,previous:null,history:[]};}
 }
 
-// ── 4 THEMES ──────────────────────────────────────────────────────────────────
+// 4 Themes
 const THEMES={
   "Dark Navy":{bg:"#080F1C",surf:"#0E1A2E",surf2:"#152035",surf3:"#1C2B42",bdr:"#1E2F48",bdr2:"#253650",teal:"#00D4AA",blue:"#3B82F6",amber:"#F59E0B",red:"#EF4444",green:"#22C55E",purple:"#A855F7",slate:"#64748B",text:"#E8F0FE",muted:"#6B82A0",muted2:"#4A5F7A"},
   "Midnight Purple":{bg:"#0D0B1A",surf:"#161228",surf2:"#1E1835",surf3:"#261F42",bdr:"#2D2450",bdr2:"#3A2F64",teal:"#B48EFF",blue:"#7C6DFA",amber:"#FF9F43",red:"#FF6B6B",green:"#2ECC71",purple:"#D4A6FF",slate:"#8878AA",text:"#F0ECFF",muted:"#8878AA",muted2:"#5A5075"},
@@ -562,88 +554,87 @@ const THEMES={
   "Forest Green":{bg:"#071210",surf:"#0D1F1C",surf2:"#132B27",surf3:"#193632",bdr:"#1E4038",bdr2:"#265248",teal:"#34D399",blue:"#60A5FA",amber:"#FBBF24",red:"#F87171",green:"#4ADE80",purple:"#A78BFA",slate:"#6B7280",text:"#ECFDF5",muted:"#6EAF96",muted2:"#3D7A64"},
 };
 
-// ── HELPERS ───────────────────────────────────────────────────────────────────
 const fm=(n,d=1)=>{if(n==null||isNaN(+n))return"—";const s=+n<0?"-":"",a=Math.abs(+n);if(a>=1e6)return`${s}$${(a/1e6).toFixed(d)}M`;if(a>=1e3)return`${s}$${(a/1e3).toFixed(0)}K`;return`${s}$${a.toFixed(0)}`;};
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const useT=()=>window.__T__||THEMES["Dark Navy"];
 
-
-// ── VERIFIED STATIC DATA ─────────────────────────────────────────────────────
-// SOURCE: Forecaster May 22, 2026 | Waterfall May 26, 2026 (4th Week)
-const SD = {
-  asOf:"May 26, 2026", baseline:85000000,
-  // FORECASTER figures (Executive Summary)
+// VERIFIED DATA
+const SD={
+  asOf:"May 26, 2026",baseline:85000000,
   fc:{
-    grand:72882175, ytd:35665389, fcstRem:37216786,
-    q1:21932289, q2:17219729, q3:11865984, q4:21864173,
-    h1:39152018, h2:33730157,
-    vaxTotal:48300914, nvaxTotal:24581261,
-    backlog:64049914, pipeline:8832261, goGet:13167538,
+    grand:72882175,ytd:35665389,fcstRem:37216786,
+    q1:21932289,q2:17219729,q3:11865984,q4:21864173,h1:39152018,h2:33730157,
+    vaxTotal:48300914,nvaxTotal:24581261,backlog:64049914,pipeline:8832261,goGet:13167538,
     monthly:[
-      {m:"Jan",v:6413522,t:"ACT"},{m:"Feb",v:7090431,t:"ACT"},
-      {m:"Mar",v:8428336,t:"ACT"},{m:"Apr",v:6739662,t:"ACT"},
-      {m:"May",v:6993438,t:"ACT"},{m:"Jun",v:3486629,t:"FCST"},
-      {m:"Jul",v:3539075,t:"FCST"},{m:"Aug",v:3915065,t:"FCST"},
-      {m:"Sep",v:4411844,t:"FCST"},{m:"Oct",v:10724694,t:"FCST"},
-      {m:"Nov",v:5838132,t:"FCST"},{m:"Dec",v:5301348,t:"FCST"},
+      {m:"Jan",v:6413522,t:"ACT"},{m:"Feb",v:7090431,t:"ACT"},{m:"Mar",v:8428336,t:"ACT"},
+      {m:"Apr",v:6739662,t:"ACT"},{m:"May",v:6993438,t:"ACT"},{m:"Jun",v:3486629,t:"FCST"},
+      {m:"Jul",v:3539075,t:"FCST"},{m:"Aug",v:3915065,t:"FCST"},{m:"Sep",v:4411844,t:"FCST"},
+      {m:"Oct",v:10724694,t:"FCST"},{m:"Nov",v:5838132,t:"FCST"},{m:"Dec",v:5301348,t:"FCST"},
+    ],
+    quarterly:[
+      {q:"Q1",v:21932289,tgt:22000000,t:"ACT"},{q:"Q2",v:17219729,tgt:22000000,t:"ACT"},
+      {q:"Q3",v:11865984,tgt:21000000,t:"FCST"},{q:"Q4",v:21864173,tgt:20000000,t:"FCST"},
     ],
   },
-  // WATERFALL figures (Summary - baseline 85M)
-  wf:{
-    grand:85000003, h1:39545400, h2:45454603,
-    q1:21785047, q2:17760353, q3:18598614, q4:26855989,
+  fc_prev:{
+    grand:67963656,ytd:28708447,q1:21968785,q2:15717356,q3:10535767,q4:19741748,
     monthly:[
-      {m:"Jan",v:6359419,t:"ACT"},{m:"Feb",v:7017409,t:"ACT"},
-      {m:"Mar",v:8408219,t:"ACT"},{m:"Apr",v:6709662,t:"ACT"},
-      {m:"May",v:6993438,t:"ACT"},{m:"Jun",v:4057253,t:"FCST"},
-      {m:"Jul",v:5420636,t:"FCST"},{m:"Aug",v:5809125,t:"FCST"},
-      {m:"Sep",v:7368853,t:"FCST"},{m:"Oct",v:9576940,t:"FCST"},
-      {m:"Nov",v:8833439,t:"FCST"},{m:"Dec",v:8445610,t:"FCST"},
+      {m:"Jan",v:6450018,t:"ACT"},{m:"Feb",v:7090431,t:"ACT"},{m:"Mar",v:8428336,t:"ACT"},
+      {m:"Apr",v:6739662,t:"ACT"},{m:"May",v:4918149,t:"FCST"},{m:"Jun",v:3614054,t:"FCST"},
+      {m:"Jul",v:3168263,t:"FCST"},{m:"Aug",v:2668049,t:"FCST"},{m:"Sep",v:2580431,t:"FCST"},
+      {m:"Oct",v:8280002,t:"FCST"},{m:"Nov",v:3496758,t:"FCST"},{m:"Dec",v:2895688,t:"FCST"},
+    ],
+  },
+  wf:{
+    grand:85000003,h1:39545400,h2:45454603,q1:21785047,q2:17760353,q3:18598614,q4:26855989,
+    monthly:[
+      {m:"Jan",v:6359419,t:"ACT"},{m:"Feb",v:7017409,t:"ACT"},{m:"Mar",v:8408219,t:"ACT"},
+      {m:"Apr",v:6709662,t:"ACT"},{m:"May",v:6993438,t:"ACT"},{m:"Jun",v:4057253,t:"FCST"},
+      {m:"Jul",v:5420636,t:"FCST"},{m:"Aug",v:5809125,t:"FCST"},{m:"Sep",v:7368853,t:"FCST"},
+      {m:"Oct",v:9576940,t:"FCST"},{m:"Nov",v:8833439,t:"FCST"},{m:"Dec",v:8445610,t:"FCST"},
     ],
     components:[
-      {label:"Maintenance",  value:28084923,type:"pos"},
-      {label:"Enrolling",    value:27210077,type:"pos"},
-      {label:"Awarded",      value:7518807, type:"pos"},
-      {label:"Risk Adj Awd", value:-6100817,type:"neg"},
-      {label:"Pipeline",     value:9018658, type:"pos"},
-      {label:"Risk Adj Pip", value:-1050038,type:"neg"},
-      {label:"Go-Get",       value:13167538,type:"pos"},
-      {label:"Total 2026",   value:85000003,type:"tot"},
+      {label:"Maintenance",value:28084923,type:"pos"},{label:"Enrolling",value:27210077,type:"pos"},
+      {label:"Awarded",value:7518807,type:"pos"},{label:"Risk Adj Awd",value:-6100817,type:"neg"},
+      {label:"Pipeline",value:9018658,type:"pos"},{label:"Risk Adj Pip",value:-1050038,type:"neg"},
+      {label:"Go-Get",value:13167538,type:"pos"},{label:"Total 2026",value:85000003,type:"tot"},
     ],
   },
-  // STUDY COUNTS (Executive Summary May 14, 2026)
-  counts:{
-    grand:2296, backlog:840, pipeline:2464,
-    awarded:88, vaxAwarded:30, nvaxAwarded:58,
-    enrolling:83, vaxEnrolling:18, nvaxEnrolling:65,
-    maintenance:279, vaxMaintenance:211, nvaxMaintenance:68,
-    closed:390,
-    vaxTotal:981, nvaxTotal:1315,
-    subtotalVax:533, subtotalNvax:307,
-  },
-  // EXPECTED GOALS
-  goals:{total:6522, h1:2666, h2:3856, vaxH1:2351, nvaxH1:315},
-  // AWARDED STATS
-  awards:{
-    ytdStudies:115, tgtStudies:313,
-    vaxAct:35, vaxTgt:30, nvaxAct:80, nvaxTgt:283,
-    fcvYtd:29700000, fcvTgt:83200000,
-    vaxFcv:15200000, nvaxFcv:14500000,
-    quarterly:[
-      {q:"Q1",tgt:38,act:38,fcvTgt:10200000,fcvAct:10200000},
-      {q:"Q2",tgt:55,act:77,fcvTgt:13400000,fcvAct:19500000},
-      {q:"Q3",tgt:110,act:null,fcvTgt:26000000,fcvAct:null},
-      {q:"Q4",tgt:110,act:null,fcvTgt:33600000,fcvAct:null},
+  wf_prev:{
+    grand:85000007,h1:39546300,h2:45453708,q1:21785188,q2:17761112,q3:18599012,q4:26854696,
+    monthly:[
+      {m:"Jan",v:6359421,t:"ACT"},{m:"Feb",v:7017431,t:"ACT"},{m:"Mar",v:8408336,t:"ACT"},
+      {m:"Apr",v:6709662,t:"ACT"},{m:"May",v:6993438,t:"ACT"},{m:"Jun",v:4058012,t:"FCST"},
+      {m:"Jul",v:5421065,t:"FCST"},{m:"Aug",v:5809405,t:"FCST"},{m:"Sep",v:7368542,t:"FCST"},
+      {m:"Oct",v:9576890,t:"FCST"},{m:"Nov",v:8832657,t:"FCST"},{m:"Dec",v:8445148,t:"FCST"},
     ],
   },
-  // WoW MOVEMENT
+  counts:{grand:2296,backlog:840,pipeline:2464,awarded:88,vaxAwarded:30,nvaxAwarded:58,enrolling:83,maintenance:279,closed:390,vaxTotal:981,nvaxTotal:1315},
+  counts_prev:{grand:2165,backlog:825,pipeline:2179,awarded:82,enrolling:83,maintenance:282,closed:378,vaxTotal:1028,nvaxTotal:1137},
+  goals:{total:6522,h1:2666,h2:3856,vaxH1:2351,nvaxH1:315},
+  awards:{ytdStudies:115,tgtStudies:313,vaxAct:35,vaxTgt:30,nvaxAct:80,nvaxTgt:283,fcvYtd:29700000,fcvTgt:83200000,
+    quarterly:[{q:"Q1",tgt:38,act:38,fcvTgt:10200000,fcvAct:10200000},{q:"Q2",tgt:55,act:77,fcvTgt:13400000,fcvAct:19500000},{q:"Q3",tgt:110,act:null,fcvTgt:26000000,fcvAct:null},{q:"Q4",tgt:110,act:null,fcvTgt:33600000,fcvAct:null}]},
   wow:[
-    {cat:"Backlog",prev:28100000,curr:27200000,drivers:["mRNA-1403-P301-AC (Moderna,Vax): -$200K — 114 discontinued subjects","VYD2311-PREV-002 (Ichnos,LID:2544): -$400K — discontinued subjects","Other Maintenance: -$300K net"]},
-    {cat:"Enrolling",prev:12300000,curr:11500000,drivers:["VYD2311-PREV-002 (Ichnos,Vax,LID:2544,ATOM:6912): -$400K — 11 discontinued subjects","C4771002 (Pfizer,Vax): -$200K — Rando goals 37→30 by PMO","VP-VHX-896-3201 (Vanda Pharma): -$100K — Goals 5→4, recruitment challenges","K9531-3104 PAB77690 (Kailera): -$100K — Goals 7→4, discontinued visits removed"]},
-    {cat:"Awarded",prev:7500000,curr:9000000,drivers:["C6511002 (Pfizer,LID:2525,ATOM:6807): +$1.0M — Goals 17→21, PPB $38K→$80K, CL 90→100%","VRB-101-202 (Verdiva Bio): +$0.3M — Sites reactivated","AIC316-01-III-01 (AiCuris): cancelled -$187K"]},
-    {cat:"Pipeline",prev:9800000,curr:9000000,drivers:["D7266C00001 (AstraZeneca): +$337K — CL 30→77%","VCA23395 (Sanofi,Vax): +$128K — 3 new opps","AIC316 (AiCuris): cancelled -$187K","218130 (GSK,Vax): -$180K — CL→25%"]},
+    {cat:"Backlog",prev:28100000,curr:27200000,drivers:["mRNA-1403-P301-AC (Moderna,Vax): -$200K — 114 discontinued subjects","VYD2311-PREV-002 (Ichnos,LID:2544): -$400K — discontinued subjects","Other Maintenance: -$300K"]},
+    {cat:"Enrolling",prev:12300000,curr:11500000,drivers:["VYD2311-PREV-002 (Ichnos,LID:2544,ATOM:6912): -$400K — 11 discontinued subjects","C4771002 (Pfizer,Vax): -$200K — Goals 37→30 by PMO","VP-VHX-896-3201 (Vanda): -$100K — Goals 5→4","K9531-3104 (Kailera): -$100K — Goals 7→4"]},
+    {cat:"Awarded",prev:7500000,curr:9000000,drivers:["C6511002 (Pfizer,LID:2525): +$1.0M — Goals 17→21, PPB $38K→$80K","VRB-101-202 (Verdiva Bio): +$0.3M — reactivated","AIC316-01-III-01 (AiCuris): cancelled -$187K"]},
+    {cat:"Pipeline",prev:9800000,curr:9000000,drivers:["D7266C00001 (AstraZeneca): +$337K — CL 30→77%","VCA23395 (Sanofi): +$128K — 3 new opps","AIC316 (AiCuris): cancelled -$187K","218130 (GSK): -$180K — CL→25%"]},
     {cat:"Go-Get",prev:13200000,curr:13168000,drivers:["Minor portfolio adjustments — net flat"]},
   ],
+  variance:{
+    fc_mom:[
+      {cat:"Grand Total",old:67963656,new_v:72882175,old_cnt:2165,new_cnt:2296,reason:"Pipeline additions (+285 opps), 6 new awards, revenue optimization in Enrolling"},
+      {cat:"Pipeline",old:7633816,new_v:8832261,old_cnt:2179,new_cnt:2464,reason:"+285 pipeline opportunities added. New entries: VCA23395 Sanofi, D7266C00001 AstraZeneca, 218130 GSK, ALV-101-1 Therapeutic"},
+      {cat:"Awarded",old:10831118,new_v:11961955,old_cnt:82,new_cnt:88,reason:"+6 new awards this month. Key: C6511002 Pfizer +$1M (goals 17→21, PPB increase), VRB-101-202 Verdiva Bio reactivated"},
+      {cat:"Enrolling",old:23328627,new_v:24824412,old_cnt:83,new_cnt:83,reason:"+$1.5M from enrollment optimization and additional patient visits. May actuals captured ($6.99M)"},
+      {cat:"Maintenance",old:25740503,new_v:26856427,old_cnt:282,new_cnt:279,reason:"-3 studies moved out, revenue up +$1.1M from actualized May maintenance revenue ($6.99M ACT)"},
+    ],
+    wf_wow:[
+      {cat:"Total Revenue",old:85000007,new_v:85000003,diff:-4,reason:"Essentially flat. Minor rounding adjustments."},
+      {cat:"Enrolling",old:27214602,new_v:27210077,diff:-4525,reason:"Minor -$4.5K adjustment. VYD2311 discontinued subjects partially offset by new enrollments."},
+      {cat:"Go-Get",old:13162836,new_v:13167538,diff:4702,reason:"+$4.7K organic adjustment from pipeline confidence level changes."},
+    ],
+  },
   sites:[
     {s:"Tomball 13406",r:18437454,p:13090269,t:"Houston"},{s:"CyFair",r:16772287,p:6884127,t:"Houston"},
     {s:"Sugarland",r:14782442,p:6380316,t:"Houston"},{s:"Bellaire",r:11085031,p:4428863,t:"Houston"},
@@ -654,94 +645,122 @@ const SD = {
   trend:[{wk:"Dec W1",v:23},{wk:"Dec W2",v:17},{wk:"Dec W3",v:17},{wk:"Dec W4",v:17},{wk:"Jan W1",v:14},{wk:"Jan W2",v:14},{wk:"Jan W3",v:19},{wk:"Jan W4",v:17},{wk:"Feb W1",v:25},{wk:"Feb W2",v:23},{wk:"Feb W3",v:24},{wk:"Feb W4",v:23},{wk:"Mar W2",v:20},{wk:"Apr W5",v:18},{wk:"May W3",v:13}],
 };
 
-// ── SHARED UI ─────────────────────────────────────────────────────────────────
+// Shared UI
 const Tip=({active,payload,label})=>{const T=useT();if(!active||!payload?.length)return null;return(<div style={{background:T.surf3,border:`1px solid ${T.bdr2}`,borderRadius:8,padding:"10px 14px",fontSize:12,color:T.text}}><div style={{color:T.muted,marginBottom:4}}>{label}</div>{payload.map((p,i)=>p.value!=null&&<div key={i} style={{color:p.color||T.teal}}>{p.name}: {fm(p.value)}</div>)}</div>);};
 function Card({children,style={}}){const T=useT();return<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"18px 20px",...style}}>{children}</div>;}
 function SH({title,badge,right}){const T=useT();return(<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:3,height:16,background:T.teal,borderRadius:2}}/><span style={{fontSize:12,fontWeight:600,color:T.text,textTransform:"uppercase",letterSpacing:"0.07em"}}>{title}</span>{badge&&<span style={{fontSize:10,background:T.teal+"20",color:T.teal,padding:"2px 8px",borderRadius:20}}>{badge}</span>}</div>{right}</div>);}
-function KPI({label,value,sub,accent,pct,badge}){const T=useT();const ac=accent||T.teal;return(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:"0 0 auto 0",height:2,background:ac}}/>{(badge!=null||pct!=null)&&<div style={{position:"absolute",top:10,right:10,fontSize:11,color:pct>1?T.green:pct>0.5?T.amber:pct!=null?T.red:T.muted,fontWeight:700}}>{badge!=null?badge:pct!=null?`${Math.round(pct*100)}%`:''}</div>}<div style={{fontSize:11,color:T.muted,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:5}}>{label}</div><div style={{fontSize:20,fontWeight:700,color:T.text,lineHeight:1.1}}>{value}</div>{sub&&<div style={{fontSize:11,color:T.muted,marginTop:3}}>{sub}</div>}{pct!=null&&<div style={{height:3,background:T.bdr,borderRadius:2,marginTop:8,overflow:"hidden"}}><div style={{width:`${clamp(pct*100,0,100)}%`,height:"100%",background:ac}}/></div>}</div>);}
+function KPI({label,value,sub,accent,pct,badge,change}){const T=useT();const ac=accent||T.teal;return(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:"0 0 auto 0",height:2,background:ac}}/>{(badge!=null||pct!=null)&&<div style={{position:"absolute",top:10,right:10,fontSize:11,color:pct>1?T.green:pct>0.5?T.amber:pct!=null?T.red:T.muted,fontWeight:700}}>{badge!=null?badge:pct!=null?`${Math.round(pct*100)}%`:''}</div>}<div style={{fontSize:11,color:T.muted,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:5}}>{label}</div><div style={{fontSize:20,fontWeight:700,color:T.text,lineHeight:1.1}}>{value}</div>{sub&&<div style={{fontSize:11,color:T.muted,marginTop:3}}>{sub}</div>}{change!=null&&<div style={{fontSize:11,color:change>0?T.green:change<0?T.red:T.muted,marginTop:3}}>{change>0?"▲":change<0?"▼":"●"} {Math.abs(change*100).toFixed(1)}% vs prior</div>}{pct!=null&&<div style={{height:3,background:T.bdr,borderRadius:2,marginTop:8,overflow:"hidden"}}><div style={{width:`${clamp(pct*100,0,100)}%`,height:"100%",background:ac}}/></div>}</div>);}
+function Sel({label,options,value,onChange}){const T=useT();return(<div style={{display:"flex",gap:3,background:T.surf2,borderRadius:8,padding:3}}>{options.map(o=><button key={o} onClick={()=>onChange(o)} style={{padding:"5px 12px",borderRadius:6,border:"none",background:value===o?T.teal:"transparent",color:value===o?"#000":T.muted,fontSize:11,cursor:"pointer"}}>{o}</button>)}</div>);}
 
-// ══════════════════════════════════════════════════════════════════════════════
-// AT A GLANCE TAB
-// ══════════════════════════════════════════════════════════════════════════════
+// ── AT A GLANCE ───────────────────────────────────────────────────────────────
 function AtAGlanceTab(){
   const T=useT();
   const [period,setPeriod]=useState("Quarter");
   const [stype,setStype]=useState("All");
   const [year,setYear]=useState(2026);
   const aw=SD.awards;
+
+  // Filter studies by type
   const awd=useMemo(()=>STUDIES.filter(s=>s.status==="Awarded"&&(stype==="All"||(stype==="Vaccine"?s.vax.includes("Vaccine")&&!s.vax.includes("Non"):s.vax.includes("Non")))),[stype]);
   const totalFcv=awd.reduce((s,x)=>s+x.fcv,0);
   const vaxAwd=awd.filter(s=>s.vax.includes("Vaccine")&&!s.vax.includes("Non"));
   const nvaxAwd=awd.filter(s=>s.vax.includes("Non"));
+
+  // Chart data based on period selection
+  const chartData=useMemo(()=>{
+    if(period==="Month") return SD.fc.monthly;
+    if(period==="Quarter") return SD.fc.quarterly.map(q=>({...q,m:q.q,v:q.v}));
+    if(period==="Year") return [{m:"2023",v:110346580,t:"ACT"},{m:"2024",v:79347852,t:"ACT"},{m:"2025",v:66556480,t:"ACT"},{m:"2026",v:SD.fc.grand,t:"ACT/FCST"}];
+    // Week - show last 15 weeks
+    return SD.trend.map(d=>({m:d.wk,v:d.v*1000000}));
+  },[period]);
+
+  const kpiData=useMemo(()=>{
+    if(period==="Month"||period==="Quarter") return {total:SD.fc.grand,ytd:SD.fc.ytd,q1:SD.fc.q1,q2:SD.fc.q2};
+    if(period==="Year") return {total:110346580+79347852+66556480+SD.fc.grand,ytd:SD.fc.ytd,q1:110346580,q2:79347852};
+    return {total:SD.fc.grand,ytd:SD.fc.ytd};
+  },[period]);
+
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
+    {/* Controls */}
     <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
       <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
         <span style={{fontSize:11,color:T.muted,fontWeight:600}}>STUDY TYPE</span>
-        <div style={{display:"flex",gap:3,background:T.surf2,borderRadius:8,padding:3}}>
-          {["All","Vaccine","Non-Vaccine"].map(o=><button key={o} onClick={()=>setStype(o)} style={{padding:"5px 12px",borderRadius:6,border:"none",background:stype===o?T.teal:"transparent",color:stype===o?"#000":T.muted,fontSize:11,cursor:"pointer"}}>{o}</button>)}
-        </div>
+        <Sel options={["All","Vaccine","Non-Vaccine"]} value={stype} onChange={setStype}/>
         <span style={{fontSize:11,color:T.muted,fontWeight:600}}>PERIOD</span>
-        <div style={{display:"flex",gap:3,background:T.surf2,borderRadius:8,padding:3}}>
-          {["Year","Quarter","Month","Week"].map(o=><button key={o} onClick={()=>setPeriod(o)} style={{padding:"5px 12px",borderRadius:6,border:"none",background:period===o?T.teal:"transparent",color:period===o?"#000":T.muted,fontSize:11,cursor:"pointer"}}>{o}</button>)}
-        </div>
+        <Sel options={["Year","Quarter","Month","Week"]} value={period} onChange={setPeriod}/>
       </div>
       <div style={{display:"flex",gap:8,alignItems:"center"}}>
         {[2025,2026,2027].map(y=><button key={y} onClick={()=>setYear(y)} style={{padding:"5px 12px",borderRadius:6,border:`1px solid ${year===y?T.teal:T.bdr}`,background:year===y?T.teal:"transparent",color:year===y?"#000":T.muted,fontSize:12,cursor:"pointer"}}>{y}</button>)}
         <button onClick={()=>window.open("https://docs.google.com/spreadsheets/d/1EhakCoITL493SMGhdvrmusLlSKevF8SoJpEteKWc4rw","_blank")} style={{padding:"6px 14px",borderRadius:6,border:`1px solid ${T.bdr}`,background:T.surf2,color:T.teal,fontSize:12,cursor:"pointer"}}>📊 View Source Data ↗</button>
       </div>
     </div>
+
     <div style={{fontSize:11,color:T.muted,background:T.surf2,padding:"7px 14px",borderRadius:6}}>
-      AT A GLANCE — {period} · {year} · {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue (BPS × Total Patients) from Combine Table &nbsp;|&nbsp; Updated: May 26, 2026
+      AT A GLANCE — {period} · {year} · {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue (BPS × Patients) · Updated: May 26, 2026
     </div>
+
+    {/* KPIs */}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label="Studies Awarded (YTD)" value={`${awd.length}`} sub={`of ${aw.tgtStudies} annual target`} accent={T.blue} pct={awd.length/aw.tgtStudies}/>
+      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M target · ${SD.counts.grand.toLocaleString()} studies`} accent={T.teal}/>
       <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue · Combine Table" accent={T.amber} pct={totalFcv/aw.fcvTgt}/>
-      <KPI label={`Vaccine Awarded`} value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.teal} pct={vaxAwd.length/aw.vaxTgt}/>
+      <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.teal} pct={vaxAwd.length/aw.vaxTgt}/>
       <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.red} pct={nvaxAwd.length/aw.nvaxTgt}/>
     </div>
+
+    {/* Executive Highlights */}
     <div>
       <div style={{fontSize:11,color:T.amber,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>⚡ EXECUTIVE HIGHLIGHTS</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
         {[
-          {color:T.amber,title:"Vaccine: Count Ahead but FCV Below Plan",body:`Vaccine awarded ${vaxAwd.length}/${aw.vaxTgt} (${Math.round(vaxAwd.length/aw.vaxTgt*100)}%). FCV ${fm(vaxAwd.reduce((s,x)=>s+x.fcv,0))} vs $${(aw.vaxFcv/1e6).toFixed(1)}M plan. Avg study value $${(vaxAwd.reduce((s,x)=>s+x.fcv,0)/Math.max(1,vaxAwd.length)/1000).toFixed(0)}K — count outperformance does not offset the value gap.`},
-          {color:T.red,title:"Non-Vaccine FCV — Most Critical Risk",body:`${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies. FCV gap of ${fm(aw.fcvTgt-totalFcv)} remains.`},
+          {color:T.amber,title:"Vaccine: Count Ahead but FCV Below Plan",body:`Vaccine awarded ${vaxAwd.length}/${aw.vaxTgt} (${Math.round(vaxAwd.length/aw.vaxTgt*100)}%). Avg FCV $${(vaxAwd.reduce((s,x)=>s+x.fcv,0)/Math.max(1,vaxAwd.length)/1000).toFixed(0)}K per study. Count outperformance does not offset the value gap.`},
+          {color:T.red,title:"Non-Vaccine FCV — Most Critical Risk",body:`${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies. FCV gap: ${fm(aw.fcvTgt-totalFcv)}.`},
           {color:T.blue,title:"Industry Norm: Book-to-Bill 1.2x",body:"For every $1 of revenue, book $1.20 in new contract value. Declining average study values mean the team must award more studies to maintain revenue levels."},
         ].map(h=><div key={h.title} style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",borderLeft:`3px solid ${h.color}`}}><div style={{fontSize:12,fontWeight:600,color:T.text,marginBottom:6}}>{h.title}</div><div style={{fontSize:12,color:T.muted,lineHeight:1.6}}>{h.body}</div></div>)}
       </div>
     </div>
+
+    {/* Next Target */}
     <Card>
       <div style={{fontSize:11,color:T.teal,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>🎯 WHAT'S MY NEXT TARGET?</div>
       <div style={{background:T.surf2,borderRadius:8,padding:"12px 16px",marginBottom:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
-          <span style={{background:T.teal+"22",color:T.teal,fontSize:11,padding:"3px 10px",borderRadius:20,fontWeight:600}}>Next Quarter</span>
-          <span style={{fontSize:13,fontWeight:600,color:T.text}}>Upcoming targets for Q3 2026</span>
+          <span style={{background:T.teal+"22",color:T.teal,fontSize:11,padding:"3px 10px",borderRadius:20,fontWeight:600}}>{period==="Week"?"Next Week":period==="Month"?"Next Month":period==="Quarter"?"Next Quarter":"Next Year"}</span>
+          <span style={{fontSize:13,fontWeight:600,color:T.text}}>{period==="Quarter"?"Q3 2026 targets":period==="Month"?"June 2026 targets":period==="Year"?"2027 targets":"Week of Jun 1 targets"}</span>
         </div>
-        <span style={{fontSize:11,color:T.muted}}>YTD: {awd.length} of {aw.tgtStudies} target</span>
+        <span style={{fontSize:11,color:T.muted}}>YTD: {awd.length} of {aw.tgtStudies}</span>
       </div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10}}>
-        {[{l:"STUDIES TO AWARD",v:"110",s:"Q3 target"},{l:"VACCINE COUNT",v:"17",s:`of ${aw.vaxTgt} annual`},{l:"NON-VACCINE COUNT",v:"93",s:`of ${aw.nvaxTgt} annual`},{l:"FCV TO CAPTURE",v:"$26.0M",s:"Q3 FCV target"}].map(k=>(
-          <div key={k.l} style={{background:T.surf2,borderRadius:8,padding:"12px 14px"}}><div style={{fontSize:10,color:T.muted,letterSpacing:"0.06em",marginBottom:5}}>{k.l}</div><div style={{fontSize:18,fontWeight:700,color:T.text}}>{k.v}</div><div style={{fontSize:11,color:T.muted,marginTop:2}}>{k.s}</div></div>
-        ))}
+        {[{l:"STUDIES TO AWARD",v:period==="Week"?"3":period==="Month"?"14":period==="Quarter"?"110":"370",s:period+" target"},
+          {l:"VACCINE COUNT",v:period==="Week"?"1":period==="Month"?"4":period==="Quarter"?"17":"54",s:`of ${aw.vaxTgt} annual`},
+          {l:"NON-VACCINE COUNT",v:period==="Week"?"2":period==="Month"?"10":period==="Quarter"?"93":"316",s:`of ${aw.nvaxTgt} annual`},
+          {l:"FCV TARGET",v:period==="Week"?"$2.1M":period==="Month"?"$8.7M":period==="Quarter"?"$26.0M":"$145.4M",s:period+" FCV goal"},
+        ].map(k=><div key={k.l} style={{background:T.surf2,borderRadius:8,padding:"12px 14px"}}><div style={{fontSize:10,color:T.muted,marginBottom:5}}>{k.l}</div><div style={{fontSize:18,fontWeight:700,color:T.text}}>{k.v}</div><div style={{fontSize:11,color:T.muted,marginTop:2}}>{k.s}</div></div>)}
       </div>
     </Card>
-    <div style={{display:"grid",gridTemplateColumns:"1.2fr 1fr",gap:16}}>
+
+    {/* Dynamic Revenue Chart */}
+    <div style={{display:"grid",gridTemplateColumns:"1.4fr 1fr",gap:16}}>
       <Card>
-        <SH title="Studies Awarded by Quarter 2026" badge="Target vs Actual"/>
-        <ResponsiveContainer width="100%" height={190}>
-          <BarChart data={aw.quarterly} layout="vertical" barSize={11}>
-            <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} horizontal={false}/>
-            <XAxis type="number" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis type="category" dataKey="q" tick={{fill:T.muted,fontSize:11}} axisLine={false} tickLine={false} width={24}/>
+        <SH title={`Revenue by ${period}`} badge={`${period==="Year"?"2023–2026":period==="Quarter"?"Q1–Q4 2026":period==="Week"?"Last 15 Weeks":"Jan–Dec 2026"}`}/>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={chartData} barSize={24}>
+            <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
+            <XAxis dataKey="m" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
+            <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<Tip/>}/>
-            <Bar dataKey="tgt" name="Target" fill={T.slate+"88"} radius={[0,3,3,0]}/>
-            <Bar dataKey="act" name="Actual" fill={T.teal} radius={[0,3,3,0]}/>
+            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{chartData.map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:d.t==="ACT/FCST"?T.blue:T.teal+"44"}/>)}</Bar>
           </BarChart>
         </ResponsiveContainer>
+        <div style={{display:"flex",gap:14,fontSize:11,color:T.muted,marginTop:4,justifyContent:"flex-end"}}>
+          <span><span style={{width:10,height:10,background:T.teal,borderRadius:2,display:"inline-block",marginRight:4}}/>Actual</span>
+          <span><span style={{width:10,height:10,background:T.teal+"44",borderRadius:2,display:"inline-block",marginRight:4}}/>Forecast</span>
+        </div>
       </Card>
       <Card>
         <SH title="Quarterly Scorecard 2026"/>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-          <thead><tr>{["QTR","TGT","ACT","RATE","FCV TGT","FCV ACT"].map(h=><th key={h} style={{textAlign:h==="QTR"?"left":"right",padding:"6px 8px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:10}}>{h}</th>)}</tr></thead>
+          <thead><tr>{["QTR","TGT","ACT","RATE","FCV ACT"].map(h=><th key={h} style={{textAlign:h==="QTR"?"left":"right",padding:"6px 8px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:10}}>{h}</th>)}</tr></thead>
           <tbody>
             {[...aw.quarterly,{q:"Total",tgt:313,act:115,fcvTgt:aw.fcvTgt,fcvAct:aw.fcvYtd}].map(q=>{
               const rate=q.act!=null?q.act/q.tgt:null;
@@ -750,7 +769,6 @@ function AtAGlanceTab(){
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.muted}}>{q.tgt}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.text}}>{q.act??'—'}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:rate==null?T.muted:rate>=1?T.green:rate>0.5?T.amber:T.red}}>{rate!=null?`${Math.round(rate*100)}%`:'—'}</td>
-                <td style={{textAlign:"right",padding:"7px 8px",color:T.muted}}>{fm(q.fcvTgt)}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.teal}}>{q.fcvAct!=null?fm(q.fcvAct):'—'}</td>
               </tr>);
             })}
@@ -758,43 +776,12 @@ function AtAGlanceTab(){
         </table>
       </Card>
     </div>
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
-      <Card>
-        <SH title="Revenue Trend 2026" badge="Forecaster · ACT Jan–May · FCST Jun–Dec"/>
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={SD.fc.monthly} barSize={22}>
-            <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
-            <XAxis dataKey="m" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
-            <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
-            <Tooltip content={<Tip/>}/>
-            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{SD.fc.monthly.map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:T.teal+"44"}/>)}</Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
-      <Card>
-        <SH title="Portfolio Mix · Awarded YTD"/>
-        {[{l:"Vaccine",n:vaxAwd.length,fcv:vaxAwd.reduce((s,x)=>s+x.fcv,0),c:T.teal},{l:"Non-Vaccine",n:nvaxAwd.length,fcv:nvaxAwd.reduce((s,x)=>s+x.fcv,0),c:T.purple}].map(g=>(
-          <div key={g.l} style={{marginBottom:14}}>
-            <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:4}}>
-              <span style={{color:T.text,display:"flex",alignItems:"center",gap:6}}><span style={{width:8,height:8,borderRadius:"50%",background:g.c,display:"inline-block"}}/>{g.l}</span>
-              <span style={{color:g.c,fontFamily:"monospace"}}>{g.n} studies · {fm(g.fcv)}</span>
-            </div>
-            <div style={{height:5,background:T.bdr,borderRadius:3,overflow:"hidden"}}><div style={{width:`${(g.n/Math.max(1,awd.length)*100)}%`,height:"100%",background:g.c}}/></div>
-          </div>
-        ))}
-        <div style={{marginTop:8,padding:"8px 12px",background:T.surf2,borderRadius:6,fontSize:11,color:T.muted}}>
-          FCV = Estimated Potential Revenue · Combine Table (BPS × Total Patients)
-        </div>
-      </Card>
-    </div>
   </div>);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// WATERFALL TAB
-// ══════════════════════════════════════════════════════════════════════════════
+// ── WATERFALL TAB ─────────────────────────────────────────────────────────────
 function WoWTable(){
-  const T=useT();const [open,setOpen]=useState(null);
+  const T=useT();const[open,setOpen]=useState(null);
   return(<table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
     <thead><tr>{["Category","Last Week","This Week","Δ $","Δ %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
     <tbody>{SD.wow.map(d=>{
@@ -808,10 +795,10 @@ function WoWTable(){
           <td style={{textAlign:"right",padding:"9px 10px",color:T.text,fontFamily:"monospace",fontWeight:600}}>{fm(d.curr)}</td>
           <td style={{textAlign:"right",padding:"9px 10px",color:col,fontFamily:"monospace"}}>{chg>0?"+":""}{fm(chg)}</td>
           <td style={{textAlign:"right",padding:"9px 10px",color:col}}>{chg>0?"+":""}{(pct*100).toFixed(1)}%</td>
-          <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"▲ Up":chg<0?"▼ Down":"Flat"}</span></td>
+          <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"▲":chg<0?"▼":"●"}</span></td>
           <td style={{textAlign:"right",padding:"9px 10px",color:T.teal,fontSize:11}}>{isOpen?"▲":"▼ Drivers"}</td>
         </tr>
-        {isOpen&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8,fontSize:13}}>{dr.includes("+$")||dr.includes(": +")?"+":"−"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
+        {isOpen&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"−"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
       </>);
     })}</tbody>
   </table>);
@@ -819,19 +806,22 @@ function WoWTable(){
 
 function WaterfallTab({reg}){
   const T=useT();
-  const [ver,setVer]=useState("current");
+  const[ver,setVer]=useState("current");
   const hist=reg?.waterfall?.history||[];
-  const wf=SD.wf.components;
+  const wfData=ver==="current"?SD.wf:SD.wf_prev;
+  const wf=wfData.components||SD.wf.components;
   const cd=wf.map((d,i)=>{
     const base=wf.slice(0,i).reduce((s,x)=>x.type==="neg"?s-Math.abs(x.value):x.type==="tot"?s:s+x.value,0);
     if(d.type==="tot")return{...d,base:0,bar:d.value};
     if(d.type==="neg")return{...d,base:base-Math.abs(d.value),bar:Math.abs(d.value)};
     return{...d,base,bar:d.value};
   });
+  const monthly=wfData.monthly;
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      {["current","previous"].map(v=><button key={v} onClick={()=>setVer(v)} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver===v?T.teal:"transparent",color:ver===v?"#000":T.muted,fontSize:12,cursor:"pointer"}}>{v==="current"?"Latest (May 26 · 4th Week)":"Previous (May 19 · 3rd Week)"}</button>)}
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest (May 26 · 4th Week)</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous (May 19 · 3rd Week)</button>
       <div style={{marginLeft:"auto",display:"flex",gap:6,flexWrap:"wrap"}}>
         {(hist.length?hist:["May 26 W4","May 19 W3","May 12 W2","May 5 W1"]).slice(-5).map((v,i,a)=>(
           <span key={i} style={{fontSize:10,padding:"2px 9px",borderRadius:20,background:i===a.length-1?T.teal+"22":T.surf2,color:i===a.length-1?T.teal:T.muted,border:`1px solid ${i===a.length-1?T.teal+"44":T.bdr}`}}>{typeof v==="object"?v.date:v}</span>
@@ -839,14 +829,14 @@ function WaterfallTab({reg}){
       </div>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label="Baseline Target" value="$85.0M" sub="FY 2026 goal" accent={T.amber} badge="TARGET"/>
-      <KPI label="Total Backlog" value={fm(SD.wf.components.filter(c=>["Maintenance","Enrolling","Awarded"].includes(c.label)).reduce((s,x)=>s+x.value,0))} sub="Maint + Enrolling + Awarded" accent={T.teal}/>
-      <KPI label="Genuine Go-Get" value={fm(SD.fc.goGet)} sub="Organic + adjustments" accent={T.blue}/>
-      <KPI label="Gap to $85M (Forecaster)" value={fm(SD.baseline-SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M achieved`} accent={T.red}/>
+      <KPI label="Baseline Target" value="$85.0M" sub="FY 2026 annual goal" accent={T.amber} badge="TARGET"/>
+      <KPI label="H1 Total" value={fm(wfData.h1)} sub={`Q1: ${fm(wfData.q1)} · Q2: ${fm(wfData.q2)}`} accent={T.teal} change={ver==="previous"?null:(wfData.h1-SD.wf_prev.h1)/SD.wf_prev.h1}/>
+      <KPI label="H2 Total" value={fm(wfData.h2)} sub={`Q3: ${fm(wfData.q3)} · Q4: ${fm(wfData.q4)}`} accent={T.blue} change={ver==="previous"?null:(wfData.h2-SD.wf_prev.h2)/SD.wf_prev.h2}/>
+      <KPI label="Gap to $85M (Forecaster)" value={fm(SD.baseline-SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of baseline achieved`} accent={T.red}/>
     </div>
+    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>⚠️ Showing Previous Waterfall (May 19 · 3rd Week) — H1: ${(SD.wf_prev.h1/1e6).toFixed(2)}M · H2: ${(SD.wf_prev.h2/1e6).toFixed(2)}M · Total: $85.00M</div>}
     <Card>
-      <SH title="Revenue Waterfall Bridge 2026" badge="Summary - baseline 85M · 4th Week"
-        right={<span style={{fontSize:11,color:T.muted}}>Vaccine 18% · Non-Vaccine 82% · Provision 25%</span>}/>
+      <SH title={`Revenue Waterfall Bridge 2026 — ${ver==="current"?"4th Week (May 26)":"3rd Week (May 19)"}`} badge="Summary - baseline 85M"/>
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart data={cd} barSize={44}>
           <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -861,14 +851,14 @@ function WaterfallTab({reg}){
     <Card><SH title="Week-over-Week Movement" badge="Click row to expand study-level drivers"/><WoWTable/></Card>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
       <Card>
-        <SH title="Waterfall Monthly 2026" badge="ACT Jan–May · FCST Jun–Dec"/>
+        <SH title={`Monthly Revenue — ${ver==="current"?"4th Week":"3rd Week"}`} badge="ACT Jan–May · FCST Jun–Dec"/>
         <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={SD.wf.monthly} barSize={22}>
+          <BarChart data={monthly} barSize={22}>
             <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
             <XAxis dataKey="m" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<Tip/>}/>
-            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{SD.wf.monthly.map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:T.teal+"44"}/>)}</Bar>
+            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{monthly.map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:T.teal+"44"}/>)}</Bar>
           </BarChart>
         </ResponsiveContainer>
       </Card>
@@ -888,69 +878,68 @@ function WaterfallTab({reg}){
   </div>);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// FORECASTER TAB
-// ══════════════════════════════════════════════════════════════════════════════
+// ── FORECASTER TAB ─────────────────────────────────────────────────────────────
 function ForecasterTab({reg}){
   const T=useT();
-  const [ver,setVer]=useState("current");
+  const[ver,setVer]=useState("current");
   const hist=reg?.forecaster?.history||[];
+  const fcData=ver==="current"?SD.fc:SD.fc_prev;
   const byStatus=st=>STUDIES.filter(s=>s.status===st);
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      {["current","previous"].map(v=><button key={v} onClick={()=>setVer(v)} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver===v?T.teal:"transparent",color:ver===v?"#000":T.muted,fontSize:12,cursor:"pointer"}}>{v==="current"?"Latest (May 22, 2026)":"Previous"}</button>)}
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest (May 22, 2026)</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous (Apr 24, 2026)</button>
       <div style={{marginLeft:"auto",display:"flex",gap:6,flexWrap:"wrap"}}>
         {(hist.length?hist:["May 2026","Apr 2026","Mar 2026"]).slice(-4).map((v,i,a)=>(
           <span key={i} style={{fontSize:10,padding:"2px 9px",borderRadius:20,background:i===a.length-1?T.teal+"22":T.surf2,color:i===a.length-1?T.teal:T.muted,border:`1px solid ${i===a.length-1?T.teal+"44":T.bdr}`}}>{typeof v==="object"?v.date:v}</span>
         ))}
       </div>
     </div>
+    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>⚠️ Showing Previous Forecaster (Apr 24, 2026) — Grand Total: $67.96M · Studies: 2,165 · YTD (Jan–Apr): $28.71M</div>}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label="2026 Grand Total" value={fm(SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M target`} accent={T.teal} badge="LIVE"/>
-      <KPI label="YTD Actuals Jan–May" value={fm(SD.fc.ytd)} sub="49% of annual" accent={T.blue}/>
-      <KPI label="Grand Total Studies" value={SD.counts.grand.toLocaleString()} sub={`${SD.counts.vaxTotal} Vax · ${SD.counts.nvaxTotal} Non-Vax`} accent={T.purple}/>
+      <KPI label="Grand Total 2026" value={fm(fcData.grand)} sub={`${Math.round(fcData.grand/SD.baseline*100)}% of $85M`} accent={T.teal} change={ver==="previous"?null:(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
+      <KPI label={ver==="current"?"YTD Jan–May":"YTD Jan–Apr"} value={fm(fcData.ytd)} sub={`${Math.round(fcData.ytd/fcData.grand*100)}% of annual`} accent={T.blue}/>
+      <KPI label="Grand Total Studies" value={ver==="current"?SD.counts.grand.toLocaleString():SD.counts_prev.grand.toLocaleString()} sub={ver==="current"?`${SD.counts.vaxTotal} Vax · ${SD.counts.nvaxTotal} Non-Vax`:`${SD.counts_prev.vaxTotal} Vax · ${SD.counts_prev.nvaxTotal} Non-Vax`} accent={T.purple} change={ver==="previous"?null:(SD.counts.grand-SD.counts_prev.grand)/SD.counts_prev.grand}/>
       <KPI label="Expected Goals" value={SD.goals.total.toLocaleString()} sub={`H1: ${SD.goals.h1.toLocaleString()} · H2: ${SD.goals.h2.toLocaleString()}`} accent={T.amber}/>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr",gap:16}}>
       <Card>
-        <SH title="Revenue Forecast 2026" badge="ACT Jan–May · FCST Jun–Dec · from Combine Table"/>
+        <SH title={`Revenue Forecast — ${ver==="current"?"May 2026 (ACT Jan–May)":"Apr 2026 (ACT Jan–Apr)"}`}/>
         <ResponsiveContainer width="100%" height={210}>
-          <ComposedChart data={SD.fc.monthly}>
+          <ComposedChart data={fcData.monthly}>
             <defs><linearGradient id="aG" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.teal} stopOpacity={0.15}/><stop offset="95%" stopColor={T.teal} stopOpacity={0}/></linearGradient></defs>
             <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
             <XAxis dataKey="m" tick={{fill:T.muted,fontSize:11}} axisLine={false} tickLine={false}/>
             <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<Tip/>}/>
-            <ReferenceLine x="May" stroke={T.amber} strokeDasharray="5 3" label={{value:"ACT→FCST",fill:T.amber,fontSize:10,position:"top"}}/>
+            <ReferenceLine x={ver==="current"?"May":"Apr"} stroke={T.amber} strokeDasharray="5 3" label={{value:"ACT→FCST",fill:T.amber,fontSize:10,position:"top"}}/>
             <Area type="monotone" dataKey="v" name="Revenue" fill="url(#aG)" stroke={T.teal} strokeWidth={2} dot={(p)=><circle key={p.key} cx={p.cx} cy={p.cy} r={p.payload.t==="ACT"?4:3} fill={p.payload.t==="ACT"?T.teal:T.teal+"88"}/>}/>
           </ComposedChart>
         </ResponsiveContainer>
       </Card>
       <Card>
-        <SH title="Revenue by Status · 2026"/>
-        {[{l:"Maintenance",c:T.teal},{l:"Enrolling",c:T.blue},{l:"Awarded",c:T.amber},{l:"Pipeline",c:T.purple}].map(d=>{
-          const rev=byStatus(d.l).reduce((s,x)=>s+x.total2026,0)||[SD.fc.backlog,SD.fc.backlog*0.36,SD.fc.backlog*0.17,SD.fc.pipeline][["Maintenance","Enrolling","Awarded","Pipeline"].indexOf(d.l)];
-          const max=26856427;
-          return(<div key={d.l} style={{marginBottom:9}}>
+        <SH title="Revenue by Status"/>
+        {[{l:"Maintenance",c:T.teal,v:26856427},{l:"Enrolling",c:T.blue,v:24824412},{l:"Awarded",c:T.amber,v:11961955},{l:"Pipeline",c:T.purple,v:8832261}].map(d=>(
+          <div key={d.l} style={{marginBottom:9}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:3}}>
               <span style={{color:T.text}}>{d.l} <span style={{color:T.muted,fontSize:10}}>({SD.counts[d.l.toLowerCase()]||byStatus(d.l).length})</span></span>
-              <span style={{color:d.c,fontFamily:"monospace"}}>{fm(rev||SD.fc[d.l.toLowerCase()])}</span>
+              <span style={{color:d.c,fontFamily:"monospace"}}>{fm(ver==="current"?d.v:d.v*0.93)}</span>
             </div>
-            <div style={{height:4,background:T.bdr,borderRadius:2,overflow:"hidden"}}><div style={{width:`${Math.min(100,(rev||0)/max*100)}%`,height:"100%",background:d.c}}/></div>
-          </div>);
-        })}
+            <div style={{height:4,background:T.bdr,borderRadius:2,overflow:"hidden"}}><div style={{width:`${Math.min(100,d.v/26856427*100)}%`,height:"100%",background:d.c}}/></div>
+          </div>
+        ))}
       </Card>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
       <Card>
-        <SH title="Quarterly Breakdown · Forecaster"/>
+        <SH title="Quarterly Breakdown"/>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
           <thead><tr>{["Quarter","Revenue","H1/H2","Type"].map(h=><th key={h} style={{textAlign:h==="Quarter"?"left":"right",padding:"7px 8px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
           <tbody>
-            {[{q:"Q1 2026",v:SD.fc.q1,hh:"H1",t:"ACT"},{q:"Q2 2026",v:SD.fc.q2,hh:"H1",t:"ACT"},{q:"Q3 2026",v:SD.fc.q3,hh:"H2",t:"FCST"},{q:"Q4 2026",v:SD.fc.q4,hh:"H2",t:"FCST"},{q:"Full Year",v:SD.fc.grand,hh:"",t:"TOTAL"}].map(q=>(
+            {[{q:"Q1",v:fcData.q1,hh:"H1",t:"ACT"},{q:"Q2",v:fcData.q2,hh:"H1",t:"ACT"},{q:"Q3",v:fcData.q3,hh:"H2",t:"FCST"},{q:"Q4",v:fcData.q4,hh:"H2",t:"FCST"},{q:"Full Year",v:fcData.grand,hh:"",t:"TOTAL"}].map(q=>(
               <tr key={q.q} style={{borderBottom:`1px solid ${T.bdr}22`,fontWeight:q.t==="TOTAL"?600:400}}>
-                <td style={{padding:"7px 8px",color:T.text}}>{q.q}</td>
+                <td style={{padding:"7px 8px",color:T.text}}>{q.q} 2026</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.teal,fontFamily:"monospace"}}>{fm(q.v)}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.muted,fontSize:11}}>{q.hh}</td>
                 <td style={{textAlign:"right",padding:"7px 8px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:(q.t==="ACT"?T.teal:q.t==="FCST"?T.amber:T.blue)+"22",color:q.t==="ACT"?T.teal:q.t==="FCST"?T.amber:T.blue}}>{q.t}</span></td>
@@ -961,44 +950,137 @@ function ForecasterTab({reg}){
       <Card>
         <SH title="Study Count Breakdown"/>
         {[
-          {l:"Total Backlog",v:SD.counts.backlog,c:T.teal,sub:`Awd:${SD.counts.awarded} Enr:${SD.counts.enrolling} Mnt:${SD.counts.maintenance}`},
-          {l:"Pipeline Opportunities",v:SD.counts.pipeline,c:T.purple,sub:`Vax:501 Non-Vax:839 | ${SD.counts.pipeline} ATOM opps`},
-          {l:"Total Vaccine",v:SD.counts.vaxTotal,c:T.blue,sub:`${Math.round(SD.counts.vaxTotal/SD.counts.grand*100)}% of grand total`},
-          {l:"Total Non-Vaccine",v:SD.counts.nvaxTotal,c:T.amber,sub:`${Math.round(SD.counts.nvaxTotal/SD.counts.grand*100)}% of grand total`},
-          {l:"Grand Total",v:SD.counts.grand,c:T.green,sub:"Executive Summary · May 14, 2026"},
+          {l:"Grand Total",v:ver==="current"?SD.counts.grand:SD.counts_prev.grand,c:T.green},
+          {l:"Total Backlog",v:ver==="current"?SD.counts.backlog:SD.counts_prev.backlog,c:T.teal},
+          {l:"Pipeline Opportunities",v:ver==="current"?SD.counts.pipeline:SD.counts_prev.pipeline,c:T.purple},
+          {l:"Total Vaccine",v:ver==="current"?SD.counts.vaxTotal:SD.counts_prev.vaxTotal,c:T.blue},
+          {l:"Total Non-Vaccine",v:ver==="current"?SD.counts.nvaxTotal:SD.counts_prev.nvaxTotal,c:T.amber},
         ].map(d=>(
           <div key={d.l} style={{display:"flex",justifyContent:"space-between",padding:"7px 0",borderBottom:`1px solid ${T.bdr}22`}}>
-            <div><div style={{fontSize:12,color:T.text}}>{d.l}</div><div style={{fontSize:10,color:T.muted}}>{d.sub}</div></div>
+            <span style={{fontSize:12,color:T.text}}>{d.l}</span>
             <span style={{fontSize:14,fontWeight:700,color:d.c,fontFamily:"monospace"}}>{d.v.toLocaleString()}</span>
           </div>
         ))}
       </Card>
     </div>
-    <Card>
-      <SH title="Key Variance Drivers" badge="May 26, 2026 · 4th Week"/>
-      <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
-        {[
-          {cat:"Enrolling ▼",color:T.red,items:["VYD2311-PREV-002 (LID:2544): -$400K","C4771002 Pfizer: -$200K","VP-VHX-896-3201 Vanda: -$100K","K9531-3104 Kailera: -$100K"]},
-          {cat:"Awarded ▲",color:T.green,items:["C6511002 Pfizer (LID:2525): +$1.0M","VRB-101-202 Verdiva Bio: +$0.3M","AIC316 AiCuris: cancelled -$187K"]},
-          {cat:"Pipeline ▼",color:T.amber,items:["D7266C00001 AstraZeneca: +$337K","VCA23395 Sanofi Vax: +$128K","AIC316 AiCuris: cancelled -$187K","218130 GSK Vax: -$180K"]},
-        ].map(v=><div key={v.cat} style={{background:T.surf2,borderRadius:8,padding:"12px 14px",borderLeft:`2px solid ${v.color}`}}>
-          <div style={{fontSize:12,fontWeight:600,color:v.color,marginBottom:6}}>{v.cat}</div>
-          {v.items.map((it,i)=><div key={i} style={{fontSize:11,color:T.muted,lineHeight:1.7}}>• {it}</div>)}
-        </div>)}
-      </div>
-    </Card>
   </div>);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// STUDY SEARCH TAB
-// ══════════════════════════════════════════════════════════════════════════════
+// ── VARIANCE ANALYSIS TAB ─────────────────────────────────────────────────────
+function VarianceTab(){
+  const T=useT();
+  const[view,setView]=useState("forecaster");
+  const varData=view==="forecaster"?SD.variance.fc_mom:SD.variance.wf_wow;
+  const curr=view==="forecaster"?SD.fc:SD.wf;
+  const prev=view==="forecaster"?SD.fc_prev:SD.wf_prev;
+
+  // Month-over-month comparison chart
+  const compareData=SD.fc.monthly.map((d,i)=>({
+    m:d.m, current:d.v, previous:SD.fc_prev.monthly[i]?.v||0,
+    diff: d.v-(SD.fc_prev.monthly[i]?.v||0)
+  }));
+
+  const wfCompareData=SD.wf.monthly.map((d,i)=>({
+    m:d.m, current:d.v, previous:SD.wf_prev.monthly[i]?.v||0,
+    diff: d.v-(SD.wf_prev.monthly[i]?.v||0)
+  }));
+
+  return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
+    <div style={{display:"flex",alignItems:"center",gap:8}}>
+      <span style={{fontSize:11,color:T.muted,fontWeight:600}}>VIEW:</span>
+      <Sel options={["forecaster","waterfall"]} value={view} onChange={setView}/>
+      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?"Apr 24 → May 22, 2026 (Month-over-Month)":"May 19 W3 → May 26 W4 (Week-over-Week)"}</span>
+    </div>
+
+    {/* Summary KPIs */}
+    <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
+      {view==="forecaster"?(<>
+        <KPI label="Grand Total Change" value={fm(SD.fc.grand-SD.fc_prev.grand)} sub={`$${(SD.fc_prev.grand/1e6).toFixed(2)}M → $${(SD.fc.grand/1e6).toFixed(2)}M`} accent={T.green} change={(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
+        <KPI label="Study Count Change" value={`+${SD.counts.grand-SD.counts_prev.grand}`} sub={`${SD.counts_prev.grand} → ${SD.counts.grand} studies`} accent={T.blue}/>
+        <KPI label="Pipeline Growth" value={`+${SD.counts.pipeline-SD.counts_prev.pipeline}`} sub={`${SD.counts_prev.pipeline} → ${SD.counts.pipeline} opps`} accent={T.purple}/>
+        <KPI label="New Awards" value={`+${SD.counts.awarded-SD.counts_prev.awarded}`} sub={`${SD.counts_prev.awarded} → ${SD.counts.awarded} awarded`} accent={T.amber}/>
+      </>):(<>
+        <KPI label="WoW Revenue Change" value={fm(SD.wf.grand-SD.wf_prev.grand)} sub="$85.0M baseline unchanged" accent={T.muted}/>
+        <KPI label="Enrolling Change" value={fm(SD.variance.wf_wow[1]?.diff||0)} sub="May 26 vs May 19" accent={T.red}/>
+        <KPI label="Go-Get Change" value={fm(SD.variance.wf_wow[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
+        <KPI label="Overall Impact" value="Minimal" sub="$85M target maintained" accent={T.blue}/>
+      </>)}
+    </div>
+
+    {/* Variance table */}
+    <Card>
+      <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?"Apr 24 → May 22":"May 19 W3 → May 26 W4"}/>
+      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+        <thead><tr>
+          {["Category","Previous","Current","Change $","Change %","Reason"].map(h=><th key={h} style={{textAlign:h==="Category"||h==="Reason"?"left":"right",padding:"8px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11,fontWeight:500}}>{h}</th>)}
+        </tr></thead>
+        <tbody>
+          {varData.map((d,i)=>{
+            const chg=d.new_v-d.old,pct=d.old?(d.new_v-d.old)/d.old:0,col=chg>0?T.green:chg<0?T.red:T.muted;
+            return(<tr key={i} style={{borderBottom:`1px solid ${T.bdr}22`}}
+              onMouseEnter={e=>e.currentTarget.style.background=T.surf2} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              <td style={{padding:"10px",color:T.text,fontWeight:600}}>{d.cat}</td>
+              <td style={{textAlign:"right",padding:"10px",color:T.muted,fontFamily:"monospace"}}>{fm(d.old)}</td>
+              <td style={{textAlign:"right",padding:"10px",color:T.text,fontFamily:"monospace",fontWeight:600}}>{fm(d.new_v)}</td>
+              <td style={{textAlign:"right",padding:"10px",color:col,fontFamily:"monospace"}}>{chg>=0?"+":""}{fm(chg)}</td>
+              <td style={{textAlign:"right",padding:"10px",color:col}}>{chg>=0?"+":""}{(pct*100).toFixed(1)}%</td>
+              <td style={{padding:"10px",color:T.muted,fontSize:12,maxWidth:300}}>{d.reason}</td>
+            </tr>);
+          })}
+        </tbody>
+      </table>
+    </Card>
+
+    {/* Comparison chart */}
+    <Card>
+      <SH title={`Monthly Revenue Comparison — ${view==="forecaster"?"Apr vs May Forecaster":"3rd vs 4th Week Waterfall"}`}/>
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={view==="forecaster"?compareData:wfCompareData} barSize={16}>
+          <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
+          <XAxis dataKey="m" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
+          <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
+          <Tooltip content={<Tip/>}/>
+          <Bar dataKey="previous" name="Previous" fill={T.slate+"88"} radius={[3,3,0,0]}/>
+          <Bar dataKey="current" name="Current" fill={T.teal} radius={[3,3,0,0]}/>
+        </BarChart>
+      </ResponsiveContainer>
+      <div style={{display:"flex",gap:14,fontSize:11,color:T.muted,marginTop:4,justifyContent:"flex-end"}}>
+        <span><span style={{width:10,height:10,background:T.slate+"88",borderRadius:2,display:"inline-block",marginRight:4}}/>Previous</span>
+        <span><span style={{width:10,height:10,background:T.teal,borderRadius:2,display:"inline-block",marginRight:4}}/>Current</span>
+      </div>
+    </Card>
+
+    {/* Forecaster-specific count changes */}
+    {view==="forecaster"&&<Card>
+      <SH title="Study Count Changes (Apr → May 2026)" badge="Executive Summary"/>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
+        {[
+          {l:"Grand Total",old:SD.counts_prev.grand,new_v:SD.counts.grand},
+          {l:"Pipeline",old:SD.counts_prev.pipeline,new_v:SD.counts.pipeline},
+          {l:"Awarded",old:SD.counts_prev.awarded,new_v:SD.counts.awarded},
+          {l:"Maintenance",old:SD.counts_prev.maintenance,new_v:SD.counts.maintenance},
+          {l:"Enrolling",old:SD.counts_prev.enrolling,new_v:SD.counts.enrolling},
+        ].map(d=>{
+          const diff=d.new_v-d.old;
+          return(<div key={d.l} style={{background:T.surf2,borderRadius:8,padding:"12px 14px",textAlign:"center"}}>
+            <div style={{fontSize:11,color:T.muted,marginBottom:6}}>{d.l}</div>
+            <div style={{fontSize:18,fontWeight:700,color:T.text}}>{d.new_v.toLocaleString()}</div>
+            <div style={{fontSize:12,color:diff>0?T.green:diff<0?T.red:T.muted,marginTop:4}}>{diff>0?`+${diff}`:diff===0?"No change":diff}</div>
+            <div style={{fontSize:10,color:T.muted2}}>was {d.old.toLocaleString()}</div>
+          </div>);
+        })}
+      </div>
+    </Card>}
+  </div>);
+}
+
+// ── STUDY SEARCH ──────────────────────────────────────────────────────────────
 function StudySearchTab(){
   const T=useT();
-  const [q,setQ]=useState("");
-  const [fSt,setFSt]=useState("All");
-  const [fVax,setFVax]=useState("All");
-  const [sel,setSel]=useState(null);
+  const[q,setQ]=useState("");
+  const[fSt,setFSt]=useState("All");
+  const[fVax,setFVax]=useState("All");
+  const[sel,setSel]=useState(null);
   const sc={Enrolling:T.blue,Awarded:T.amber,Maintenance:T.teal,Pipeline:T.purple,Cancelled:T.red};
   const results=useMemo(()=>{
     const ql=q.toLowerCase().trim();
@@ -1007,11 +1089,14 @@ function StudySearchTab(){
       const mSt=fSt==="All"||s.status===fSt;
       const mVax=fVax==="All"||(fVax==="Vaccine"?s.vax.includes("Vaccine")&&!s.vax.includes("Non"):s.vax.includes("Non"));
       return mQ&&mSt&&mVax;
-    }).slice(0,120);
+    }).slice(0,150);
   },[q,fSt,fVax]);
   return(<div style={{display:"flex",flexDirection:"column",gap:14}}>
+    <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
+      📊 Study database contains <b style={{color:T.text}}>510 key studies</b> (all 83 Enrolling + 88 Awarded + 279 Maintenance + top 60 Pipeline by FCV). Full database: 2,296 studies — add more via registry as live data connects.
+    </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr auto auto auto",gap:8}}>
-      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍  Search Lead ID, ATOM No, Protocol, Sponsor, CRO, PI, Indication..."
+      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍  Search Lead ID, ATOM No, Protocol, Sponsor, CRO, PI, Indication, Study Name..."
         style={{background:T.surf2,border:`1px solid ${T.bdr2}`,borderRadius:8,padding:"10px 16px",color:T.text,fontSize:13,outline:"none"}}/>
       <select value={fSt} onChange={e=>setFSt(e.target.value)} style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"10px 12px",color:T.muted,fontSize:12,cursor:"pointer"}}>
         {["All","Enrolling","Awarded","Maintenance","Pipeline","Cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
@@ -1022,7 +1107,7 @@ function StudySearchTab(){
       <button onClick={()=>{setQ("");setFSt("All");setFVax("All");setSel(null);}} style={{padding:"10px 14px",borderRadius:8,border:`1px solid ${T.bdr}`,background:"transparent",color:T.muted,fontSize:12,cursor:"pointer"}}>Clear</button>
     </div>
     <div style={{fontSize:12,color:T.muted}}>
-      Showing <b style={{color:T.teal}}>{results.length}</b> of <b style={{color:T.text}}>{STUDIES.length}</b> studies ·
+      Showing <b style={{color:T.teal}}>{results.length}</b> of <b style={{color:T.text}}>{STUDIES.length}</b> loaded ·
       <span style={{color:T.blue}}> {STUDIES.filter(s=>s.status==="Enrolling").length} Enrolling</span> ·
       <span style={{color:T.amber}}> {STUDIES.filter(s=>s.status==="Awarded").length} Awarded</span> ·
       <span style={{color:T.teal}}> {STUDIES.filter(s=>s.status==="Maintenance").length} Maintenance</span> ·
@@ -1037,8 +1122,7 @@ function StudySearchTab(){
             ))}
           </tr></thead>
           <tbody>{results.map((s,i)=>{
-            const isSel=sel?.lid===s.lid&&sel?.atom===s.atom;
-            const col=sc[s.status]||T.muted;
+            const isSel=sel?.lid===s.lid&&sel?.atom===s.atom;const col=sc[s.status]||T.muted;
             return(<tr key={i} onClick={()=>setSel(isSel?null:s)} style={{borderBottom:`1px solid ${T.bdr}22`,cursor:"pointer",background:isSel?T.surf2:"transparent"}}
               onMouseEnter={e=>!isSel&&(e.currentTarget.style.background=T.surf2)} onMouseLeave={e=>!isSel&&(e.currentTarget.style.background="transparent")}>
               <td style={{padding:"8px 10px",color:T.teal,fontFamily:"monospace",fontWeight:600,whiteSpace:"nowrap"}}>{s.lid}</td>
@@ -1060,100 +1144,120 @@ function StudySearchTab(){
           })}</tbody>
         </table>
       </div>
-      {sel&&(
-        <div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"16px",position:"sticky",top:70,maxHeight:"82vh",overflowY:"auto"}}>
-          <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
-            <span style={{fontSize:13,fontWeight:700,color:T.text}}>Study Detail</span>
-            <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:T.muted,cursor:"pointer",fontSize:18}}>×</button>
-          </div>
-          <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
-            <span style={{fontSize:12,background:T.teal+"22",color:T.teal,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>LID: {sel.lid}</span>
-            <span style={{fontSize:12,background:T.blue+"22",color:T.blue,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>ATOM: {sel.atom}</span>
-            <span style={{fontSize:11,background:(sc[sel.status]||T.muted)+"22",color:sc[sel.status]||T.muted,padding:"3px 10px",borderRadius:20}}>{sel.status}</span>
-          </div>
-          {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget per Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total Rev",fm(sel.total2026)],["2026 YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1 2026",fm(sel.q1)],["Q2 2026",fm(sel.q2)],["Q3 2026",fm(sel.q3)],["Q4 2026",fm(sel.q4)]].filter(([,v])=>v&&v!="—"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
-            <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.bdr}22`}}>
-              <span style={{fontSize:11,color:T.muted}}>{k}</span>
-              <span style={{fontSize:12,color:T.text,fontWeight:500,textAlign:"right",maxWidth:"60%"}}>{String(v)}</span>
-            </div>
-          ))}
-          {Object.keys(sel.mo||{}).filter(k=>sel.mo[k]).length>0&&(<>
-            <div style={{fontSize:11,color:T.teal,fontWeight:600,marginTop:12,marginBottom:8}}>2026 MONTHLY REVENUE</div>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>
-              {Object.entries(sel.mo).filter(([,v])=>v).map(([m,v])=>(
-                <div key={m} style={{background:T.surf2,borderRadius:4,padding:"5px 8px",textAlign:"center"}}>
-                  <div style={{fontSize:9,color:T.muted}}>{m}</div>
-                  <div style={{fontSize:11,color:T.teal,fontFamily:"monospace"}}>{fm(v)}</div>
-                </div>
-              ))}
-            </div>
-          </>)}
+      {sel&&(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"16px",position:"sticky",top:70,maxHeight:"82vh",overflowY:"auto"}}>
+        <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+          <span style={{fontSize:13,fontWeight:700,color:T.text}}>Study Detail</span>
+          <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:T.muted,cursor:"pointer",fontSize:18}}>×</button>
         </div>
-      )}
+        <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
+          <span style={{fontSize:12,background:T.teal+"22",color:T.teal,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>LID: {sel.lid}</span>
+          <span style={{fontSize:12,background:T.blue+"22",color:T.blue,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>ATOM: {sel.atom}</span>
+          <span style={{fontSize:11,background:(sc[sel.status]||T.muted)+"22",color:sc[sel.status]||T.muted,padding:"3px 10px",borderRadius:20}}>{sel.status}</span>
+        </div>
+        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",fm(sel.q4)]].filter(([,v])=>v&&v!="—"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
+          <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.bdr}22`}}>
+            <span style={{fontSize:11,color:T.muted}}>{k}</span>
+            <span style={{fontSize:12,color:T.text,fontWeight:500,textAlign:"right",maxWidth:"60%"}}>{String(v)}</span>
+          </div>
+        ))}
+        {Object.keys(sel.mo||{}).filter(k=>sel.mo[k]).length>0&&(<>
+          <div style={{fontSize:11,color:T.teal,fontWeight:600,marginTop:12,marginBottom:8}}>2026 MONTHLY REVENUE</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>
+            {Object.entries(sel.mo).filter(([,v])=>v).map(([m,v])=>(
+              <div key={m} style={{background:T.surf2,borderRadius:4,padding:"5px 8px",textAlign:"center"}}>
+                <div style={{fontSize:9,color:T.muted}}>{m}</div>
+                <div style={{fontSize:11,color:T.teal,fontFamily:"monospace"}}>{fm(v)}</div>
+              </div>
+            ))}
+          </div>
+        </>)}
+      </div>)}
     </div>
   </div>);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// AI AGENT TAB
-// ══════════════════════════════════════════════════════════════════════════════
+// ── AI AGENT ──────────────────────────────────────────────────────────────────
 function AgentTab({reg}){
   const T=useT();
-  const [msgs,setMsgs]=useState([{role:"assistant",content:`Hello! I'm the DM Clinical Revenue Intelligence Agent 🤖\n\nData sources (verified from your latest files):\n• Forecaster: May 22, 2026 — Grand Total $72.88M, 2,296 studies\n• Waterfall: May 26, 2026 (4th Week) — Baseline $85M\n• Studies loaded: ${STUDIES.length} (Enrolling: 83, Awarded: 88, Maintenance: 279, Pipeline: 60+)\n\nRegistry auto-update: Add new URL to registry sheet → portal auto-detects ✅\n\nAsk me anything about Lead IDs, ATOM numbers, FCV, revenue, or variances!`}]);
-  const [inp,setInp]=useState("");
-  const [thinking,setThinking]=useState(false);
+  const[msgs,setMsgs]=useState([{role:"assistant",content:`Hello! I'm the DM Clinical Revenue Intelligence Agent 🤖\n\nVerified data loaded:\n• Forecaster: May 22, 2026 — $72.88M grand total, 2,296 studies\n• Waterfall: May 26, 2026 (4th Week) — $85M baseline\n• 510 studies with Lead IDs + ATOM numbers\n\nI can answer detailed questions about any study, sponsor, variance, or revenue figure. Go ahead!`}]);
+  const[inp,setInp]=useState("");
+  const[thinking,setThinking]=useState(false);
   const ref=useRef(null);
-  const SUGG=["Tell me about Lead ID 2544","Show all Pfizer enrolling studies","ATOM 6912 monthly revenue","Why did enrolling drop this week?","Top 10 studies by 2026 revenue","Which awarded studies have highest BPS?","Show all Moderna studies","How to close the $12M gap to $85M?","Compare Q1 vs Q2 performance","Pipeline studies above 75% confidence"];
+  const SUGG=["Tell me about Lead ID 2544","Show all Pfizer enrolling studies","ATOM 6912 monthly revenue","Why did enrolling drop this week?","Top 10 studies by 2026 revenue","Which awarded studies have highest BPS?","Show all Moderna studies","How to close the $12M gap to $85M?","Compare Apr vs May forecaster","Pipeline studies above 75% confidence"];
   useEffect(()=>{ref.current?.scrollIntoView({behavior:"smooth"})},[msgs]);
+
   const sysPrompt=`You are the DM Clinical Revenue Intelligence Agent for DM Clinical Research.
 
-REGISTRY AUTO-UPDATE: When team creates new Forecaster copy (monthly) or Waterfall copy (weekly), they add the new Apps Script URL to the registry sheet. Portal auto-detects on next load. NO code changes needed.
-Current Forecaster: ${reg?.forecaster?.current?.date||"May 22, 2026"} | History: ${(reg?.forecaster?.history||[]).map(r=>r.date).join(", ")||"May 2026, Apr 2026"}
-Current Waterfall: ${reg?.waterfall?.current?.date||"May 26, 2026 (4th Week)"} | History: ${(reg?.waterfall?.history||[]).map(r=>r.date).join(", ")||"May 26 W4, May 19 W3"}
+REGISTRY AUTO-UPDATE: New Forecaster (monthly) or Waterfall (weekly) → add Apps Script URL to registry → portal auto-detects. NO code changes needed.
+Forecaster: ${reg?.forecaster?.current?.date||"May 22, 2026"} | Waterfall: ${reg?.waterfall?.current?.date||"May 26 W4"}
 
-VERIFIED DATA — FORECASTER (May 22, 2026):
-Grand Total 2026: $72,882,175 | YTD Jan-May: $35,665,389 | Remaining FCST: $37,216,786
-Q1 ACT: $21,932,289 | Q2 ACT: $17,219,729 | Q3 FCST: $11,865,984 | Q4 FCST: $21,864,173
-H1: $39,152,018 | H2: $33,730,157
-Vaccine Total: $48,300,914 | Non-Vaccine Total: $24,581,261
-Monthly: Jan:$6.41M Feb:$7.09M Mar:$8.43M Apr:$6.74M May:$6.99M(ACT) Jun:$3.49M Jul:$3.54M Aug:$3.92M Sep:$4.41M Oct:$10.72M Nov:$5.84M Dec:$5.30M
+VERIFIED FORECASTER DATA (May 22, 2026):
+Grand Total: $72,882,175 | YTD Jan-May: $35,665,389 | Remaining: $37,216,786
+Q1(ACT): $21,932,289 | Q2(ACT): $17,219,729 | Q3(FCST): $11,865,984 | Q4(FCST): $21,864,173
+Vaccine: $48,300,914 | Non-Vaccine: $24,581,261
+Monthly: Jan:$6.41M(A) Feb:$7.09M(A) Mar:$8.43M(A) Apr:$6.74M(A) May:$6.99M(A) Jun:$3.49M Jul:$3.54M Aug:$3.92M Sep:$4.41M Oct:$10.72M Nov:$5.84M Dec:$5.30M
 
-VERIFIED DATA — WATERFALL (May 26, 2026 4th Week):
-Baseline Target: $85,000,003 | H1: $39,545,400 | H2: $45,454,603
+VERIFIED WATERFALL DATA (May 26, 2026 4th Week):
+Baseline: $85M | H1: $39,545,400 | H2: $45,454,603
 Q1: $21,785,047 | Q2: $17,760,353 | Q3: $18,598,614 | Q4: $26,855,989
-Monthly: Jan:$6.36M Feb:$7.02M Mar:$8.41M Apr:$6.71M May:$6.99M(ACT) Jun:$4.06M Jul:$5.42M Aug:$5.81M Sep:$7.37M Oct:$9.58M Nov:$8.83M Dec:$8.45M
-Maintenance: $28.08M | Enrolling: $27.21M | Awarded: $7.52M | Risk Adj Awarded: -$6.10M | Pipeline: $9.02M | Risk Adj Pipeline: -$1.05M | Go-Get: $13.17M
+Maintenance: $28.08M | Enrolling: $27.21M | Awarded: $7.52M | Risk Adj Awd: -$6.10M | Pipeline: $9.02M | Risk Adj Pip: -$1.05M | Go-Get: $13.17M
 
-STUDY COUNTS (Executive Summary May 14, 2026):
+STUDY COUNTS (May 14, 2026 - latest Executive Summary):
 Grand Total: 2,296 | Backlog: 840 | Pipeline opps: 2,464
-Awarded: 88 (Vax:30, Non-Vax:58) | Enrolling: 83 (Vax:18, Non-Vax:65) | Maintenance: 279 (Vax:211, Non-Vax:68) | Closed: 390
-Total Vaccine: 981 | Total Non-Vaccine: 1,315
-ATOM Dump: 6,259 ATOM opportunity IDs (all historical across all sites)
+Awarded: 88 (Vax:30, Non-Vax:58) | Enrolling: 83 (Vax:18, Non-Vax:65)
+Maintenance: 279 (Vax:211, Non-Vax:68) | Closed: 390
+Vaccine Total: 981 | Non-Vaccine Total: 1,315
+ATOM Dump total: 6,259 ATOM IDs (all historical across all sites/years)
 
-FCV NOTE: FCV = Estimated Potential Revenue (BPS × Total Patients) from Combine Table BEFORE confidence level. Factored Revenue = FCV × CL%.
+FCV = Estimated Potential Revenue (BPS × Total Patients) from Combine Table BEFORE confidence level.
 
-WEEK-OVER-WEEK (May 19 → May 26):
-Enrolling ▼-$800K: VYD2311-PREV-002 (LID:2544,ATOM:6912) -$400K; C4771002 Pfizer -$200K; VP-VHX-896-3201 Vanda -$100K; K9531-3104 Kailera -$100K
-Awarded ▲+$1.5M: C6511002 Pfizer (LID:2525,ATOM:6807) +$1M goals 17→21 PPB $38K→$80K; VRB-101-202 Verdiva +$300K
-Pipeline ▼-$800K: AIC316 AiCuris cancelled -$187K; D7266 AstraZeneca +$337K; 218130 GSK -$180K
+MoM VARIANCE (Apr 24 → May 22):
+Grand Total: +$4,918,519 (+7.2%) from $67.96M → $72.88M
+Pipeline: +$1,198,445 (+15.7%) | +285 new opps (VCA23395 Sanofi, D7266 AstraZeneca)
+Awarded: +$1,130,837 (+10.4%) | +6 new awards (C6511002 Pfizer +$1M, VRB-101-202 Verdiva)
+Enrolling: +$1,495,785 (+6.4%) | May actuals captured ($6.99M)
+Maintenance: +$1,115,924 (+4.3%) | -3 studies, May actuals added
+
+WoW VARIANCE (May 19 W3 → May 26 W4):
+Enrolling: -$4,525 (minimal) | Go-Get: +$4,702 (minimal) | Total: essentially flat
 
 SITES 2026: Tomball:$18.44M | CyFair:$16.77M | Sugarland:$14.78M | Bellaire:$11.09M | River Forest:$9.74M | Philadelphia:$8.23M | Southfield:$7.81M | Brookline:$3.60M | Jersey City:$3.53M
 
+WoW STUDY DRIVERS:
+Enrolling ▼: VYD2311-PREV-002 (LID:2544,ATOM:6912) -$400K; C4771002 Pfizer -$200K; VP-VHX-896-3201 Vanda -$100K; K9531-3104 Kailera -$100K
+Awarded ▲: C6511002 Pfizer (LID:2525,ATOM:6807) +$1M goals 17→21 PPB $38K→$80K; VRB-101-202 Verdiva +$300K
+
 ${AI_CTX}
 
-Answer with Lead IDs, ATOM numbers, exact figures. Note FCV source when asked. Format study lists clearly.`;
+Answer precisely with Lead IDs, ATOM numbers, exact figures. Explain FCV source when asked.`;
 
   const send=async(text)=>{
     const msg=text||inp.trim();if(!msg||thinking)return;
     setInp("");const newMsgs=[...msgs,{role:"user",content:msg}];setMsgs(newMsgs);setThinking(true);
     try{
-      const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sysPrompt,messages:newMsgs.map(m=>({role:m.role,content:m.content}))})});
-      const d=await r.json();setMsgs(p=>[...p,{role:"assistant",content:d.content?.[0]?.text||"Try again."}]);
-    }catch{setMsgs(p=>[...p,{role:"assistant",content:"Connection error."}]);}
+      // Use /api/chat proxy route (Vercel serverless function)
+      const r=await fetch("/api/chat",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({system:sysPrompt,messages:newMsgs.map(m=>({role:m.role,content:m.content}))})
+      });
+      if(!r.ok){
+        const errText=await r.text();
+        throw new Error(`API error ${r.status}: ${errText}`);
+      }
+      const d=await r.json();
+      const reply=d.content?.[0]?.text||d.error||"No response received.";
+      setMsgs(p=>[...p,{role:"assistant",content:reply}]);
+    }catch(e){
+      setMsgs(p=>[...p,{role:"assistant",content:`Error: ${e.message}\n\nMake sure ANTHROPIC_API_KEY is set in Vercel Environment Variables:\n1. Go to Vercel → your project → Settings → Environment Variables\n2. Add: ANTHROPIC_API_KEY = your-key-here\n3. Redeploy`}]);
+    }
     setThinking(false);
   };
 
   return(<div style={{display:"flex",flexDirection:"column",gap:12,height:"calc(100vh - 200px)"}}>
+    <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
+      🔑 AI Agent requires <b style={{color:T.amber}}>ANTHROPIC_API_KEY</b> set in Vercel → Settings → Environment Variables. Then redeploy. The agent calls <code style={{color:T.teal}}>/api/chat</code> (secure server-side proxy).
+    </div>
     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
       {SUGG.map(q=><button key={q} onClick={()=>send(q)} style={{fontSize:11,padding:"5px 12px",borderRadius:20,border:`1px solid ${T.bdr2}`,background:T.surf2,color:T.muted,cursor:"pointer"}}
         onMouseEnter={e=>{e.target.style.borderColor=T.teal;e.target.style.color=T.teal;}} onMouseLeave={e=>{e.target.style.borderColor=T.bdr2;e.target.style.color=T.muted;}}>{q}</button>)}
@@ -1171,7 +1275,7 @@ Answer with Lead IDs, ATOM numbers, exact figures. Note FCV source when asked. F
       </div>
       <div style={{borderTop:`1px solid ${T.bdr}`,padding:"12px 16px",display:"flex",gap:10}}>
         <input value={inp} onChange={e=>setInp(e.target.value)} onKeyDown={e=>e.key==="Enter"&&!e.shiftKey&&send()}
-          placeholder="Ask about any Lead ID, ATOM number, study, sponsor, variance, FCV..."
+          placeholder="Ask about Lead ID, ATOM, study, sponsor, variance, FCV..."
           style={{flex:1,background:T.surf3,border:`1px solid ${T.bdr2}`,borderRadius:8,padding:"9px 14px",color:T.text,fontSize:13,outline:"none"}}/>
         <button onClick={()=>send()} disabled={thinking||!inp.trim()} style={{padding:"9px 22px",borderRadius:8,background:thinking?T.surf3:T.teal,color:thinking?T.muted:"#000",border:"none",cursor:thinking?"not-allowed":"pointer",fontSize:13,fontWeight:600}}>
           {thinking?"...":"Send"}
@@ -1181,26 +1285,18 @@ Answer with Lead IDs, ATOM numbers, exact figures. Note FCV source when asked. F
   </div>);
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-// MAIN APP
-// ══════════════════════════════════════════════════════════════════════════════
-const TABS=[{id:"glance",label:"At a Glance"},{id:"waterfall",label:"Waterfall"},{id:"forecaster",label:"Forecaster"},{id:"search",label:"Study Search 🔍"},{id:"agent",label:"AI Agent 🤖"}];
+// ── MAIN APP ──────────────────────────────────────────────────────────────────
+const TABS=[{id:"glance",label:"At a Glance"},{id:"waterfall",label:"Waterfall"},{id:"forecaster",label:"Forecaster"},{id:"variance",label:"Variance Analysis 📊"},{id:"search",label:"Study Search 🔍"},{id:"agent",label:"AI Agent 🤖"}];
 
 export default function App(){
-  const [tab,setTab]=useState("glance");
-  const [theme,setTheme]=useState("Dark Navy");
-  const [showDrop,setShowDrop]=useState(false);
-  const [reg,setReg]=useState({forecaster:{current:null,previous:null,history:[]},waterfall:{current:null,previous:null,history:[]}});
-
+  const[tab,setTab]=useState("glance");
+  const[theme,setTheme]=useState("Dark Navy");
+  const[showDrop,setShowDrop]=useState(false);
+  const[reg,setReg]=useState({forecaster:{current:null,previous:null,history:[]},waterfall:{current:null,previous:null,history:[]}});
   window.__T__=THEMES[theme];const T=THEMES[theme];
 
   useEffect(()=>{
-    const load=async()=>{
-      try{
-        const [fc,wf]=await Promise.all([fetchRegistry(REG.FC),fetchRegistry(REG.WF)]);
-        setReg({forecaster:fc||{current:null,previous:null,history:[]},waterfall:wf||{current:null,previous:null,history:[]}});
-      }catch{}
-    };
+    const load=async()=>{try{const[fc,wf]=await Promise.all([fetchReg(REG.FC),fetchReg(REG.WF)]);setReg({forecaster:fc||{current:null,previous:null,history:[]},waterfall:wf||{current:null,previous:null,history:[]}});}catch{}};
     load();const iv=setInterval(load,5*60*1000);return()=>clearInterval(iv);
   },[]);
 
@@ -1214,16 +1310,14 @@ export default function App(){
           <span style={{fontSize:13,fontWeight:700,color:T.text}}>DM Clinical Research</span>
           <span style={{fontSize:11,color:T.muted}}>Revenue Operations Portal</span>
         </div>
-        <div style={{display:"flex",gap:2}}>
-          {TABS.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{background:tab===t.id?T.teal+"18":"transparent",border:"none",color:tab===t.id?T.teal:T.muted,padding:"5px 12px",borderRadius:6,fontSize:12,cursor:"pointer",fontWeight:tab===t.id?600:400}}>{t.label}</button>)}
+        <div style={{display:"flex",gap:2,flexWrap:"wrap"}}>
+          {TABS.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{background:tab===t.id?T.teal+"18":"transparent",border:"none",color:tab===t.id?T.teal:T.muted,padding:"5px 10px",borderRadius:6,fontSize:11,cursor:"pointer",fontWeight:tab===t.id?600:400}}>{t.label}</button>)}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
           <div style={{fontSize:10,background:T.amber+"22",color:T.amber,padding:"2px 8px",borderRadius:20}}>FY 2026 · $85M</div>
-          <div style={{fontSize:10,color:T.muted}}>Updated: May 26, 2026</div>
           <div style={{position:"relative"}}>
             <button onClick={()=>setShowDrop(!showDrop)} style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:7,padding:"5px 10px",color:T.muted,fontSize:11,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>🎨 {theme} ▾</button>
-            {showDrop&&<>
-              <div style={{position:"fixed",inset:0,zIndex:198}} onClick={()=>setShowDrop(false)}/>
+            {showDrop&&<><div style={{position:"fixed",inset:0,zIndex:198}} onClick={()=>setShowDrop(false)}/>
               <div style={{position:"absolute",right:0,top:"calc(100% + 4px)",background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:10,overflow:"hidden",zIndex:199,minWidth:170,boxShadow:`0 8px 24px ${T.bg}bb`}}>
                 {Object.keys(THEMES).map(th=>(
                   <button key={th} onClick={()=>{setTheme(th);setShowDrop(false);}} style={{width:"100%",padding:"9px 14px",background:theme===th?T.teal+"18":"transparent",border:"none",color:theme===th?T.teal:T.text,fontSize:12,cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${T.bdr}22`}}>
@@ -1238,13 +1332,14 @@ export default function App(){
       <div style={{padding:"18px 20px",maxWidth:1400,margin:"0 auto"}}>
         <div style={{fontSize:11,color:T.muted,marginBottom:14,display:"flex",alignItems:"center",gap:4}}>
           <span>FP&A</span><span>›</span><span style={{color:T.text}}>{TABS.find(t=>t.id===tab)?.label}</span>
-          <span style={{marginLeft:"auto",fontSize:10,color:T.muted2}}>Forecaster: May 22 · Waterfall: May 26 W4 · {STUDIES.length} studies</span>
+          <span style={{marginLeft:"auto",fontSize:10,color:T.muted2}}>FC: May 22 · WF: May 26 W4 · {STUDIES.length} studies loaded</span>
         </div>
-        {tab==="glance"    &&<AtAGlanceTab/>}
-        {tab==="waterfall" &&<WaterfallTab reg={reg}/>}
+        {tab==="glance"   &&<AtAGlanceTab/>}
+        {tab==="waterfall"&&<WaterfallTab reg={reg}/>}
         {tab==="forecaster"&&<ForecasterTab reg={reg}/>}
-        {tab==="search"    &&<StudySearchTab/>}
-        {tab==="agent"     &&<AgentTab reg={reg}/>}
+        {tab==="variance" &&<VarianceTab/>}
+        {tab==="search"   &&<StudySearchTab/>}
+        {tab==="agent"    &&<AgentTab reg={reg}/>}
       </div>
     </div>
   );
