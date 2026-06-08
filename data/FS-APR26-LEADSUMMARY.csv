@@ -1,0 +1,624 @@
+,,,,,,,,,,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00
+Amount in 000's,,"Kindly do not edit - This sheet is automated, You may use Filters",,,,,,,,,,,,,,,,,
+Sorted based on 2025,,,,,,,,,Total Loaded,"16,500,024","18,174,700","10,440,353","21,441,403","66,556,480","21,932,289","16,258,330","12,010,774","22,505,592","72,706,986"
+,,,,,,,,,Total Unloaded,"16,500,024","18,174,700","10,440,353","21,441,403","66,556,480","21,932,289","14,261,693","10,535,767","19,741,748","66,471,497"
+Lead ID,Protocol,Sponsor,CRO,Indication,Therapeutic area,Full Contract Value,Factored Contract Value,Future Goals,Actual Goals,Q1 2025,Q2 2025,Q3 2025,Q4 2025,Total 2025,Q1 2026,Q2 2026,Q3 2026,Q4 2026,Total 2026
+2544,VYD2311-PREV-002,Ichnos Sciences,(No Info),COVID-19,Vaccine-COVID,"  $9,665 ","  $9,665 ",0,819,  - ,  - ,  - ,  $30 ,  $30 ,"  $6,100 ","  $3,253 ",  $293 ,  - ,"  $9,646 "
+1843,mRNA-1403-P301,Moderna,Parexel,Norovirus,Vaccine-Other,"  $27,397 ","  $27,397 ",0,"3,165","  $3,069 ","  $2,939 ","  $1,276 ","  $5,415 ","  $12,699 ","  $3,719 ","  $2,565 ",  $406 ,"  $2,730 ","  $9,420 "
+1612,218130,GSK,(No Info),Influenza,Vaccine-Influenza,"  $5,847 ","  $5,236 ",905,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,"  $3,637 ","  $3,637 "
+2685,VCA23395,Sanofi,ICON,RSV Vaccine,Vaccine-Respiratory,"  $4,793 ","  $4,295 ",564,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $187 ,"  $2,837 ","  $3,023 "
+456,V118_24,Seqirus UK Limited,Parexel,Influenza,Vaccine-Influenza,"  $5,444 ","  $5,444 ",0,962,  - ,  - ,  $108 ,"  $3,946 ","  $4,054 ","  $1,044 ","  $1,177 ",  - ,  - ,"  $2,220 "
+1618,VAX31-103,Vaxcyte,PPD,Pneumococcal,Vaccine-Other,"  $3,509 ","  $3,509 ",0,466,  - ,  - ,  $38 ,"  $1,638 ","  $1,676 ","  $1,545 ",  $313 ,  $93 ,  - ,"  $1,952 "
+1613,218132,GSK,(No Info),Influenza,Vaccine-Influenza,"  $3,315 ","  $2,798 ",510,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,"  $1,937 ","  $1,937 "
+2187,C4771002,Pfizer,(No Info),Clostridium Difficile,Vaccine-Other,"  $4,288 ","  $4,288 ",411,29,  - ,  - ,  - ,  $89 ,  $89 ,  $125 ,  $377 ,  $615 ,  $748 ,"  $1,864 "
+2521,C4591081,Pfizer,None,COVID-19,Vaccine-COVID,"  $1,177 ","  $1,177 ",0,184,  - ,  - ,  - ,  - ,  - ,"  $1,107 ",  $185 ,  $199 ,  - ,"  $1,491 "
+2057,CD388.SQ.3.06,"Cidara Therapeutics, Inc",Parexel,Influenza,Vaccine-Influenza,"  $3,696 ","  $3,696 ",0,192,  - ,  - ,  $36 ,"  $1,837 ","  $1,873 ",  $697 ,  $577 ,  $10 ,  - ,"  $1,284 "
+2115,D7960C00015,AstraZeneca,IQVIA,Dyslipidemia,Cardiovascular,"  $2,338 ","  $2,338 ",106,53,  - ,  - ,  $114 ,  $235 ,  $349 ,  $191 ,  $276 ,  $385 ,  $341 ,"  $1,193 "
+2522,mRNA-1273_1283-P401,Moderna,None,COVID-19,Vaccine-COVID,"  $1,237 ","  $1,237 ",0,272,  - ,  - ,  - ,  $366 ,  $366 ,  $900 ,  $100 ,  $128 ,  - ,"  $1,127 "
+1800,VXA-COV-202,Vaxart,ICON,COVID-19,Vaccine-COVID,"  $3,528 ","  $3,528 ",0,283,  $44 ,  $836 ,"  $2,170 ",  $818 ,"  $3,868 ",  $633 ,  $110 ,  $309 ,  - ,"  $1,052 "
+2675,C6491014,Pfizer,Unknown,Obesity,General Medicine,"  $1,500 ","  $1,350 ",75,0,  - ,  - ,  - ,  - ,  - ,  - ,  $219 ,  $363 ,  $263 ,  $845 
+2594,V2000103,Veru,Worldwide Clinical Trials,Obesity,General Medicine,"  $1,752 ","  $1,752 ",36,8,  - ,  - ,  - ,  - ,  - ,  $75 ,  $184 ,  $299 ,  $233 ,  $791 
+258,mRNA-1189-P101,Moderna,PPD,Epstein Barr,Vaccine-Other,"  $1,748 ","  $1,748 ",0,53,  $35 ,  $0 ,  $0 ,  $12 ,  $48 ,  $758 ,  $14 ,  $14 ,  - ,  $787 
+2633,C6481001,Pfizer,Unknown,Influenza,Vaccine-Influenza,  $743 ,  $743 ,40,72,  - ,  - ,  - ,  - ,  - ,  $269 ,  $315 ,  - ,  $165 ,  $749 
+2217,K9531-3103 (OAB58025),Kailera Therapeutics,IQVIA,Obesity,General Medicine,"  $1,237 ","  $1,237 ",20,20,  - ,  - ,  - ,  $51 ,  $51 ,  $129 ,  $129 ,  $222 ,  $177 ,  $657 
+1621,VAX31-106,Vaxcyte,PPD,Pneumococcal,Vaccine-Other,  $599 ,  $599 ,0,59,  - ,  - ,  $19 ,  - ,  $19 ,  $503 ,  $96 ,  $34 ,  - ,  $632 
+2558,TRS-018,Tarsus,Allucent,Lyme,Vaccine-Other,  $840 ,  $840 ,35,15,  - ,  - ,  - ,  - ,  - ,  $58 ,  $180 ,  $217 ,  $149 ,  $604 
+2558,TRS-018,Tarsus,PPD,Lyme,Vaccine-Other,  $840 ,  $840 ,35,12,  - ,  - ,  - ,  - ,  - ,  $26 ,  $180 ,  $217 ,  $149 ,  $572 
+2507,2019nCoV-420,Novavax,ICON,COVID-19,Vaccine-COVID,  $646 ,  $646 ,89,0,  - ,  - ,  - ,  $96 ,  $96 ,  $132 ,  $320 ,  $65 ,  $34 ,  $550 
+2242,PARA_OA_012,Paradigm Biopharmaceuticals,Advanced Clinical ((Advanced Clinical)),Osteoarthritis,Rheumatoid and Autoimmune,  $615 ,  $615 ,13,28,  - ,  - ,  $24 ,  $56 ,  $80 ,  $131 ,  $199 ,  $167 ,  $51 ,  $548 
+2593,"  306,938 ",GSK,(No Info),Influenza,Vaccine-Influenza,"  $2,720 ",  $816 ,320,,  - ,  - ,  - ,  - ,  - ,  - ,  $130 ,  $206 ,  $206 ,  $543 
+2285,D8750C00014,AstraZeneca,None,Obesity,General Medicine,"  $1,800 ",  $540 ,90,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $303 ,  $237 ,  $540 
+2651,J2A-MC-GZVA,Eli Lilly,Unknown,Not Available in Atom,Endocrine & Metabolism,"  $4,200 ","  $1,260 ",210,,  - ,  - ,  - ,  - ,  - ,  - ,  $90 ,  $224 ,  $224 ,  $538 
+1888,D6973C00001,AstraZeneca,(No Info),Cardiovascular Disease,Cardiovascular,  $991 ,  $991 ,29,19,  - ,  $12 ,  $50 ,  $84 ,  $146 ,  $89 ,  $114 ,  $191 ,  $126 ,  $521 
+2683,K-304-P004,"Kallyope, Inc",Confidence Pharmaceutical Research ((CFR)),Migraine,General Medicine,  $813 ,  $731 ,65,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $163 ,  $333 ,  $497 
+2749,ALV-101-1,,Worldwide Clinical Trials,Obesity,General Medicine,"  $1,500 ",  $870 ,75,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $227 ,  $269 ,  $496 
+2265,AIC316-01-III-01,AiCuris Anti-infectives Cures AG (AiCuris),IQVIA,HSV,Infectious Disease,"  $1,003 ",  $903 ,63,0,  - ,  - ,  - ,  - ,  - ,  - ,  $33 ,  $225 ,  $234 ,  $492 
+2114,D7960C00012,AstraZeneca,IQVIA,Dyslipidemia,Cardiovascular,"  $1,197 ","  $1,197 ",0,65,  - ,  $12 ,  $410 ,  $368 ,  $789 ,  $118 ,  $93 ,  $192 ,  $76 ,  $480 
+2513,K9531-3107,Kailera Therapeutics,IQVIA,Obesity,General Medicine,  $954 ,  $954 ,19,4,  - ,  - ,  - ,  - ,  - ,  $19 ,  $149 ,  $160 ,  $135 ,  $463 
+2561,D7266C00001,AstraZeneca,None,CVOT,Cardiovascular,"  $2,742 ","  $1,204 ",115,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $161 ,  $285 ,  $446 
+2031,AR882-301,Arthrosi,IQVIA,Gout,Rheumatoid and Autoimmune,"  $1,290 ","  $1,290 ",0,58,  $119 ,  $440 ,  $411 ,  $210 ,"  $1,180 ",  $166 ,  $184 ,  $69 ,  $2 ,  $421 
+2283,D8750C00012,AstraZeneca,None,Obesity,General Medicine,"  $2,000 ",  $600 ,100,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $158 ,  $246 ,  $404 
+2198,SPY002-072-201,Spyre Therapeutics,Parexel,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $695 ,  $695 ,3,32,  - ,  - ,  $108 ,  $169 ,  $277 ,  $186 ,  $91 ,  $66 ,  $58 ,  $400 
+1819,C4771001,Pfizer,ICON,Clostridium Difficile,Vaccine-Other,"  $1,835 ","  $1,835 ",0,173,  $284 ,  $73 ,  $113 ,  $40 ,  $510 ,  $21 ,  $111 ,  $98 ,  $158 ,  $387 
+1620,VAX31-105,Vaxcyte,PPD,Pneumococcal,Vaccine-Other,  $126 ,  $126 ,0,16,  - ,  - ,  - ,  - ,  - ,  $341 ,  $31 ,  $10 ,  - ,  $382 
+1276,mRNA-1195-P101,Moderna,PPD,Epstein Barr,Vaccine-Other,"  $5,715 ","  $5,715 ",0,181,  $40 ,  $591 ,  $226 ,  $312 ,"  $1,169 ",  $139 ,  $62 ,  $57 ,  $73 ,  $331 
+2643,EXPD-101-201,Expedition Therapeutics,IQVIA,COPD,Respiratory,  $362 ,  $326 ,13,0,  - ,  - ,  - ,  - ,  - ,  - ,  $79 ,  $197 ,  $41 ,  $317 
+2218,K9531-3104 (PAB77690),Kailera Therapeutics,IQVIA,Obesity,General Medicine,  $527 ,  $527 ,8,7,  - ,  - ,  - ,  $17 ,  $17 ,  $84 ,  $85 ,  $72 ,  $75 ,  $316 
+2647,TTP399-302,vTv Therapeutics,Medpace,Type 1 Diabetes,Endocrine & Metabolism,  $530 ,  $305 ,15,0,  - ,  - ,  - ,  - ,  - ,  $18 ,  $131 ,  $112 ,  $50 ,  $312 
+2054,M25-191,Abbvie,(No Info),Psoriatic Arthritis,Rheumatoid and Autoimmune,  $519 ,  $519 ,0,12,  - ,  $26 ,  $122 ,  $138 ,  $287 ,  $113 ,  $99 ,  $74 ,  $22 ,  $307 
+2214,D9640C00003,AstraZeneca,None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $490 ,  $490 ,10,0,  - ,  - ,  - ,  - ,  - ,  $13 ,  $38 ,  $98 ,  $153 ,  $301 
+2630,TAK-360-2001,Takeda,Unknown,Narcolepsy NT1/NT2,CNS,  $334 ,  $300 ,4,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $123 ,  $175 ,  $299 
+2301,2019nCoV-318,Novavax,PPD,COVID-19,Vaccine-COVID,"  $1,415 ","  $1,415 ",0,291,  - ,  - ,  - ,"  $1,296 ","  $1,296 ",  $159 ,  $128 ,  - ,  - ,  $287 
+2164,C4931020,Pfizer,(No Info),Pneumococcal,Vaccine-Other,  $319 ,  $319 ,0,19,  - ,  - ,  - ,  $22 ,  $22 ,  $145 ,  $48 ,  $81 ,  $8 ,  $282 
+2287,NN9838-4968,Novo Norsdisk,(No Info),Obesity,General Medicine,  $788 ,  $788 ,4,3,  - ,  - ,  - ,  $12 ,  $12 ,  - ,  $75 ,  $132 ,  $69 ,  $275 
+2515,NN9490-8293,Novo Norsdisk,None,Obstructive Sleep Apnea,Respiratory,  $269 ,  $269 ,5,0,  - ,  - ,  - ,  - ,  - ,  - ,  $42 ,  $205 ,  $22 ,  $269 
+2298,VP-VHX-896-3201,Vanda Pharmaceuticals Inc,(No Info),Major Depressive Disorder,Psychiatry,  $333 ,  $333 ,7,4,  - ,  - ,  - ,  $13 ,  $13 ,  $17 ,  $101 ,  $61 ,  $75 ,  $255 
+2142,VRB-101-201,Verdiva Bio,Parexel,Obesity,General Medicine,  $325 ,  $325 ,0,11,  - ,  - ,  - ,  $39 ,  $39 ,  $145 ,  $82 ,  $14 ,  - ,  $241 
+2545,BHV2000-202,Biohaven,(No Info),Obesity,General Medicine,  $284 ,  $284 ,0,9,  - ,  - ,  - ,  $21 ,  $21 ,  $86 ,  $52 ,  $93 ,  $10 ,  $241 
+2509,GSBR-1290-17,"Gasherbrum Bio, Inc.",Parexel,Type 2 Diabetes,Endocrine & Metabolism,  $322 ,  $322 ,0,12,  - ,  - ,  - ,  $78 ,  $78 ,  $90 ,  $70 ,  $66 ,  $12 ,  $238 
+1289,ITI-007-505,Intra-Cellular Therapies,IQVIA,Major Depressive Disorder,Psychiatry,  $391 ,  $391 ,10,10,  - ,  $4 ,  ($1),  - ,  $3 ,  - ,  $42 ,  $110 ,  $81 ,  $233 
+1802,J4M-MC-PWMP,Lilly,PPD,Obesity,General Medicine,  $497 ,  $497 ,0,27,  $75 ,  $125 ,  $92 ,  $71 ,  $363 ,  $76 ,  $56 ,  $71 ,  $20 ,  $223 
+2053,M25-056,Abbvie,(No Info),Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $390 ,  $390 ,6,16,  - ,  $20 ,  $69 ,  $134 ,  $223 ,  $56 ,  $59 ,  $54 ,  $44 ,  $213 
+2168,301160,GSK,IQVIA,MASH,Endocrine & Metabolism,"  $1,103 ","  $1,103 ",11,29,  - ,  - ,  - ,  $41 ,  $41 ,  $81 ,  $11 ,  $49 ,  $70 ,  $212 
+1888,D6973C00001,AstraZeneca,None,Cardiovascular Disease,Cardiovascular,  $327 ,  $327 ,10,10,  - ,  - ,  - ,  $16 ,  $16 ,  $56 ,  $56 ,  $74 ,  $24 ,  $210 
+2552,J3R-MC-YDAF,Eli Lilly,(No Info),Obesity,General Medicine,  $255 ,  $255 ,2,4,  - ,  - ,  - ,  - ,  - ,  $64 ,  $59 ,  $43 ,  $42 ,  $208 
+2548,ELV001-201,Eisai,Novotech,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $239 ,  $239 ,7,,  - ,  - ,  - ,  - ,  - ,  $30 ,  $22 ,  $62 ,  $89 ,  $203 
+2286,D8750C00011,AstraZeneca,None,Obesity,General Medicine,  $800 ,  $240 ,40,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $78 ,  $121 ,  $199 
+1687,AR882-302,Arthrosi,IQVIA,Gout,Rheumatoid and Autoimmune,"  $3,085 ","  $3,085 ",0,116,  $836 ,  $577 ,  $531 ,  $237 ,"  $2,182 ",  $159 ,  $20 ,  - ,  - ,  $179 
+2284,D8750C00010,AstraZeneca,None,Obesity,General Medicine,  $800 ,  $240 ,40,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $67 ,  $105 ,  $173 
+2603,821P203,Supernus Pharmaceuticals,Clinical Research Corp. (CRC),Major Depressive Disorder,Psychiatry,  $152 ,  $152 ,7,0,  - ,  - ,  - ,  - ,  - ,  $18 ,  $34 ,  $62 ,  $56 ,  $169 
+2710,R5713-5715-ALG-2556,Regeneron,Unknown,Birch Pollen Allergy,Allergy/Immunology,  $600 ,  $345 ,30,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $168 ,  $168 
+2658,DRI19694,Sanofi,Unknown,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $180 ,  $153 ,9,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $113 ,  $40 ,  $153 
+2648,TAK-360-2002,Takeda,Unknown,Narcolepsy NT1/NT2,CNS,  $168 ,  $151 ,4,0,  - ,  - ,  - ,  - ,  - ,  - ,  $6 ,  $106 ,  $39 ,  $151 
+2132,FYU-981-CRYS-301,Crystal therapeutics,ICON,Gout,Rheumatoid and Autoimmune,  $231 ,  $231 ,6,3,  - ,  - ,  - ,  $45 ,  $45 ,  $20 ,  $51 ,  $41 ,  $36 ,  $148 
+1632,C4931001,Pfizer,ICON,Pneumococcal,Vaccine-Other,"  $1,703 ","  $1,703 ",0,380,  $308 ,  $133 ,  $96 ,  $696 ,"  $1,234 ",  $71 ,  $75 ,  - ,  - ,  $146 
+2623,D7260C00015,AstraZeneca,IQVIA,Obesity,General Medicine,  $720 ,  $626 ,36,0,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $44 ,  $97 ,  $142 
+2645,"  223,957 ",GSK,Unknown,Asthma,Respiratory,  $160 ,  $144 ,8,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $51 ,  $90 ,  $141 
+2294,WC45726(CT-388-106),Roche,ICON,Obesity,General Medicine,  $391 ,  $391 ,10,0,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $55 ,  $77 ,  $136 
+1284,1404-0040,Boehringer Ingelheim,Unknown,Obesity,General Medicine,  $775 ,  $775 ,0,14,  $64 ,  $72 ,  $79 ,  $66 ,  $280 ,  $78 ,  $32 ,  $21 ,  - ,  $131 
+1676,CVXGA-003,BARDA,Syneos Health,COVID-19,Vaccine-COVID,  $400 ,  $400 ,0,53,  $440 ,  $80 ,  $36 ,  $12 ,  $568 ,  $118 ,  - ,  - ,  - ,  $118 
+2098,MK7240-013,Merck,(No Info),Ankylosing Spondylitis,Musculoskeletal,  $239 ,  $239 ,2,3,  - ,  - ,  $17 ,  $4 ,  $21 ,  $9 ,  $51 ,  $31 ,  $20 ,  $111 
+230,TA-8995-304,NewAmsterdam,Medpace,Hypercholesteromia,General Medicine,  $884 ,  $884 ,0,151,  $55 ,  $23 ,  $31 ,  $19 ,  $128 ,  $36 ,  $18 ,  $33 ,  $20 ,  $107 
+2746,D7961C00001,AstraZeneca,,Dyslipidemia,Endocrine & Metabolism,"  $1,520 ",  $456 ,76,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $21 ,  $81 ,  $102 
+1988,NN9388-7864,Novo Norsdisk,(No Info),Diabetic Neuropathy,CNS,  $185 ,  $185 ,0,12,  - ,  $54 ,  $126 ,  $101 ,  $280 ,  $65 ,  $30 ,  $1 ,  - ,  $96 
+2697,C4591083,Pfizer,Unknown,COVID-19,Vaccine-COVID,  $680 ,  $204 ,80,,  - ,  - ,  - ,  - ,  - ,  - ,  $13 ,  $41 ,  $41 ,  $95 
+2501,C4591076,Pfizer,None,COVID-19,Vaccine-COVID,  $487 ,  $487 ,0,83,  - ,  - ,  - ,  $465 ,  $465 ,  $6 ,  $88 ,  - ,  - ,  $95 
+2211,WA45846,Roche,IQVIA,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $98 ,  $98 ,3,4,  - ,  - ,  - ,  $34 ,  $34 ,  $36 ,  $32 ,  $24 ,  $2 ,  $94 
+2638,D7261C00005,AstraZeneca,Unknown,Type 2 Diabetes,Endocrine & Metabolism,  $400 ,  $224 ,20,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $27 ,  $67 ,  $93 
+2073,GS-US-667-6882,Gilead Sciences,IQVIA,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $172 ,  $172 ,0,4,  - ,  $37 ,  $67 ,  $43 ,  $147 ,  $56 ,  $25 ,  $11 ,  - ,  $92 
+2126,DQB104CT,Chugai,IQVIA,Celiac Disease,Gastroenterology,  $72 ,  $72 ,2,0,  - ,  - ,  - ,  - ,  - ,  $22 ,  $29 ,  $20 ,  $21 ,  $92 
+408,C3671013,Pfizer,ICON,RSV Vaccine,Vaccine-Respiratory,"  $1,425 ","  $1,425 ",0,947,  $109 ,  $30 ,  $246 ,  $85 ,  $470 ,  $78 ,  $13 ,  - ,  - ,  $91 
+1299,mRNA-1345-P303,Moderna,PPD,RSV,Vaccine-Respiratory,"  $1,738 ","  $1,738 ",0,152,  $134 ,  $98 ,  $153 ,  $131 ,  $517 ,  $90 ,  $1 ,  - ,  - ,  $91 
+2169,306246,GSK,IQVIA,MASH,Endocrine & Metabolism,  $225 ,  $225 ,7,,  - ,  - ,  - ,  - ,  - ,  $20 ,  $4 ,  $23 ,  $43 ,  $90 
+2530,MDD3011,Johnson&Johnson,None,Major Depressive Disorder,Psychiatry,  $89 ,  $89 ,5,0,  - ,  - ,  - ,  - ,  - ,  - ,  $15 ,  $35 ,  $38 ,  $89 
+2660,ML-007C-MA-212,Maplight Therapeutics,Syneos Health,Schizophrenia,CNS,  $100 ,  $90 ,5,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $34 ,  $54 ,  $88 
+2061,80120522,No Information,Worldwide Clinical Trials,Obesity,General Medicine,"  $2,800 ",  $140 ,140,,  - ,  - ,  - ,  - ,  - ,  - ,  $17 ,  $35 ,  $35 ,  $88 
+2664,K-304 P003,"Kallyope, Inc",Confidence Pharmaceutical Research ((CFR)),Migraine,CNS,  $87 ,  $87 ,16,0,  - ,  - ,  - ,  - ,  - ,  - ,  $16 ,  $71 ,  - ,  $87 
+2304,VP-VYV-683-3102,Vanda Pharmaceuticals Inc,(No Info),Schizophrenia,CNS,  $65 ,  $65 ,3,0,  - ,  - ,  - ,  - ,  - ,  $22 ,  $9 ,  $26 ,  $27 ,  $83 
+1945,V201-08,Seqirus UK Limited,IQVIA,Influenza,Vaccine-Influenza,"  $3,995 ",  $200 ,470,,  - ,  - ,  - ,  - ,  - ,  - ,  $16 ,  $34 ,  $34 ,  $83 
+2723,26-2572,No Information,ICON,Gout,Rheumatoid and Autoimmune,"  $1,200 ",  $360 ,60,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $17 ,  $66 ,  $83 
+2724,26-2579,No Information,ICON,Gout,Rheumatoid and Autoimmune,"  $1,200 ",  $360 ,60,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $17 ,  $66 ,  $83 
+2646,K9531-2110,Kailera Therapeutics,IQVIA,,Endocrine & Metabolism,  $104 ,  $104 ,3,1,  - ,  - ,  - ,  - ,  - ,  $17 ,  $31 ,  $18 ,  $15 ,  $82 
+2525,C6511002,Pfizer,None,Obesity,General Medicine,  $155 ,  $139 ,4,0,  - ,  - ,  - ,  - ,  - ,  - ,  $9 ,  $37 ,  $29 ,  $76 
+2307,GSBR-1290-10,"Gasherbrum Bio, Inc.",IQVIA,Obesity,General Medicine,  $74 ,  $74 ,1,1,  - ,  - ,  - ,  $23 ,  $23 ,  $23 ,  $43 ,  $9 ,  - ,  $75 
+2543,"  224,349 ",GSK,IQVIA,MMRVNS Vaccine,Vaccine-Other,  $86 ,  $86 ,15,0,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $27 ,  $40 ,  $71 
+1619,VAX31-104,Vaxcyte,PPD,Pneumococcal,Vaccine-Other,"  $4,216 ",  $211 ,496,,  - ,  - ,  - ,  - ,  - ,  - ,  $13 ,  $28 ,  $28 ,  $69 
+2009,77242113PSA3002,Janssen,(No Info),Psoriatic Arthritis,Rheumatoid and Autoimmune,  $167 ,  $167 ,0,5,  $20 ,  $52 ,  $46 ,  $26 ,  $144 ,  $33 ,  $17 ,  $8 ,  $10 ,  $68 
+2008,ESK-001-010,Alumis Inc.,Syneos Health,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  $192 ,  $192 ,0,7,  $39 ,  $62 ,  $40 ,  $40 ,  $181 ,  $44 ,  $18 ,  - ,  - ,  $62 
+2169,306246,No Information,IQVIA,MASH,Endocrine & Metabolism,  $161 ,  $161 ,5,0,  - ,  - ,  - ,  $41 ,  $41 ,  - ,  $12 ,  $20 ,  $29 ,  $60 
+2497,C4931008,Pfizer,None,Pneumococcal,Vaccine-Other,  $103 ,  $103 ,6,0,  - ,  - ,  - ,  - ,  - ,  - ,  $11 ,  $27 ,  $22 ,  $60 
+2634,D7261C00006,AstraZeneca,Unknown,Type 2 Diabetes,Endocrine & Metabolism,  $240 ,  $140 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $21 ,  $37 ,  $58 
+2669,NT-0796-P005,NodThera,Medpace,Cardiovascular Disease,Cardiovascular,  $400 ,  $120 ,20,,  - ,  - ,  - ,  - ,  - ,  - ,  $14 ,  $22 ,  $22 ,  $58 
+294,TILD-21-01,Sun Pharma,IQVIA,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $282 ,  $282 ,0,11,  $22 ,  $15 ,  $40 ,  $26 ,  $103 ,  $27 ,  $6 ,  $15 ,  $10 ,  $57 
+2571,ENERGI-F703-04,BARDA,Syneos Health,Diabetic Foot Ulcer,Endocrine & Metabolism,  $67 ,  $60 ,5,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $23 ,  $32 ,  $55 
+1790,mRNA-1010-P304,Moderna,Parexel,Influenza,Vaccine-Influenza,"  $15,325 ","  $15,325 ",0,"2,557",  $263 ,"  $5,819 ",  $473 ,  $140 ,"  $6,696 ",  $55 ,  - ,  - ,  - ,  $55 
+2077,OAB71527,No Information,IQVIA,Shingles,Vaccine-Other,"  $2,601 ",  $130 ,306,,  - ,  - ,  - ,  - ,  - ,  - ,  $10 ,  $22 ,  $22 ,  $54 
+2040,221531,GSK,None,COPD,Respiratory,  $55 ,  $55 ,0,2,  - ,  - ,  - ,  $32 ,  $32 ,  $31 ,  $15 ,  $5 ,  $3 ,  $54 
+313,BHV3000-315,Biohaven,Synteract,Migraine,General Medicine,  $121 ,  $121 ,3,1,  $6 ,  $4 ,  - ,  $0 ,  $10 ,  - ,  $23 ,  $18 ,  $13 ,  $53 
+2638,D7261C00005,AstraZeneca,Sponsor Initiated,Type 2 Diabetes,Endocrine & Metabolism,  $120 ,  $108 ,6,0,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $19 ,  $32 ,  $53 
+1571,VBD00003,Sanofi,ICON,RSV,Vaccine-Respiratory,  $943 ,  $943 ,0,27,  $188 ,  $32 ,  $36 ,  $8 ,  $264 ,  $53 ,  - ,  - ,  - ,  $53 
+1470,EBSI-CV-317-008,Emergent,PPD,Chikungunya,Vaccine-Other,  $260 ,  $260 ,0,47,  $46 ,  $68 ,  $19 ,  $15 ,  $148 ,  $23 ,  $16 ,  $4 ,  $9 ,  $52 
+2676,AB-101-05,Artiva Biotherapeutics,PPD,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $400 ,  $120 ,20,,  - ,  - ,  - ,  - ,  - ,  - ,  $5 ,  $22 ,  $22 ,  $49 
+2652,K7535-2101,Kailera Therapeutics,IQVIA,Not Available in Atom,Endocrine & Metabolism,"  $1,560 ",  $108 ,78,,  - ,  - ,  - ,  - ,  - ,  - ,  $9 ,  $19 ,  $19 ,  $48 
+1844,mRNA-1083-P201,Moderna,Parexel,Combined Covid + Influenza Vaccine,Vaccine-Other,"  $1,124 ","  $1,124 ",0,147,  $288 ,  $33 ,  $31 ,  $14 ,  $366 ,  $45 ,  - ,  - ,  - ,  $45 
+2291,VP-VQW-765-3201,Vanda Pharmaceuticals Inc,None,SAD/MAD,CNS,  $39 ,  $39 ,5,1,  - ,  - ,  - ,  - ,  - ,  $12 ,  $10 ,  $23 ,  - ,  $44 
+2244,IMVT-1402-2503,Immuvonant Sciences GmbH,(No Info),Graves Diseases,Hormonal Disorders,  $46 ,  $46 ,0,3,  - ,  - ,  - ,  $26 ,  $26 ,  $24 ,  $11 ,  $9 ,  - ,  $44 
+2758,EVO765-MIG001,Evommune,IQVIA,Migraine,CNS,"  $2,200 ",  $110 ,110,,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $20 ,  $20 ,  $44 
+2134,1378-0018,Boehringer Ingelheim,(No Info),Heart Failure,Cardiovascular,  $145 ,  $145 ,3,5,  - ,  $19 ,  - ,  $13 ,  $31 ,  $5 ,  $2 ,  $25 ,  $11 ,  $43 
+1679,20230143,Amgen,ICON,Obesity,General Medicine,  $631 ,  $631 ,0,22,  $254 ,  $124 ,  $99 ,  $44 ,  $520 ,  $43 ,  - ,  - ,  - ,  $43 
+2665,K-304-P005,"Kallyope, Inc",Confidence Pharmaceutical Research ((CFR)),Migraine,CNS,  $127 ,  $127 ,16,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $14 ,  $28 ,  $43 
+312,3110-306-002,AbbVie,None,Migraine,CNS/Psychiatry,  $122 ,  $122 ,4,3,  - ,  - ,  - ,  - ,  - ,  - ,  $19 ,  $10 ,  $14 ,  $42 
+2678,FYU-981-CRYS-201,Crystalys therapeutics,ICON,Gout,Rheumatoid and Autoimmune,  $58 ,  $58 ,2,0,  - ,  - ,  - ,  - ,  - ,  - ,  $7 ,  $22 ,  $11 ,  $41 
+2636,D7261C00003,AstraZeneca,Unknown,Type 2 Diabetes,Endocrine & Metabolism,  $660 ,  $153 ,33,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $19 ,  $20 ,  $38 
+2635,D7261C00004,AstraZeneca,Sponsor Initiated,Type 2 Diabetes,Endocrine & Metabolism,  $80 ,  $72 ,4,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $13 ,  $25 ,  $38 
+2635,D7261C00004,AstraZeneca,Unknown,Type 2 Diabetes,Endocrine & Metabolism,  $160 ,  $72 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $12 ,  $26 ,  $38 
+2499,C4931004,Pfizer,None,Others,Others,  $46 ,  $42 ,8,0,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $18 ,  $15 ,  $37 
+106,mRNA-1647-P104,Moderna,PPD,CMV,Vaccine-Other,  $303 ,  $303 ,0,16,  $30 ,  $34 ,  $39 ,  $19 ,  $121 ,  $12 ,  $11 ,  $8 ,  $6 ,  $37 
+2770,"  295,449 ",,Parexel,COPD,Respiratory,  $160 ,  $136 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  $6 ,  $14 ,  $16 ,  $36 
+2637,D7261C00002,AstraZeneca,Unknown,Type 2 Diabetes,Endocrine & Metabolism,  $80 ,  $68 ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $11 ,  $25 ,  $36 
+2608,D7265C00001,AstraZeneca,(No Info),Chronic Kidney Disease,Nephrology/Urology,  $600 ,  $246 ,30,,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $16 ,  $16 ,  $35 
+2045,C6271001,Pfizer,(No Info),Combined Covid + Influenza Vaccine,Vaccine-Other,"  $2,526 ","  $2,526 ",0,314,  $367 ,"  $1,531 ",  $506 ,  $354 ,"  $2,757 ",  $34 ,  - ,  - ,  - ,  $34 
+2774,NOE115-VMS-202,Noema Pharma,,Vasomotor Symptoms,Women's Health,"  $1,760 ",  $88 ,88,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $13 ,  $16 ,  $29 
+2725,EFC22927,,,COPD,Respiratory,  $160 ,  $136 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $24 ,  $29 
+1737,PSK00031,Sanofi,ICON,Pneumococcal,Vaccine-Other,  $38 ,  $38 ,0,4,  $19 ,  $5 ,  $13 ,  $4 ,  $41 ,  $10 ,  $11 ,  $6 ,  $1 ,  $28 
+2655,GSBR-1290-12,Structure Therapeutics,Parexel,Not Available in Atom,Endocrine & Metabolism,  $320 ,  $96 ,16,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $11 ,  $17 ,  $28 
+2762,NN9489-8033,Novo Norsdisk,,Type 2 Diabetes,Endocrine & Metabolism,"  $1,020 ",  $306 ,51,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $28 ,  $28 
+2764,NN9489-8034,Novo Norsdisk,,Type 2 Diabetes,Endocrine & Metabolism,"  $1,020 ",  $306 ,51,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $28 ,  $28 
+2592,WA46440,Roche,IQVIA,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $92 ,  $92 ,4,0,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $11 ,  $16 ,  $27 
+2590,RAB35102,No Information,IQVIA,Lyme,Vaccine-Other,  $255 ,  $34 ,30,,  - ,  - ,  - ,  - ,  - ,  - ,  $6 ,  $10 ,  $10 ,  $26 
+2621,D8790C00001,AstraZeneca,IQVIA,Chronic Kidney Disease,Nephrology/Urology,  $840 ,  $222 ,42,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $12 ,  $13 ,  $26 
+2698,382-201-00032,Otsuka Pharmaceutical,Syneos Health,General Anxiety Disorder,Psychiatry,  $200 ,  $60 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $11 ,  $11 ,  $25 
+297,mRNA-1273-P306,Moderna,PPD,COVID-19,Vaccine-COVID,  $815 ,  $815 ,0,143,  ($5),  - ,  $3 ,  $24 ,  $22 ,  $25 ,  - ,  - ,  - ,  $25 
+1835,BHV-4157-209,Biohaven,IQVIA,Migraine,CNS,  $189 ,  $189 ,0,6,  $12 ,  $16 ,  $15 ,  $11 ,  $54 ,  $5 ,  $2 ,  $9 ,  $8 ,  $25 
+2743,2513T1632,Shionogi,PPD,COVID-19 Treatment,General Medicine,  $480 ,  $144 ,24,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $24 ,  $24 
+2133,FYU-981-CRYS-302,Crystal therapeutics,ICON,Gout,Rheumatoid and Autoimmune,  $41 ,  $41 ,1,0,  - ,  - ,  - ,  $32 ,  $32 ,  $2 ,  $11 ,  $5 ,  $6 ,  $24 
+291,3110-305-002,AbbVie,None,Migraine,General Medicine,  $74 ,  $74 ,3,2,  $1 ,  $5 ,  $1 ,  ($2),  $5 ,  - ,  $9 ,  $7 ,  $6 ,  $22 
+1958,I1F-MC-RHDB,Eli Lilly,(No Info),Obesity,General Medicine,  $228 ,  $228 ,0,10,  $77 ,  $59 ,  $34 ,  $18 ,  $188 ,  $22 ,  - ,  - ,  - ,  $22 
+2727,Unknown,No Information,IQVIA,Non-Cystic Fibrosis Bronchiectasis,Respiratory,  $200 ,  $60 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $10 ,  $11 ,  $21 
+2569,PIR21191,Sanofi,Syneos Health,Asthma,Respiratory,  $61 ,  $55 ,9,0,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $10 ,  $10 ,  $21 
+118,382-201-00001,Otsuka Pharmaceutical,Syneos Health,Major Depressive Disorder,Psychiatry,  $130 ,  $130 ,0,7,  $21 ,  $80 ,  $52 ,  $3 ,  $155 ,  $21 ,  - ,  - ,  - ,  $21 
+2765,NN9489-8035,Novo Norsdisk,,Type 2 Diabetes,Endocrine & Metabolism,  $700 ,  $210 ,35,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $19 ,  $19 
+1976,ALTO-100-211,Alto Neuroscience,(No Info),Depression,Psychiatry,  $38 ,  $38 ,1,3,  - ,  $10 ,  $5 ,  $1 ,  $15 ,  - ,  - ,  $9 ,  $10 ,  $19 
+1857,219685,GSK,(No Info),UTI,Nephrology/Urology,  $58 ,  $58 ,0,4,  - ,  - ,  $16 ,  $29 ,  $45 ,  $5 ,  $6 ,  $2 ,  $5 ,  $19 
+2610,"  300,622 ",GSK,ICON,IBS-D IBS-M,Others,  $80 ,  $24 ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $8 ,  $8 ,  $19 
+2503,C4591082,Pfizer,None,COVID-19,Vaccine-COVID,  $41 ,  $41 ,0,9,  - ,  - ,  - ,  $49 ,  $49 ,  $13 ,  $5 ,  - ,  - ,  $18 
+2243,ICY-AKC-301,No Information,Parexel,Atopic Dermatitis,Dermatology,  $160 ,  $48 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $7 ,  $7 ,  $17 
+2761,NN9489-8449,Novo Norsdisk,,Type 2 Diabetes,Endocrine & Metabolism,  $600 ,  $185 ,30,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $17 ,  $17 
+2688,FUZ-CT-001,Fuzzle Inc.,Unknown,Obesity,General Medicine,  $42 ,  $38 ,40,,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $7 ,  $7 ,  $17 
+2693,VGX-002-001,Vogenx,Unknown,Idiopathic Gastroparesis,Gastroenterology,  $240 ,  $72 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $13 ,  $17 
+2706,"  222,714 ",GSK,PPD,COPD,Respiratory,  $240 ,  $72 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $13 ,  $17 
+2707,"  222,725 ",GSK,PPD,COPD,Respiratory,  $240 ,  $72 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $13 ,  $17 
+2261,C6181001,Pfizer,(No Info),hMPV,Vaccine-Other,  - ,  - ,0,0,  - ,  - ,  - ,  $33 ,  $33 ,  $17 ,  - ,  - ,  - ,  $17 
+2539,XmAb13676-06,"Xencor, Inc",None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $100 ,  $30 ,5,,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $7 ,  $7 ,  $16 
+2740,"  300,742 ",,IQVIA,Asthma,Respiratory,  $180 ,  $54 ,9,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $6 ,  $10 ,  $16 
+2741,"  300,743 ",GSK,IQVIA,Asthma,Respiratory,  $180 ,  $54 ,9,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $6 ,  $10 ,  $16 
+2024,UPB-CP-05,Upstream Bio,Syneos Health,Asthma,Respiratory,  $37 ,  $37 ,0,1,  - ,  - ,  $26 ,  $10 ,  $36 ,  $7 ,  $4 ,  $4 ,  - ,  $15 
+2666,299GD201,Biogen,Unknown,Not Available in Atom,Endocrine & Metabolism,  $20 ,  $18 ,1,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $7 ,  $8 ,  $15 
+2616,VBV19172,Sanofi,Sponsor Initiated,COVID-19,Vaccine-COVID,  $935 ,  $47 ,110,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $14 ,  $15 
+2701,LCI699-RECAG-CL-0615,Recordati AG,Fortrea,Cushing's Syndrome,Endocrine & Metabolism,  $23 ,  $21 ,1,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $8 ,  $7 ,  $14 
+2032,VAX-31-201,Vaxcyte,Syneos Health,Pneumococcal,Vaccine-Other,  $40 ,  $40 ,0,2,  $30 ,  $13 ,  $6 ,  $15 ,  $64 ,  $7 ,  - ,  $6 ,  - ,  $13 
+1537,FpA-AS-30094,Teva Pharmaceuticals,Syneos Health,Asthma,Respiratory,  $46 ,  $46 ,0,6,  $24 ,  - ,  $20 ,  $11 ,  $55 ,  $8 ,  $3 ,  $2 ,  $1 ,  $13 
+2637,D7261C00002,AstraZeneca,Sponsor Initiated,Type 2 Diabetes,Endocrine & Metabolism,  $80 ,  $24 ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $4 ,  $9 ,  $13 
+2237,J3L-MC-EZEF,Eli Lilly,ICON,Atherosclerotic cardiovascular disease,Cardiovascular,"  $1,440 ",  $72 ,72,,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $5 ,  $5 ,  $12 
+1440,M23-700,AbbVie,Unknown,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $335 ,  $335 ,0,15,  $53 ,  $67 ,  $15 ,  $7 ,  $141 ,  $5 ,  $7 ,  - ,  - ,  $12 
+1677,B24-033,UP-SPOUT,(No Info),Psoriatic Arthritis,Rheumatoid and Autoimmune,  $23 ,  $23 ,0,3,  $2 ,  $1 ,  $0 ,  - ,  $4 ,  $12 ,  - ,  - ,  - ,  $12 
+1853,42847922MDD3003,Janssen,(No Info),Major Depressive Disorder,Psychiatry,  $139 ,  $139 ,0,9,  $22 ,  $32 ,  $16 ,  $11 ,  $82 ,  $12 ,  - ,  - ,  - ,  $12 
+1963,1378-0021,Boehringer Ingelheim,None,Hypertension,Cardiovascular,  $480 ,  $24 ,24,,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $5 ,  $5 ,  $11 
+2716,D9186C00004/D9186C00005,AstraZeneca,IQVIA,Non-Cystic Fibrosis Bronchiectasis,Respiratory,  $160 ,  $48 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $9 ,  $11 
+1490,UPB-CP-04,Upstream Bio,Syneos Health,Asthma,Respiratory,  $16 ,  $16 ,0,1,  $17 ,  $5 ,  $3 ,  - ,  $26 ,  $11 ,  - ,  - ,  - ,  $11 
+2012,FpA-AS-30093,Teva Pharmaceuticals,PPD,Asthma,Respiratory,  $40 ,  $40 ,1,1,  $17 ,  $28 ,  $4 ,  $2 ,  $51 ,  - ,  $6 ,  $5 ,  - ,  $11 
+2111,D9180C00008,AstraZeneca,(No Info),COPD,Respiratory,  $24 ,  $24 ,0,1,  $11 ,  $5 ,  $7 ,  $5 ,  $27 ,  $2 ,  $3 ,  $4 ,  - ,  $10 
+1452,VAD00004,Sanofi,PPD,RSV Vaccine,Vaccine-Respiratory,  $65 ,  $65 ,0,8,  $9 ,  $19 ,  $13 ,  $5 ,  $45 ,  $5 ,  $3 ,  $1 ,  - ,  $9 
+1724,VNS 20-001,GSK,IQVIA,Varicella,Vaccine-Latent,  $38 ,  $38 ,1,6,  $24 ,  - ,  $31 ,  $3 ,  $59 ,  $3 ,  $5 ,  - ,  $1 ,  $9 
+1740,VAD00016,Sanofi,ICON,RSV Vaccine,Vaccine-Respiratory,  $34 ,  - ,0,5,  $1 ,  $1 ,  $2 ,  - ,  $3 ,  $8 ,  - ,  - ,  - ,  $8 
+2549,D740AC00001,AstraZeneca,Fortrea,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $40 ,  $12 ,2,,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $3 ,  $3 ,  $8 
+317,LPS16676,Sanofi,ICON,Asthma,Respiratory,  $105 ,  $105 ,0,3,  $13 ,  $7 ,  $12 ,  $4 ,  $37 ,  $3 ,  $2 ,  $1 ,  $2 ,  $8 
+1694,DRI17963,Sanofi,ICON,Celiac Disease,Gastroenterology,  $17 ,  $17 ,0,3,  $16 ,  - ,  $21 ,  $2 ,  $40 ,  $8 ,  - ,  - ,  - ,  $8 
+2195,D7130C00002,AstraZeneca,None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $360 ,  $18 ,18,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $3 ,  $3 ,  $8 
+2196,D6940C00002,AstraZeneca,None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $360 ,  $18 ,18,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $3 ,  $3 ,  $8 
+1651,NN9388-4894,Novo Norsdisk,Unknown,Diabetes,Endocrine & Metabolism,  $331 ,  $331 ,0,15,  $40 ,  $30 ,  $26 ,  $9 ,  $105 ,  $7 ,  - ,  - ,  - ,  $7 
+1456,NN9388-4896,Novo Norsdisk,Unknown,Diabetes,Endocrine & Metabolism,  $466 ,  $466 ,0,11,  $46 ,  $43 ,  $69 ,  $12 ,  $170 ,  $7 ,  - ,  - ,  - ,  $7 
+109,mRNA-1647-P301,Moderna,PPD,CMV,Vaccine-Other,"  $1,818 ","  $1,818 ",0,77,  $84 ,  $78 ,  $75 ,  $49 ,  $287 ,  $7 ,  - ,  - ,  - ,  $7 
+1846,PA0016,UCB,Parexel,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $132 ,  $132 ,0,10,  $42 ,  $38 ,  $58 ,  $13 ,  $151 ,  $3 ,  $2 ,  $2 ,  - ,  $7 
+2695,382-201-00033,Otsuka Pharmaceutical,Syneos Health,General Anxiety Disorder,Psychiatry,  $100 ,  $20 ,5,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $4 ,  $6 
+343,M14-465,AbbVie,AbbVie - Aaron Thomas,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,25,  $14 ,  $10 ,  $10 ,  $13 ,  $47 ,  $6 ,  - ,  - ,  - ,  $6 
+2601,AAHI-AMVPX-123,Technical Resources International (TRI),None,Amoebiasis,Infectious Disease,  $200 ,  $10 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $2 ,  $2 ,  $5 
+2608,D7265C00001,AstraZeneca,Sponsor Initiated,Chronic Kidney Disease,Nephrology/Urology,  $120 ,  $36 ,6,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $2 ,  $2 ,  $5 
+2656,M26-266,Abbvie,Unknown,Crohn's Disease,Gastroenterology,  $320 ,  $16 ,16,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $3 ,  $5 
+2163,Steel-101,Steel,Target Health (Target Health),SAD/MAD,CNS,  $240 ,  $12 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $2 ,  $2 ,  $5 
+361,V503-049-0013,Merck,None,Male HPV,General Medicine,  $99 ,  $99 ,0,22,  $7 ,  $14 ,  $8 ,  $5 ,  $34 ,  $1 ,  $4 ,  - ,  - ,  $5 
+2747,"  308,532 ",GSK,,HIV,Infectious Disease,  $40 ,  $12 ,2,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $2 ,  $2 ,  $5 
+1472,VAN00010,Sanofi,ICON,Meningococcal,Vaccine-Other,  $492 ,  $492 ,0,37,  $18 ,  $3 ,  - ,  $13 ,  $34 ,  $4 ,  - ,  - ,  - ,  $4 
+2258,none at the moment,"Altimmune, Inc",None,MASH,Endocrine & Metabolism,  $160 ,  $8 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 ,  $1 ,  $4 
+2596,CDDY391B12201,Novartis,IQVIA,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  $100 ,  $5 ,5,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $3 ,  $4 
+2555,BHV1300-302,Biohaven,(No Info),Not Available in Atom,Endocrine & Metabolism,  $40 ,  $7 ,2,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 ,  $1 ,  $4 
+132,C5031001,Pfizer,ICON,Varicella,Vaccine-Latent,  $267 ,  $267 ,0,54,  ($2),  $8 ,  $34 ,  ($3),  $37 ,  - ,  $2 ,  - ,  $1 ,  $3 
+2599,CLI-10196AA1-02,"Chiesi Usa, Inc.",IQVIA,Bronchiectasis,Respiratory,  $240 ,  $12 ,12,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $2 ,  $3 
+319,AFX3772-003,Affinivax Inc,Syneos Health,Pneumococcal,Vaccine-Other,  $24 ,  $24 ,0,0,  - ,  - ,  $6 ,  ($1),  $5 ,  $3 ,  - ,  - ,  - ,  $3 
+1823,JCXH-105-021,Tiger Med,(No Info),Herpes Zoster,Vaccine-Other,"  $4,891 ","  $4,891 ",0,191,"  $2,816 ",  $453 ,  $268 ,  $30 ,"  $3,568 ",  $3 ,  - ,  - ,  - ,  $3 
+2554,BHV1300-301,Biohaven,(No Info),Not Available in Atom,Endocrine & Metabolism,  $40 ,  $7 ,2,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 ,  $1 ,  $3 
+2751,FYU-981-CRYS-202,Crystalys therapeutics,ICON,Gout,Rheumatoid and Autoimmune,  $60 ,  $18 ,3,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $3 
+101,mRNA-1365-P101,Moderna,Parexel,RSV Vaccine,Vaccine-Respiratory,  $258 ,  $258 ,0,5,  $15 ,  $16 ,  $7 ,  $9 ,  $48 ,  ($0),  $2 ,  $1 ,  - ,  $3 
+2631,NN9490-8037,Novo Norsdisk,Unknown,CVOT,Cardiovascular,  $200 ,  $60 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $3 
+2632,NN9490-8665,Novo Norsdisk,Unknown,Atherosclerotic cardiovascular disease,Cardiovascular,  $200 ,  $60 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $3 ,  $3 
+2182,CIN-102-124,"CinDome Pharma, Inc",Medpace,Idiopathic Gastroparesis,Gastroenterology,  $20 ,  $6 ,1,,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 ,  $1 ,  $3 
+349,M16-011,AbbVie,None,Psoriatic Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,5,  $2 ,  $5 ,  $3 ,  $2 ,  $12 ,  $3 ,  - ,  - ,  - ,  $3 
+1860,PSK00010,Sanofi,PPD,Pneumococcal,Vaccine-Other,  $147 ,  $147 ,0,33,  $16 ,  $91 ,  $36 ,  $13 ,  $156 ,  $3 ,  - ,  - ,  - ,  $3 
+2241,K-645-P003,"Kallyope, Inc",Clinilabs ((Clinilabs)),Migraine,CNS,  $16 ,  $16 ,0,3,  - ,  - ,  $19 ,  $16 ,  $34 ,  $2 ,  $0 ,  - ,  - ,  $2 
+246,BHV-4157-302,Biohaven,Clinical Research Corp,Obsessive Compulsive Disorder (OCD),Psychiatry,  $197 ,  $197 ,0,13,  - ,  $13 ,  $4 ,  $0 ,  $18 ,  $2 ,  - ,  - ,  - ,  $2 
+2759,NBI-1065845-MDD3026,Neurocrine Biosciences,IQVIA,Major Depressive Disorder,CNS,  $220 ,  $11 ,11,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  $2 
+2185,D4326C00006,AstraZeneca,IQVIA,Liver Cirrhosis,Gastroenterology,  $20 ,  $6 ,1,,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $1 ,  $1 ,  $2 
+2186,D4326C00007,AstraZeneca,IQVIA,Liver Cirrhosis,Gastroenterology,  $20 ,  $6 ,1,,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $1 ,  $1 ,  $2 
+2690,BHB-1893-301,Braveheart Bio,PPD,Not Available in Atom,Cardiovascular,  $20 ,  $6 ,1,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 ,  $2 
+101,mRNA-1365-P101,Moderna,Parexel,RSV,Vaccine-Respiratory,  $29 ,  $29 ,0,1,  - ,  - ,  - ,  - ,  - ,  - ,  $2 ,  - ,  - ,  $2 
+2099,J3K-MC-KIAC,Eli Lilly,(No Info),Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $126 ,  $126 ,0,7,  - ,  $93 ,  $88 ,  $35 ,  $216 ,  $0 ,  $1 ,  - ,  - ,  $1 
+2631,NN9490-8037,Novo Norsdisk,Sponsor Initiated,CVOT,Cardiovascular,  $200 ,  $10 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 
+2632,NN9490-8665,Novo Norsdisk,Sponsor Initiated,Atherosclerotic cardiovascular disease,Cardiovascular,  $200 ,  $10 ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $1 ,  $1 
+2609,"  223,960 ",GSK,(No Info),RSV Vaccine,Vaccine-Respiratory,  $43 ,  $2 ,5,,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $1 ,  $1 ,  $1 
+2512,306300,GSK,IQVIA,MASH,Endocrine & Metabolism,  $80 ,  $4 ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $0 ,  $0 ,  $1 
+2696,382-201-00034,Otsuka Pharmaceutical,Syneos Health,General Anxiety Disorder,Psychiatry,  $80 ,  $4 ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $1 ,  $1 
+2682,NOE-TTS-201,No Information,Unknown,Not Available in Atom,CNS,  $40 ,  $2 ,2,,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $0 ,  $0 ,  $1 
+107,mRNA-CRID-001,Moderna,Parexel,COVID-19,Vaccine-COVID,  $127 ,  $127 ,0,2,  $458 ,  - ,  $1 ,  - ,  $459 ,  $1 ,  - ,  - ,  - ,  $1 
+133,C4591048,Pfizer,ICON,COVID-19,Vaccine-COVID,  $621 ,  $621 ,0,99,  $20 ,  $4 ,  $4 ,  $0 ,  $28 ,  $1 ,  - ,  - ,  - ,  $1 
+208,mRNA-1468-P101,Moderna,Parexel,Herpes Zoster,Vaccine-Other,"  $4,157 ","  $4,157 ",0,180,  $135 ,  $266 ,  $181 ,  $67 ,  $648 ,  $0 ,  - ,  - ,  - ,  $0 
+2640,"  7,076,875 ",No Information,Syneos Health,Not Available in Atom,Cardiovascular,  $160 ,  $8 ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  $0 ,  $0 
+1546,ANB030-203,AnaptysBio,Allucent,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $194 ,  $194 ,0,2,  $2 ,  $3 ,  $8 ,  $24 ,  $37 ,  $0 ,  - ,  - ,  - ,  $0 
+1685,125207-01/ALN-AGT01-007,"Alnylam Pharmaceuticals, Inc.",PPD,Hypertension,Cardiovascular,  $224 ,  $224 ,0,8,  $25 ,  $16 ,  $5 ,  $5 ,  $51 ,  $0 ,  - ,  - ,  - ,  $0 
+243,I4V-MC-JAJD,Lilly,HealthCore,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $246 ,  $246 ,0,23,  $2 ,  $24 ,  $15 ,  - ,  $41 ,  $0 ,  - ,  - ,  - ,  $0 
+,CP-PRO-CoVLP-021 Phase 3,Medicago,Syneos Health,COVID-19,Vaccine-primary COVID,  - ,  - ,0,150,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+18,BHV3000-407,Biohaven,Linical,Migraine,CNS,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+18,BHV3000-407,Biohaven,Linical,Migraine,General Medicine,  $24 ,  $24 ,0,1,  $3 ,  - ,  - ,  $0 ,  $3 ,  - ,  - ,  - ,  - ,  - 
+19,BNT162-21,BioNTech SE,ICON,COVID-19,Vaccine-COVID,  $478 ,  $478 ,0,11,  $5 ,  $336 ,  $3 ,  ($56),  $288 ,  - ,  - ,  - ,  - ,  - 
+55,217884,GSK,PPD,Influenza,Vaccine-Influenza,  $243 ,  $243 ,0,27,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+89,V116-004,Merck,Unknown,Pneumococcal,Vaccine-Respiratory,  $13 ,  $13 ,0,30,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+92,mRNA-1345-P301,Moderna,PPD,RSV,Vaccine-Respiratory,"  $1,288 ","  $1,288 ",0,118,"  $1,183 ",  $463 ,  $36 ,  $92 ,"  $1,773 ",  - ,  - ,  - ,  - ,  - 
+92,mRNA-1345-P301,Moderna,PPD,RSV Vaccine,Vaccine-Respiratory,  $615 ,  $615 ,0,61,  $533 ,  $209 ,  $32 ,  $95 ,  $869 ,  - ,  - ,  - ,  - ,  - 
+92,mRNA-1345-P301 - Phase 2,Moderna,PPD,RSV Vaccine,Vaccine-Respiratory,"  $4,390 ","  $4,390 ",0,279,  ($157),  ($71),  $32 ,  $4 ,  ($191),  - ,  - ,  - ,  - ,  - 
+92,mRNA-1345-P301 - Phase 3,Moderna,PPD,RSV Vaccine,Vaccine-Respiratory,"  $39,433 ","  $39,433 ",0,"1,623",  ($969),  ($486),  $76 ,  $18 ,"  ($1,361)",  - ,  - ,  - ,  - ,  - 
+95,mRNA-1073-P101 (Phase 1),Moderna,PPD,Influenza + SARSCoV-2,Vaccine-COVID,  - ,  - ,0,98,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+97,mRNA-1230-P101,Moderna,Parexel,Influenza,Vaccine-Influenza,  $232 ,  $232 ,0,12,  $1 ,  - ,  - ,  - ,  $1 ,  - ,  - ,  - ,  - ,  - 
+97,mRNA-1230-P101 (Phase 1),Moderna,Parexel,Influenza,Vaccine-Influenza,  $339 ,  $339 ,0,21,  $20 ,  - ,  - ,  - ,  $20 ,  - ,  - ,  - ,  - ,  - 
+97,mRNA-1230-P101 (Phase 3),Moderna,Parexel,Influenza,Vaccine-Influenza,  $74 ,  $74 ,0,2,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+98,mRNA-1273-P206,Moderna,PPD,COVID-19,Vaccine-COVID,  $22 ,  $22 ,0,1,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+99,mRNA-1345-P901,Moderna,None,RSV Vaccine,Vaccine-RSV,  $627 ,  $627 ,0,"1,001",  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+102,mRNA-1010-P302,Moderna,Parexel,Influenza,Vaccine-Influenza,"  $2,711 ","  $2,711 ",0,613,  $100 ,  - ,  - ,  - ,  $100 ,  - ,  - ,  - ,  - ,  - 
+129,C4601012,Pfizer,ICON,Lyme,Vaccine-Other,"  $1,337 ","  $1,337 ",0,149,  $76 ,  $39 ,  $2 ,  $28 ,  $145 ,  - ,  - ,  - ,  - ,  - 
+131,C4781004,Pfizer,ICON,Influenza,Vaccine-Influenza,  $353 ,  $353 ,0,382,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+148,VAE00010,Sanofi,ICON,RSV,Respiratory,"  $1,775 ","  $1,775 ",0,14,  $28 ,  - ,  $56 ,  - ,  $83 ,  - ,  - ,  - ,  - ,  - 
+214,ABNCoV2-03,Bavarian Nordic,PPD,COVID-19,Vaccine-COVID,  $604 ,  $604 ,0,101,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+223,J1A-MC-KDAF,Lilly,Unknown,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $76 ,  $76 ,0,1,  $8 ,  $7 ,  - ,  - ,  $15 ,  - ,  - ,  - ,  - ,  - 
+223,KDAF,Lilly,Unknown,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $155 ,  $155 ,0,2,  $19 ,  $6 ,  - ,  - ,  $25 ,  - ,  - ,  - ,  - ,  - 
+225,MVA-BN-RSV,Bavarian Nordic,PPD,RSV Vaccine,Vaccine-RSV,  $186 ,  $186 ,0,98,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+225,MVA-BN-RSV-004,Bavarian Nordic,ICON,RSV Vaccine,Vaccine-Respiratory,  $399 ,  $399 ,0,30,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+225,RSV-MVA-004,Bavarian Nordic,ICON,RSV Vaccine,Vaccine-RSV,  $303 ,  $303 ,0,159,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+226,LG-GDCL010,LG Chem / Perexel,Parexel,Gout,Rheumatoid and Autoimmune,"  $1,902 ","  $1,902 ",0,34,  $68 ,  $17 ,  $9 ,  - ,  $94 ,  - ,  - ,  - ,  - ,  - 
+240,TILD-19-07,Sun Pharma,Accelovance,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $255 ,  $255 ,0,9,  $13 ,  $7 ,  $9 ,  $0 ,  $29 ,  - ,  - ,  - ,  - ,  - 
+242,TILD-19-19,Sun Pharma,IQVIA,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $236 ,  $236 ,0,11,  $6 ,  - ,  - ,  - ,  $6 ,  - ,  - ,  - ,  - ,  - 
+245,331-201-00072,Otsuka Pharmaceutical,Syneos Health,PTSD,CNS,  $109 ,  $109 ,0,10,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+247,mRNA 1273-P204,Moderna,PPD,COVID-19,Vaccine-COVID,  $429 ,  $429 ,0,479,  $7 ,  ($1),  $1 ,  - ,  $7 ,  - ,  - ,  - ,  - ,  - 
+249,BHV3500-302,Biohaven,Synteract,Migraine,General Medicine,  $149 ,  $149 ,0,6,  $3 ,  - ,  - ,  - ,  $3 ,  - ,  - ,  - ,  - ,  - 
+252,REL-1017-301,Relmada,Syneos Health,Major Depressive Disorder,Psychiatry,  - ,  - ,0,1,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+254,mRNA-1273-P205,Moderna,PPD,COVID-19,Vaccine-COVID,  $353 ,  $353 ,0,481,  - ,  - ,  ($2),  - ,  ($2),  - ,  - ,  - ,  - ,  - 
+255,C4781001 - Phase 1,Pfizer,Syneos Health,Influenza,Vaccine-Influenza,  - ,  - ,0,17,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+256,CLI-06001AA1-05,Chiesi,Labcorp Drug Development,COPD,Respiratory,  - ,  - ,0,0,  - ,  - ,  $0 ,  $1 ,  $1 ,  - ,  - ,  - ,  - ,  - 
+257,CNTO1959PSA2003,Janssen,None,Psoriatic Arthritis,Rheumatology,  $2 ,  $2 ,0,1,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+259,CNTO1959PSA3005,Janssen,NONE,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $275 ,  $275 ,0,8,  $8 ,  $3 ,  ($1),  - ,  $10 ,  - ,  - ,  - ,  - ,  - 
+260,REL-1017-310,Relmada,Syneos Health,Major Depressive Disorder,CNS/Psychiatry,  $39 ,  $39 ,0,3,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+267,I5Q-MC-CGBD,Lilly,IQVIA,Migraine,CNS,  $67 ,  $67 ,0,14,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+269,ALT-801-104,Altimmune,LBR Regulatory,Type 2 Diabetes,Endocrine & Metabolism,  $2 ,  $2 ,0,10,  $5 ,  - ,  - ,  - ,  $5 ,  - ,  - ,  - ,  - ,  - 
+269,ALT-801-104,Altimmune,LBR Regulatory,Type 2 Diabetes,General Medicine,  - ,  - ,0,11,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+272,V110-911,Merck,ICON,Pneumococcal,Vaccine-Respiratory,  - ,  - ,0,13,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+274,ALN-AGT-01-002,Alnylam Pharma,IQVIA,Hypertension,Cardiovascular,  $40 ,  $40 ,0,6,  ($39),  - ,  - ,  - ,  ($39),  - ,  - ,  - ,  - ,  - 
+277,C4591007,Pfizer,ICON,COVID-19,Vaccine-Pediatric,  $33 ,  $33 ,0,11,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+278,217741,Curevo Vaccine,PPD,COVID-19,Vaccine-COVID,  $4 ,  $4 ,0,7,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+279,NOR-212,HilleVax,PRA,Norovirus,Vaccine-Other,  $4 ,  $4 ,0,1,  $4 ,  - ,  - ,  - ,  $4 ,  - ,  - ,  - ,  - ,  - 
+280,AR882-202,Arthrosi,ProTrials,Gout,Rheumatoid and Autoimmune,  - ,  - ,0,10,  $4 ,  - ,  - ,  - ,  $4 ,  - ,  - ,  - ,  - ,  - 
+281,C4861001,Pfizer,ICON,Pneumococcal,Vaccine-Influenza,  $96 ,  $96 ,0,24,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+289,218128/VIR-7831-5012,GSK,Parexel,COVID-19,Vaccine-COVID,  $25 ,  $25 ,0,10,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+290,EBSI-CV-317-005,Emergent,None,Chikungunya,Vaccine-Other,  $42 ,  $42 ,0,24,  - ,  - ,  $11 ,  - ,  $11 ,  - ,  - ,  - ,  - ,  - 
+292,205239,GSK,PPD,Meningitis,CNS,  $30 ,  $30 ,0,3,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+293,C4591044,Pfizer,ICON,COVID-19,Vaccine-COVID,  $92 ,  $92 ,0,77,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+293,C4591044 Cohort 4,Pfizer,ICON,COVID-19,Vaccine-COVID,  $259 ,  $259 ,0,33,  $1 ,  - ,  - ,  $1 ,  $1 ,  - ,  - ,  - ,  - ,  - 
+295,V116-003,Merck,Unknown,Pneumococcal,Vaccine-Respiratory,  $4 ,  $4 ,0,11,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+298,M20-370,AbbVie,Unknown,Polymyalgia rheumatica,Rheumatology,  $82 ,  $82 ,0,2,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+301,MR-100A-01-TD-3001,Mylan,Parexel,Contraception,Women's Health,  $65 ,  $65 ,0,5,  $5 ,  $2 ,  - ,  - ,  $6 ,  - ,  - ,  - ,  - ,  - 
+304,C1091005,Pfizer,PRA,Streptococcus,Vaccine-Other,  $8 ,  $8 ,0,22,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+305,V201_07,Seqirus,Parexel,Influenza,Vaccine-Influenza,  $17 ,  $17 ,0,41,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+306,EFC16750,Sanofi,TrialSpark,COPD,Respiratory,  $3 ,  $3 ,0,3,  $10 ,  $4 ,  - ,  - ,  $14 ,  - ,  - ,  - ,  - ,  - 
+307,CLI-05993AA3-06,Chiesi,Labcorp Drug Development,COPD,Respiratory,  $20 ,  $20 ,0,0,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+308,D9180C00004,AstraZeneca,Unknown,COPD,Respiratory,  $40 ,  $40 ,0,1,  $14 ,  $3 ,  - ,  - ,  $16 ,  - ,  - ,  - ,  - ,  - 
+310,NN9535-4820,Novo Norsdisk,None,Type 2 Diabetes,Endocrine & Metabolism,  $26 ,  $26 ,0,2,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+311,213749,GSK,IQVIA,Male HPV,General Medicine,  $20 ,  $20 ,0,2,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+315,D7552C00001,AstraZeneca,Parexel,Asthma,Respiratory,  $3 ,  $3 ,0,0,  $9 ,  - ,  - ,  - ,  $9 ,  - ,  - ,  - ,  - ,  - 
+318,KPL-404-C211,"Kiniksa Pharmaceuticals, Ltd.",Parexel,Rheumatoid Arthritis,Rheumatology,  $334 ,  $334 ,0,14,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+319,AFX3772-003,Astellas,Syneos Health,Pneumococcal,Vaccine-Other,  $48 ,  $48 ,0,7,  $13 ,  $2 ,  $2 ,  $1 ,  $19 ,  - ,  - ,  - ,  - ,  - 
+321,20007A,H. Lundbeck A/S,PPD,Migraine,CNS/Psychiatry,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+323,NAV-17A-007,Navitor,Premier Research,Major Depressive Disorder,Psychiatry,  $207 ,  $207 ,0,9,  $1 ,  $6 ,  - ,  - ,  $7 ,  - ,  - ,  - ,  - ,  - 
+324,mRNA-CRID-002,Moderna,Parexel,Influenza,Vaccine-Influenza,  $2 ,  $2 ,0,11,  $42 ,  - ,  - ,  - ,  $42 ,  - ,  - ,  - ,  - ,  - 
+325,CNTO1959PSA4002 (STAR),Janssen,None,Psoriatic Arthritis,Rheumatoid and Autoimmune,  $24 ,  $24 ,0,0,  $5 ,  - ,  - ,  - ,  $5 ,  - ,  - ,  - ,  - ,  - 
+334,H8H-MC-LAHW,Lilly,None,Migraine,CNS/Psychiatry,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+335,BHV3500-301,Biohaven,None,Migraine,General Medicine,  - ,  - ,0,55,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+337,EVO100-311,Evofem,ICON,Chlamydia Trachomatis,Women's Health,  - ,  - ,0,5,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+340,MIT-Do001-C302,Estetra SPRL,ICON,Postmenopausal,Women's Health,  - ,  - ,0,10,  ($5),  - ,  - ,  - ,  ($5),  - ,  - ,  - ,  - ,  - 
+345,M15-572,AbbVie,AbbVie - Aaron Thomas,Psoriatic Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,20,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+346,M15-554,AbbVie,None,Psoriatic Arthritis,Rheumatology,  - ,  - ,0,15,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+347,M16-100,AbbVie,Labcorp Drug Development,Hypogonadism,General Medicine,  - ,  - ,0,0,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+348,M15-998,AbbVie,Syneos Health,Psoriatic Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,15,  $6 ,  - ,  - ,  $2 ,  $7 ,  - ,  - ,  - ,  - ,  - 
+351,CL04041024 (Credo 4),R-Pharm,IQVIA,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,10,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+351,CREDO 4,R-Pharm,IQVIA,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,10,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+354,M13-542,AbbVie,None,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,20,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+355,201791,GSK,Parexel,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,10,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+362,209564,GSK,Parexel,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,10,  $1 ,  - ,  - ,  - ,  $1 ,  - ,  - ,  - ,  - ,  - 
+362,209564,GSK,Parexel,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,10,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+363,217-MDD-303,SAGE,Syneos Health,Major Depressive Disorder,CNS,  - ,  - ,0,35,  $64 ,  - ,  - ,  - ,  $64 ,  - ,  - ,  - ,  - ,  - 
+364,B7471011,Pfizer,ICON,Pneumococcal,Vaccine-Other,  - ,  - ,0,20,  $10 ,  - ,  - ,  - ,  $10 ,  - ,  - ,  - ,  - ,  - 
+366,C3671008,Pfizer,ICON,RSV Vaccine,Vaccine-RSV,  - ,  - ,0,12,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+366,C3671008,Pfizer,ICON,RSV Vaccine,Vaccine-Respiratory,  - ,  - ,0,8,  $0 ,  - ,  - ,  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+368,mRNA-1273-P301,Moderna,PPD,COVID-19,Vaccine-COVID,  - ,  - ,0,250,  - ,  - ,  ($15),  - ,  ($15),  - ,  - ,  - ,  - ,  - 
+371,STS101-003,Satsuma,None,Migraine,CNS/Psychiatry,  $2 ,  $2 ,0,4,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+377,VAC31518COV3009,Janssen,IQVIA,COVID-19,Vaccine-COVID,  $9 ,  $9 ,0,35,  $1 ,  - ,  - ,  ($3),  ($2),  - ,  - ,  - ,  - ,  - 
+377,VAC31518COV3009,Janssen,IQVIA,COVID-19,Vaccine-primary COVID,  $46 ,  $46 ,0,291,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+378,VAC31518COV3001,Janssen,IQVIA,COVID-19,Vaccine-primary COVID,  $3 ,  $3 ,0,12,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+380,mRNA-1273-P203,Moderna,PPD,COVID-19,Vaccine-COVID,  $210 ,  $210 ,0,246,  $5 ,  - ,  ($2),  - ,  $3 ,  - ,  - ,  - ,  - ,  - 
+382,217-MDD-305,SAGE,Syneos Health,Major Depressive Disorder,CNS/Psychiatry,  - ,  - ,0,28,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+387,RPL554-CO-302,Verona Pharma,IQVIA,COPD,Respiratory,  - ,  - ,0,4,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+388,KBP-201,Kentucky Bio Processing,ICON,COVID-19,Vaccine-primary COVID,  - ,  - ,0,40,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+393,mRNA-1345-P101,Moderna,PPD,RSV Vaccine,Vaccine-Respiratory,  $93 ,  $93 ,0,21,  ($0),  $1 ,  ($6),  - ,  ($5),  - ,  - ,  - ,  - ,  - 
+394,2019nCoV-301,Novavax,ICON,COVID-19,Vaccine-primary COVID,  $43 ,  $43 ,0,417,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+394,2019nCoV-301 Peds,Novavax,ICON,COVID-19,Vaccine-Pediatric,  $625 ,  $625 ,0,154,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+398,RA0138,UCB,Parexel,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,8,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+405,VAC18193RSV3001,Janssen,IQVIA,RSV,Respiratory,  $137 ,  $137 ,0,230,  - ,  - ,  ($105),  $5 ,  ($100),  - ,  - ,  - ,  - ,  - 
+405,VAC18193RSV3001,Janssen,IQVIA,RSV,Vaccine-RSV,  $19 ,  $19 ,0,46,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+407,M20-466,AbbVie,None,Rheumatoid Arthritis,Rheumatology,  $139 ,  $139 ,0,9,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+417,MK1654-004,Merck,None,RSV Vaccine,Vaccine-Pediatric,  $2 ,  $2 ,0,5,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+427,EBSI-CV-317-004,Emergent,None,Chikungunya,Vaccine-Other,  - ,  - ,0,129,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+432,M15-925,AbbVie,None,Rheumatoid Arthritis,Rheumatology,  - ,  - ,0,20,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+434,STS101-007,Satsuma,None,Migraine,General Medicine,  - ,  - ,0,10,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+459,2021-PT055,XBiotech,Unknown,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $352 ,  $352 ,0,18,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+712,BHV3000-404,Biohaven,Syneos Health,Migraine,General Medicine,  $27 ,  $27 ,0,2,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+917,VIR-2482-4002,Vivus,IQVIA,Influenza,Vaccine-Influenza,  $382 ,  $382 ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1236,VAV00020,Sanofi,ICON,Influenza,Vaccine-Influenza,  $595 ,  $595 ,0,43,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1261,mRNA-1083-P101,Moderna,PPD,COVID_Flu_RSV Combo,Vaccine-Other,"  $3,340 ","  $3,340 ",0,353,  $6 ,  - ,  $1 ,  $10 ,  $17 ,  - ,  - ,  - ,  - ,  - 
+1263,mRNA-1608-P101/275178,Moderna,Parexel,Herpes Zoster,Vaccine-Other,  $822 ,  $822 ,0,30,  $95 ,  $34 ,  $11 ,  - ,  $139 ,  - ,  - ,  - ,  - ,  - 
+1273,mRNA-1283-P301,Moderna,Parexel,COVID-19,Vaccine-COVID,"  $6,542 ","  $6,542 ",0,355,  $6 ,  $68 ,  $30 ,  $3 ,  $108 ,  - ,  - ,  - ,  - ,  - 
+1275,D8610C00001,AstraZeneca,IQVIA,Influenza,Vaccine-Influenza,  - ,  - ,0,0,  $254 ,  $28 ,  $39 ,  - ,  $320 ,  - ,  - ,  - ,  - ,  - 
+1280,ALTO-100-201,Alto Neuroscience,Unknown,Major Depressive Disorder,Psychiatry,  $134 ,  $134 ,0,3,  $6 ,  ($4),  $12 ,  - ,  $14 ,  - ,  - ,  - ,  - ,  - 
+1294,HZNP-DAZ-301,Horizon Therapeutics,PPD,Sjogren's Syndrome,Allergy/Immunology,  $53 ,  $53 ,0,4,  $10 ,  $6 ,  $8 ,  - ,  $25 ,  - ,  - ,  - ,  - ,  - 
+1359,219833,GSK,IQVIA,Influenza,Vaccine-Influenza,  $497 ,  $497 ,0,34,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1363,VAX24-112,Vaxcyte,Linical,Pneumococcal,Vaccine-Other,  $202 ,  $202 ,0,8,  $14 ,  $7 ,  $5 ,  $1 ,  $28 ,  - ,  - ,  - ,  - ,  - 
+1402,mRNA-1975/1982-P101,Moderna,Parexel,Lyme,Vaccine-Other,"  $3,489 ","  $3,489 ",0,123,  $199 ,  $42 ,  $31 ,  $4 ,  $275 ,  - ,  - ,  - ,  - ,  - 
+1406,V201_03,Seqirus,IQVIA,Influenza,Vaccine-Influenza,  $556 ,  $556 ,0,44,  $18 ,  - ,  - ,  - ,  $18 ,  - ,  - ,  - ,  - ,  - 
+1424,mRNA-1010-P303,Moderna,PPD,Influenza,Vaccine-Influenza,"  $1,890 ","  $1,890 ",0,244,  - ,  ($2),  $3 ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+1424,mRNA-1010-P303 Part B & C Extension,Moderna,PPD,Influenza,Vaccine-Influenza,"  $2,796 ","  $2,796 ",0,428,  $2 ,  $3 ,  $12 ,  - ,  $17 ,  - ,  - ,  - ,  - ,  - 
+1454,mRNA-CRID-004,Moderna,Parexel,Influenza,Vaccine-Influenza,"  $1,725 ","  $1,725 ",0,96,  $11 ,  - ,  - ,  - ,  $11 ,  - ,  - ,  - ,  - ,  - 
+1462,mRNA-1083-P301,Moderna,PPD,COVID_Flu_RSV Combo,Vaccine-Other,"  $5,156 ","  $5,156 ",0,802,  $1 ,  - ,  $1 ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+1478,2019nCoV-313,Novavax,Syneos Health,COVID-19,Vaccine-COVID,  $92 ,  $92 ,0,11,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1480,REL-1017-302,Relmada,Unknown,Major Depressive Disorder,Psychiatry,  $84 ,  $84 ,0,1,  $1 ,  - ,  - ,  - ,  $1 ,  - ,  - ,  - ,  - ,  - 
+1489,C4591054,Pfizer,ICON,COVID-19,Vaccine-COVID,  $669 ,  $669 ,0,110,  $52 ,  $11 ,  $0 ,  - ,  $63 ,  - ,  - ,  - ,  - ,  - 
+1497,C5261001,Pfizer,ICON,Combined Covid + Influenza Vaccine,Vaccine-Other,  $67 ,  $67 ,0,7,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1498,HZNP-DAZ-303,Horizon Therapeutics,PPD,Sjogren's Syndrome,Allergy/Immunology,  $23 ,  $23 ,0,2,  $8 ,  ($6),  $10 ,  $11 ,  $22 ,  - ,  - ,  - ,  - ,  - 
+1499,HAB78209/D7000C00001,AstraZeneca,IQVIA,COVID-19,Vaccine-COVID,  $566 ,  $566 ,0,35,  $4 ,  - ,  ($4),  - ,  $0 ,  - ,  - ,  - ,  - ,  - 
+1503,C5481001,Pfizer,ICON,COVID_Flu_RSV Combo,Vaccine-Other,  $449 ,  $449 ,0,100,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1505,CVX NDV-HXP-S-KP.2,CastleVax,ICON,COVID-19,Vaccine-COVID,  - ,  - ,0,0,  - ,  - ,  $53 ,  - ,  $53 ,  - ,  - ,  - ,  - ,  - 
+1511,mRNA-1283-P302,Moderna,Parexel,COVID-19,Vaccine-COVID,  $65 ,  - ,10,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1518,CAIN457C22301,Novartis,PPD,Polymyalgia Rheumatica,Rheumatoid and Autoimmune,  $21 ,  $21 ,0,0,  $8 ,  $0 ,  - ,  - ,  $9 ,  - ,  - ,  - ,  - ,  - 
+1524,2019nCoV-314,Novavax,Syneos Health,COVID-19,Vaccine-COVID,  $686 ,  $686 ,0,83,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1526,NBI-98854-ATS3019,Neurocrine Biosciences,IQVIA,Schizophrenia,Psychiatry,  $22 ,  $22 ,0,0,  $11 ,  - ,  - ,  - ,  $11 ,  - ,  - ,  - ,  - ,  - 
+1530,VAX31-101,Vaxcyte,Linical,Pneumococcal,Vaccine-Other,"  $1,134 ","  $1,134 ",0,96,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1531,V201_05,Seqirus UK Limited,IQVIA,Influenza,Vaccine-Influenza,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1532,mRNA-1345-P304,Moderna,Parexel,RSV_Flu Vaccine,Vaccine-Other,  $717 ,  $717 ,0,73,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1532,mRNA-1345-P304,Moderna,Parexel,RSV_Flu Vaccine,Vaccine-Respiratory,"  $3,402 ","  $3,402 ",0,342,  $3 ,  - ,  - ,  - ,  $3 ,  - ,  - ,  - ,  - ,  - 
+1542,D5982C00007,AstraZeneca,IQVIA,Asthma,Respiratory,  $18 ,  $18 ,0,0,  $1 ,  $4 ,  - ,  $0 ,  $5 ,  - ,  - ,  - ,  - ,  - 
+1544,mRNA-1345-P201,Moderna,Parexel,RSV Vaccine,Vaccine-Respiratory,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1551,C5301007/ERN 7053,Pfizer,ICON,Migraine,General Medicine,"  $1,600 ",  - ,80,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1567,CT-155-R-001,Click Therapeutics,IQVIA,Schizophrenia,Psychiatry,  $74 ,  $74 ,0,4,  $8 ,  - ,  - ,  $3 ,  $12 ,  - ,  - ,  - ,  - ,  - 
+1569,ERN: 7083,AstraZeneca,IQVIA,COVID-19,Vaccine-COVID,"  $3,570 ",  - ,420,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1571,VBD00003,Sanofi,ICON,RSV Vaccine,Vaccine-Respiratory,  $681 ,  $681 ,0,54,  - ,  $8 ,  - ,  - ,  $8 ,  - ,  - ,  - ,  - ,  - 
+1579,C5241007,Pfizer,ICON,RSV,Respiratory,  $11 ,  $11 ,0,1,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1614,218139,GSK,None,Influenza,Vaccine-Influenza,"  $13,090 ",  - ,"1,540",,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1628,mRNA-1468-P301,Moderna,Parexel,Herpes Zoster,Vaccine-Other,"  $7,800 ",  - ,"1,200",,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1630,220735,GSK,IQVIA,Asthma,Respiratory,  $408 ,  $408 ,0,19,  $115 ,  $147 ,  $40 ,  $17 ,  $318 ,  - ,  - ,  - ,  - ,  - 
+1642,221542,GSK,(No Info),COVID_Flu_RSV Combo,Vaccine-Other,  - ,  - ,0,0,  $15 ,  - ,  - ,  - ,  $15 ,  - ,  - ,  - ,  - ,  - 
+1643,C5261002,Pfizer,PPD,COVID_Flu_RSV Combo,Vaccine-Other,  $37 ,  $37 ,0,10,  - ,  - ,  - ,  $1 ,  $1 ,  - ,  - ,  - ,  - ,  - 
+1643,C5261002,Pfizer,Unknown,COVID_Flu_RSV Combo,Vaccine-Other,  $191 ,  $191 ,0,40,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1649,CV2 SARS-COV2-014/123336-01/220749,GSK,PPD,COVID-19,Vaccine-COVID,  $680 ,  - ,80,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1653,QHD00014,Sanofi,ICON,Pneumococcal,Vaccine-Other,  $179 ,  - ,21,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1663,VAV00045,Sanofi,ICON,Influenza,Vaccine-Influenza,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1666,NAV-17A-008,Dr.Vince Clinical Research,None,Major Depressive Disorder,Psychiatry,  $59 ,  $59 ,0,2,  $5 ,  - ,  - ,  - ,  $5 ,  - ,  - ,  - ,  - ,  - 
+1669,OBEZ-301,New Amsterdam Pharma,Unknown,High Cholesterol,General Medicine,  $355 ,  $355 ,0,27,  $3 ,  - ,  - ,  - ,  $3 ,  - ,  - ,  - ,  - ,  - 
+1676,CVXGA-003 Main,BARDA,Syneos Health,COVID-19,Vaccine-COVID,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1696,LG-GDL009,LG Chem / Perexel,Parexel,Gout,Rheumatology,  $85 ,  $85 ,0,2,  $4 ,  - ,  ($1),  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+1717,218741,GSK,None,RSV_Flu Vaccine,Vaccine-Respiratory,"  $3,570 ",  - ,420,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1734,BHV3000-406,Biohaven,Linical,Migraine,General Medicine,  $64 ,  $64 ,0,3,  $4 ,  - ,  $2 ,  - ,  $6 ,  - ,  - ,  - ,  - ,  - 
+1734,BHV3000-406,Pfizer,Linical,Migraine,General Medicine,  $16 ,  $16 ,0,2,  $0 ,  $4 ,  - ,  - ,  $4 ,  - ,  - ,  - ,  - ,  - 
+1736,PSK00005,Sanofi,ICON,Pneumococcal,Vaccine-Other,  $34 ,  - ,4,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1738,VAD00003,Sanofi,ICON,RSV Vaccine,Vaccine-Respiratory,  $26 ,  - ,3,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1747,mRNA-1975/1982-P102,Moderna,Parexel,Lyme,Vaccine-Other,"  $1,092 ",  - ,168,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1763,C5681001,Pfizer,ICON,Combined Covid + Influenza Vaccine,Vaccine-Other,  $460 ,  $460 ,0,79,  $1 ,  - ,  - ,  - ,  $1 ,  - ,  - ,  - ,  - ,  - 
+1768,ALTO-203-201,Alto Neuroscience,None,Major Depressive Disorder,Psychiatry,  $143 ,  $143 ,0,8,  $30 ,  $11 ,  - ,  - ,  $41 ,  - ,  - ,  - ,  - ,  - 
+1771,D6934C00001,AstraZeneca,Parexel,Asthma,Respiratory,  $17 ,  $17 ,0,0,  $19 ,  $5 ,  - ,  - ,  $24 ,  - ,  - ,  - ,  - ,  - 
+1772,230LE304,Biogen,IQVIA,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  $10 ,  $10 ,0,0,  $10 ,  - ,  - ,  - ,  $10 ,  - ,  - ,  - ,  - ,  - 
+1780,PR24-SBS-001,Sherlock Biosciences,MDC Associates,STI,Infectious Disease,  $476 ,  $476 ,0,522,  $47 ,  - ,  $0 ,  - ,  $47 ,  - ,  - ,  - ,  - ,  - 
+1783,301-23-101,Imunon Biotechnology,Allucent,COVID-19,Vaccine-COVID,  $433 ,  $433 ,0,24,  $16 ,  $24 ,  - ,  - ,  $40 ,  - ,  - ,  - ,  - ,  - 
+1797,I4V-MC-JAJA,Lilly,IQVIA,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $47 ,  $47 ,0,0,  $3 ,  $6 ,  $6 ,  $1 ,  $16 ,  - ,  - ,  - ,  - ,  - 
+1797,I4V-MC-JAJA,Lilly,None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $180 ,  $180 ,0,0,  $19 ,  $18 ,  $4 ,  - ,  $41 ,  - ,  - ,  - ,  - ,  - 
+1801,LX9211.204-DPN,Lexicon,Fortrea,Diabetic Neuropathy,CNS,  $47 ,  $47 ,0,2,  $2 ,  $2 ,  - ,  ($2),  $1 ,  - ,  - ,  - ,  - ,  - 
+1804,CT-155-E-001,Click Therapeutics,IQVIA,Schizophrenia,Psychiatry,  $19 ,  $19 ,0,2,  - ,  - ,  - ,  $5 ,  $5 ,  - ,  - ,  - ,  - ,  - 
+1826,222853,GSK,(No Info),Influenza,Vaccine-Influenza,  - ,  - ,0,0,  $4 ,  - ,  $4 ,  - ,  $8 ,  - ,  - ,  - ,  - ,  - 
+1826,222853,GSK,None,Influenza,Vaccine-Influenza,  $150 ,  $150 ,0,25,  $2 ,  - ,  - ,  - ,  $2 ,  - ,  - ,  - ,  - ,  - 
+1845,C4781013,Pfizer,ICON,Influenza,Vaccine-Influenza,  $660 ,  $660 ,0,113,  $32 ,  - ,  - ,  - ,  $32 ,  - ,  - ,  - ,  - ,  - 
+1885,VBD00002,Sanofi,ICON,RSV Vaccine,Vaccine-Respiratory,"  $13,639 ",  - ,"1,095",,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1910,C4931010,Pfizer,ICON,Pneumococcal,Vaccine-Respiratory,  $20 ,  $20 ,0,2,  $2 ,  $3 ,  - ,  - ,  $5 ,  - ,  - ,  - ,  - ,  - 
+1969,BHV2100-201,Biohaven,(No Info),Migraine,General Medicine,  $226 ,  $226 ,0,10,  $0 ,  $27 ,  - ,  - ,  $27 ,  - ,  - ,  - ,  - ,  - 
+2007,OAB18033,No Information,IQVIA,Atopic Dermatitis,Dermatology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2019,BIO-VAP-000002,Velociti Inc,CRMG (Jack Murphy),Combined Covid + Influenza Vaccine,Vaccine-Other,  $7 ,  $7 ,0,8,  $8 ,  - ,  $2 ,  - ,  $10 ,  - ,  - ,  - ,  - ,  - 
+2021,289318,No Information,Parexel,Chronic Sinusitis,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2026,C5261023,Pfizer,ICON,COVID-19,Vaccine-COVID,  $365 ,  $365 ,0,115,  $35 ,  $130 ,  $6 ,  ($0),  $170 ,  - ,  - ,  - ,  - ,  - 
+2034,20230050,Amgen,PPD,Sjogren's Syndrome,Allergy/Immunology,  - ,  - ,0,0,  - ,  $13 ,  $4 ,  - ,  $17 ,  - ,  - ,  - ,  - ,  - 
+2037,777806,No Information,Fortrea,Diabetic Neuropathy,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2045,C6271001,Pfizer,None,Combined Covid + Influenza Vaccine,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2053,M25-056,Abbvie,Direct (No Info),Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2067,C4931009,Pfizer,(No Info),Pneumococcal,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2069,C4931014,Pfizer,(No Info),Pneumococcal,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2070,C3671044,Pfizer,(No Info),RSV Vaccine,Vaccine-Respiratory,  - ,  - ,0,0,  - ,  - ,  $17 ,  $61 ,  $77 ,  - ,  - ,  - ,  - ,  - 
+2074,"  221,847 ",GSK,Direct (No Info),COVID-19,Vaccine-COVID,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2074,SARS-COV2-015 BST,GSK,(No Info),COVID-19,Vaccine-COVID,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2076,OAB58677,No Information,IQVIA,HPV Vaccine,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2081,C3671058,Pfizer,(No Info),Shingles,Vaccine-Other,  $535 ,  $535 ,0,67,  - ,  $502 ,  $108 ,  $13 ,  $623 ,  - ,  - ,  - ,  - ,  - 
+2085,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2086,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2087,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2088,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2089,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2090,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2091,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2092,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2093,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2094,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2095,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2096,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2097,No information,No Information,ICON,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2102,RIV-HU6-2203,Rivus Pharmaceutical,Worldwide Clinical Trials,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2103,No information,Rivus Pharmaceutical,None,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2106,I1F-MC-RHDE,Eli Lilly,(No Info),Psoriatic Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,0,  $15 ,  - ,  - ,  - ,  $15 ,  - ,  - ,  - ,  - ,  - 
+2117,PRAX-628-321,PRAXIS,CTI,Focal-Onset Seizures,CNS,  - ,  - ,0,0,  $26 ,  - ,  - ,  $10 ,  $36 ,  - ,  - ,  - ,  - ,  - 
+2127,BC#139082-01,No Information,PPD,Restless Legs Syndrome,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2135,294110,No Information,Parexel,Restless Legs Syndrome,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2136,BC #139639-01,No Information,PPD,UTI,Nephrology/Urology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2140,7061759,No Information,Syneos Health,Immunoglobulin G4-Related Disease,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2141,VRB-101-202,Verdiva Bio,Parexel,Obesity,General Medicine,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2158,GB-0895-101,Generate Biomedicines,CG (Centrical Global),COPD,Respiratory,  $12 ,  $12 ,0,1,  - ,  $20 ,  - ,  - ,  $20 ,  - ,  - ,  - ,  - ,  - 
+2160,IN-002-02,Inhalon Biopharma,Parexel,RSV Vaccine,Vaccine-Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2166,None at the moment,No Information,Beufort (()),Cancer Screening,Oncology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2172,None at the moment,No Information,Orca Trial (Orca Trial),Sjogren's Syndrome,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2173,None at the moment,Gilead Sciences,None,NASH,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2174,None at the moment,No Information,PPD,COPD,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2176,None at the moment,No Information,Parexel,COPD,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2177,None at the moment,No Information,Parexel,Acute Respiratory,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2178,SAN-1138,SANDOZ,IQVIA,Asthma,Respiratory,  - ,  - ,0,0,  - ,  - ,  - ,  $44 ,  $44 ,  - ,  - ,  - ,  - ,  - 
+2179,None at the moment,No Information,PPD,COVID-19,Vaccine-COVID,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2181,D6405C00001,AstraZeneca,IQVIA,Chronic Kidney Disease,Nephrology/Urology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2188,None at the moment,CSL Behring,PPD,COVID-19,Vaccine-COVID,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2189,None at the moment,No Information,Syneos Health,Contraception,Women's Health,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2190,None at the moment,No Information,Iprocess (Iprocess),colorectal cancer (CRC),Oncology,  $160 ,  - ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2194,None at the moment,Boehringer Ingelheim,None,Cardiovascular Disease,Cardiovascular,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2197,None at the moment,No Information,Worldwide Clinical Trials,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2200,None at the moment,Curevo,None,Herpes Zoster,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2201,None at the moment,No Information,Parexel,Type 2 Diabetes,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2203,None at the moment,No Information,PPD,Plague,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2207,V350,Merck,IQVIA,Epstein Barr,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2219,None at the moment,No Information,Allucent,Urticaria,Dermatology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2220,None at the moment,No Information,Allucent,Hypothyroidism,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2227,none at the moment,No Information,PPD,Pneumococcal,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2228,none at the moment,No Information,Alimentive ((Alimentive)),Idiopathic Gastroparesis,Gastroenterology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2236,219544,GSK,None,Meningococcal,Vaccine-Other,  $68 ,  - ,8,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2238,none at the moment,No Information,Rho,Food Allergy,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2245,PAB78438,No Information,IQVIA,Type 2 Diabetes,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2247,none at the moment,TransCelerate Biopharma,RD Specialists ((RD Specialists)),Pulmonary Hypertension,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2248,none at the tmoment,No Information,PPD,Migraine,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2250,none at the moment,No Information,PPD,Macular Degeneration,Ocugen,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2253,none at the moment,No Information,PPD,Major Depressive Disorder,Psychiatry,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2256,C6271002,Pfizer,(No Info),Influenza,Vaccine-Influenza,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2257,none at the moment,Roivant Sciences,None,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2260,none at the moment,Abbvie,Medpace,HSV,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2263,none at the moment,No Information,PPD,Erectile Dysfunction,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2264,none at the moment,No Information,Syneos Health,Migraine,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2266,none at the moment,No Information,PPD,COVID-19,Vaccine-COVID,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2289,none at the moment,No Information,Syneos Health,Celiac Disease,Gastroenterology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2295,none at the moment,No Information,PPD,CVOT,Cardiovascular,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2296,None at the moment,No Information,IQVIA,HSV,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2299,none at the moment,No Information,Parexel,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2300,none at the moment,No Information,Parexel,Sjogren's Syndrome,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2302,none at the moment,No Information,PPD,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2303,none at the moment,No Information,Parexel,COVID-19,Vaccine-COVID,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2305,CRC-US-003,No Information,Universal Diagnostics ((Universal Diagnostics)),colorectal cancer (CRC),Oncology,  $14 ,  - ,5,5,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2306,none at the moment,No Information,PPD,Ulcerative Colitis,Gastroenterology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2309,none at the moment,No Information,PPD,IBS,Gastroenterology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2310,none at the moment,No Information,Syneos Health,Chronic Pain,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2311,none at the moment,No Information,PPD,Parkinson Disease,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2312,none at the moment,No Information,PPD,GBS Maternal Vaccine,Women's Health,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2314,none at the moment,No Information,Rho,Epstein Barr,Vaccine-Other,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2315,none at the moment,No Information,Syneos Health,Diabetic Foot Ulcer,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2508,ACP-211-002,Acadia Pharmaceuticals Inc,Clinical Research Corp,Major Depressive Disorder,Psychiatry,  - ,  - ,0,0,  - ,  - ,  - ,  $14 ,  $14 ,  - ,  - ,  - ,  - ,  - 
+2510,SUM-191-01,"Senju USA, Inc",PPD,Bacterial Conjunctivitis,Ophthalmology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2516,B1971067,Pfizer,None,Meningococcal,Vaccine-Other,  $255 ,  - ,30,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2518,none at the moment,No Information,Iprocess (Iprocess),colorectal cancer (CRC),Oncology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2519,none at the moment,No Information,PPD,COPD,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2527,none at the moment,No Information,CRO,CRC Blood draw trial,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2531,none at the moment,No Information,PPD,Alzheimer's Disease,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2532,none at the moment,No Information,Clinical Research Corp. (CRC),Major Depressive Disorder,Psychiatry,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2533,none at the moment,No Information,PPD,Pulmonary Hypertension,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2534,303915,No Information,Parexel,Type 1 Diabetes,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2537,none at the moment,No Information,Parexel,Others,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2538,none at the moment,No Information,Syneos Health,Obesity,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2540,none at the moment,Eisai,PPD,Others,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2541,none at the moment,No Information,Parexel,Alzheimer's Disease,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2542,none at the moment,No Information,Syneos Health,Osteoarthritis,Rheumatoid and Autoimmune,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2550,none at the moment,No Information,IQVIA,Others,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2560,VXB241-002,Xbiotech,Syneos Health,RSV Vaccine,Vaccine-Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2568,none at the moment,No Information,Parexel,Ulcerative Colitis,Gastroenterology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2570,none at the moment,No Information,PPD,Dementia,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2572,none at the moment,No Information,IQVIA,Others,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2573,none at the moment,No Information,Syneos Health,Type 2 Diabetes,Endocrine & Metabolism,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2576,none at the moment,No Information,IQVIA,Sjogren's Syndrome,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2577,none at the moment,Novotech,None,Focal-Onset Seizures,CNS,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2577,none at the moment,Novotech,Unknown,Focal-Onset Seizures,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2580,none at the moment,No Information,PPD,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2581,none at the moment,No Information,PPD,Depression,Psychiatry,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2586,none at the moment,No Information,Clinical Research Corp. (CRC),Chronic Lower Back Pain,Musculoskeletal,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2588,none at the moment,No Information,Fortrea,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2589,VX25-AIS-301,Vertex Pharmaceuticals,None,Graves Diseases,Hormonal Disorders,  $100 ,  - ,5,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2591,none at the moment,No Information,(No Info),Major Depressive Disorder,Psychiatry,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2595,none at the moment,Clinchoice,(No Info),Chronic Cough,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2598,none at the moment,Baxis Pharma,(No Info),Acute Bacterial Conjunctivitis,General Medicine,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2600,none at the moment,No Information,RD Specialists ((RD Specialists)),Not Available in Atom,Others,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2602,none at the moment,No Information,Parexel,Giant Cell Arteritis and Behcet Diseases,Allergy/Immunology,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2604,none at the moment,No Information,IQVIA,Osteoarthritis,Rheumatoid and Autoimmune,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2605,none at the moment,"Altimmune, Inc",Syneos Health,Asthma,Respiratory,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2606,none at the moment,No Information,PPD,Influenza,Vaccine-Influenza,  - ,  - ,0,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2607,CD_ABX464-202,Abivax,IQVIA,Crohn's Disease,Gastroenterology,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2611,none at the moment,No Information,IQVIA,Vasomotor Symptoms,Women's Health,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2612,none at the moment,No Information,IQVIA,Vasomotor Symptoms,Women's Health,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2613,none at the moment,No Information,Medpace,Osteoarthritis,Rheumatoid and Autoimmune,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2614,none at the moment,No Information,Worldwide Clinical Trials,Obesity,General Medicine,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2615,none at the moment,No Information,Fortrea,Diabetic Foot Ulcer,Endocrine & Metabolism,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2617,VBV19042,Sanofi,Sponsor Initiated,COVID-19,Vaccine-COVID,  $51 ,  $3 ,6,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2618,none at the moment,No Information,PPD,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2619,none at the moment,No Information,Parexel,Recurrent Pericarditis,Cardiovascular,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2620,none at the moment,No Information,PPD,Not Available in Atom,Women's Health,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2622,none at the moment,No Information,PPD,Graves Diseases,Hormonal Disorders,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2629,none at the moment,Yikang Biotech (Suzhou),Aleon Pharma (Ltd),RSV Vaccine,Vaccine-Respiratory,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2639,QAB45622,No Information,IQVIA,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2641,IMVT-1402-2505,Immuvonant Sciences GmbH,Unknown,Graves Diseases,Hormonal Disorders,  - ,  - ,0,0,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2642,"  779,690 ",Beijing Inno Medicine,Fortrea,Not Available in Atom,Cardiovascular,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2649,BC#149124-01,No Information,PPD,Food Allergy,Allergy/Immunology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2650,None at the moment,No Information,Premier Research,Not Available in Atom,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2653,none at the moment,Abbott,Unknown,Hypoglycemia,Endocrine & Metabolism,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2654,DQB105CT,Chugai,Unknown,Celiac Disease,Gastroenterology,  $20 ,  $6 ,1,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2659,SAB04538,No Information,IQVIA,Alzheimer's Disease,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2661,BC#148980-01,No Information,PPD,Not Available in Atom,Cardiovascular,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2662,None at the moment,No Information,Parexel,Influenza,Vaccine-Influenza,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2663,BC#149810-01,No Information,PPD,Chronic Kidney Disease,Nephrology/Urology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2667,BC#150017-01,No Information,PPD,Not Available in Atom,Infectious Disease,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2668,SAB21450,No Information,IQVIA,Pulmonary Hypertension,Respiratory,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2670,"  782,437 ",No Information,Fortrea,Not Available in Atom,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2671,None at the moment,Premier Research,Premier Research,Migraine,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2672,"  7,078,145 ",No Information,Syneos Health,Not Available in Atom,Infectious Disease,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2673,BC# 145863-01,No Information,PPD,Vasomotor Symptoms,Women's Health,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2674,C4531009,Pfizer,Unknown,Asthma,Respiratory,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2680,BC# 150607-01,No Information,PPD,Rheumatoid Arthritis,Rheumatoid and Autoimmune,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2684,BC# 151203-01,UKN,PPD,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2686,unknown,No Information,PPD,Alzheimer's Disease,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2687,BC# 151204-01,UKN,PPD,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2694,382-201-0032,Otsuka Pharmaceutical,Syneos Health,General Anxiety Disorder,Psychiatry,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2702,OLN324-CP-05,Ollin Biosciences,Fortrea,Diabetic Macular Edema,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2703,OLN324-CP-04,Ollin Biosciences,Fortrea,Diabetic Macular Edema,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2704,OLN324-CP-03,Ollin Biosciences,Fortrea,Diabetic Macular Edema,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2705,OLN324-CP-02,Ollin Biosciences,Fortrea,Diabetic Macular Edema,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2713,SAB72962,No Information,IQVIA,Major Depressive Disorder,Psychiatry,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2715,Unknown,Enanta Pharmaceuticals,PPD,RSV Vaccine,Respiratory,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2718,CVAY736V12301,Novartis,IQVIA,Sjögren’s Disease and Overlapping Rheumatoid Arthritis (ISADORA),Rheumatoid and Autoimmune,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2735,Unknown,,ICON,Acute Gout Flares,Rheumatoid and Autoimmune,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2736,C4951085,Pfizer,,Migraine,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2737,C4951086,Pfizer,,Migraine,CNS,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2738,Unknown,,PPD,Bacterial Conjunctivitis,Ophthalmology,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2745,CD388-SQ.3.06,"Cidara Therapeutics, Inc",Parexel,Influenza,Vaccine-Influenza,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2748,BC#152412-01,,PPD,Obesity,General Medicine,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2752,Protocol #2,,PPD,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2753,Protocol #1,,PPD,Herpes Zoster,Vaccine-Other,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2754,BC#152904-01,,PPD,Type 2 Diabetes,Endocrine & Metabolism,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2755,C4531037,Pfizer,,Asthma,Respiratory,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+2771,CXF-002,"Centivax, Inc.",,Influenza,Vaccine-Influenza,  - ,  - ,,,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - ,  - 
+1250,ALN-AGT01-003,Alnylam Pharma,IQVIA,Hypertension,Cardiovascular,  $349 ,  $349 ,0,1,  $3 ,  $1 ,  - ,  - ,  $4 ,  ($0),  - ,  - ,  - ,  ($0)
+1603,mRNA-1345-P202,Moderna,Parexel,RSV Vaccine,Vaccine-Respiratory,  $234 ,  $234 ,0,26,  $21 ,  $12 ,  $2 ,  $0 ,  $35 ,  ($0),  - ,  - ,  - ,  ($0)
+394,2019nCoV-301,Novavax,ICON,COVID-19,Vaccine-COVID,  $35 ,  $35 ,0,145,  $29 ,  - ,  - ,  - ,  $29 ,  ($0),  - ,  - ,  - ,  ($0)
+1469,mRNA-1018-P101,Moderna,Parexel,Influenza,Vaccine-Influenza,"  $7,694 ","  $7,694 ",0,358,  $6 ,  - ,  $3 ,  - ,  $9 ,  ($0),  - ,  - ,  - ,  ($0)
+2101,mRNA-1083-P202,Moderna,(No Info),Combined Covid + Influenza Vaccine,Vaccine-Other,"  $3,327 ","  $3,327 ",0,646,"  $1,944 ",  $829 ,  $531 ,  $25 ,"  $3,329 ",  ($0),  - ,  - ,  - ,  ($0)
+402,C4591031,Pfizer,ICON,COVID-19,Vaccine-COVID,  $3 ,  $3 ,0,188,  $0 ,  - ,  - ,  ($0),  $0 ,  ($0),  - ,  - ,  - ,  ($0)
+1993,IMVT-1402-2601,Janssen,"Immunovant (, Inc)",Rheumatoid Arthritis,Rheumatoid and Autoimmune,  $119 ,  $119 ,0,14,  $42 ,  $76 ,  $59 ,  $7 ,  $185 ,  ($2),  - ,  - ,  - ,  ($2)
+1467,M23-699,AbbVie,Unknown,Systemic Lupus Erythematosus (SLE),Allergy/Immunology,  $98 ,  $98 ,0,9,  $24 ,  $0 ,  - ,  $6 ,  $30 ,  ($4),  - ,  - ,  - ,  ($4)
+389,209671,GSK,PPD,Influenza,Vaccine-Influenza,  - ,  - ,0,40,  $122 ,  - ,  - ,  - ,  $122 ,  ($5),  - ,  - ,  - ,  ($5)
+151,VAV00029,Sanofi,ICON,Influenza,Vaccine-Influenza,  $216 ,  $216 ,0,17,  $16 ,  - ,  - ,  - ,  $16 ,  ($7),  - ,  - ,  - ,  ($7)
+,N/A,Moderna,(No Info),,Vaccine-Other,  - ,,,,  $45 ,  $62 ,  ($28),  $5 ,  $84 ,  ($18),  - ,  - ,  - ,  ($18)
+369,C4591001,Pfizer,ICON,COVID-19,Vaccine-COVID,  - ,  - ,0,115,  $407 ,  - ,  - ,  - ,  $407 ,  ($64),  - ,  - ,  - ,  ($64)
+216,VAV00002,Sanofi,ICON,Influenza,Vaccine-Influenza,  $166 ,  $166 ,0,40,  $344 ,  - ,  - ,  - ,  $344 ,  ($67),  - ,  - ,  - ,  ($67)
