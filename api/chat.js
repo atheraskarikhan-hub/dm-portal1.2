@@ -52,7 +52,7 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-haiku-20240307', // <-- Changed to Haiku (Unlocked for all tiers)
+        model: 'claude-haiku-4-5-20251001', // <-- Changed to Haiku (Unlocked for all tiers)
         max_tokens: 4096,
         system: system + namingRules + "\nYou are an expert financial analyst. Use the provided raw CSV files to accurately compute calculations:\n" + dbContext,
         messages: messages,
