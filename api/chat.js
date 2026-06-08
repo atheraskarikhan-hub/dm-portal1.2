@@ -16,19 +16,31 @@ export default async function handler(req, res) {
 
     const dataDir = path.join(process.cwd(), 'data');
     let dbContext = "\n=== LIVE CLINICAL REVENUE DATASET ===\n\n";
+    
+    let currentTokenEstimate = 0;
+    const MAX_ALLOWED_CHARACTERS = 120000; // Hard stop to stay safely under the 50k token limit
 
     if (fs.existsSync(dataDir)) {
-      const files = fs.readdirSync(dataDir).filter(file => file.endsWith('.csv'));
+      // Get all CSV files and sort them smallest-to-largest so summary files get processed first!
+      const files = fs.readdirSync(dataDir)
+        .filter(file => file.endsWith('.csv'))
+        .map(file => ({
+          name: file,
+          path: path.join(dataDir, file),
+          size: fs.statSync(path.join(dataDir, file)).size
+        }))
+        .sort((a, b) => a.size - b.size);
       
       for (const file of files) {
-        const filePath = path.join(dataDir, file);
-        const stats = fs.statSync(filePath);
-        
-        // Safety filter to prevent payload crashes
-        if (stats.size > 800000) continue; 
+        // If adding this file risks breaking the 50k token limit, skip it
+        if (dbContext.length + file.size > MAX_ALLOWED_CHARACTERS) {
+          console.log(`[Token Guard] Skipped ${file.name} to prevent exceeding rate limit.`);
+          continue; 
+        }
 
-        const fileData = fs.readFileSync(filePath, 'utf8');
-        dbContext += `[FILE: ${file}]\n${fileData}\n\n`;
+        const fileData = fs.readFileSync(file.path, 'utf8');
+        dbContext += `[FILE: ${file.name}]\n${fileData}\n\n`;
+        console.log(`[Token Guard] Successfully included ${file.name} (${file.size} bytes)`);
       }
     } else {
       dbContext += "Error: No data folder found on the server.";
@@ -52,7 +64,7 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001', // <-- Changed to Haiku (Unlocked for all tiers)
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 4096,
         system: system + namingRules + "\nYou are an expert financial analyst. Use the provided raw CSV files to accurately compute calculations:\n" + dbContext,
         messages: messages,
@@ -61,7 +73,6 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
 
     const data = await anthropicResponse.json();
     
-    // NEW: We now stringify the entire error object so Anthropic can't hide the real reason!
     if (!anthropicResponse.ok) {
       return res.status(400).json({ 
         error: data.error ? JSON.stringify(data.error) : 'Unknown Anthropic Error' 
