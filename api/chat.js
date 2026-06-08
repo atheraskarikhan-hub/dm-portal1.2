@@ -59,7 +59,7 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-5-sonnet-20240620',
         max_tokens: 4096,
         system: system + namingRules + "\nYou are an expert financial analyst. Use the provided raw CSV files to accurately compute calculations:\n" + dbContext,
         messages: messages,
