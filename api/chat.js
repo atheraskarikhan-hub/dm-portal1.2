@@ -1,3 +1,6 @@
+// 1. Force Vercel to wait up to 60 seconds instead of the default 10 seconds
+export const maxDuration = 60; 
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -15,10 +18,10 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-6', // Your exact model
-        max_tokens: 8192, // Increased budget for extended thinking
-        thinking: { type: 'adaptive' }, // Enables the new thinking architecture
-        output_config: { effort: 'medium' }, // Sets your explicit effort level
+        model: 'claude-sonnet-4-6', 
+        max_tokens: 4096, // Reduced slightly to prevent it from rambling past the 60s limit
+        thinking: { type: 'adaptive' }, 
+        output_config: { effort: 'low' }, // 2. Lowered effort so the AI answers much faster
         system,
         messages,
       }),
@@ -26,7 +29,6 @@ export default async function handler(req, res) {
     
     const data = await response.json();
 
-    // Safely catch Anthropic API errors so React doesn't white-screen
     if (!response.ok) {
        return res.status(400).json({ error: data.error?.message || 'Unknown Anthropic API Error' });
     }
