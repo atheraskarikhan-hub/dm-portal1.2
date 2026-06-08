@@ -16,7 +16,6 @@ export default async function handler(req, res) {
 
     const dataDir = path.join(process.cwd(), 'data');
     let dbContext = "\n=== LIVE CLINICAL REVENUE DATASET ===\n\n";
-    let totalPayloadSize = 0;
 
     if (fs.existsSync(dataDir)) {
       const files = fs.readdirSync(dataDir).filter(file => file.endsWith('.csv'));
@@ -25,16 +24,11 @@ export default async function handler(req, res) {
         const filePath = path.join(dataDir, file);
         const stats = fs.statSync(filePath);
         
-        // SAFETY FILTER: Skip any file larger than 800 KB (800,000 bytes)
-        // This prevents the "Request exceeds maximum size" crash.
-        if (stats.size > 800000) {
-          console.warn(`Skipping ${file} - File is too large for AI context window.`);
-          continue; 
-        }
+        // Safety filter to prevent payload crashes
+        if (stats.size > 800000) continue; 
 
         const fileData = fs.readFileSync(filePath, 'utf8');
         dbContext += `[FILE: ${file}]\n${fileData}\n\n`;
-        totalPayloadSize += stats.size;
       }
     } else {
       dbContext += "Error: No data folder found on the server.";
@@ -48,7 +42,6 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
 - '3W' means Third Week (PREVIOUS).
 - 'MAY26' is LATEST Forecaster.
 - 'APR26' is PREVIOUS Forecaster.
-- You are only looking at SUMMARY files. If the user asks for highly granular lead-level data that is missing, politely explain you only have summary-level access right now.
 `;
 
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
@@ -59,7 +52,7 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20240620',
+        model: 'claude-3-haiku-20240307', // <-- Changed to Haiku (Unlocked for all tiers)
         max_tokens: 4096,
         system: system + namingRules + "\nYou are an expert financial analyst. Use the provided raw CSV files to accurately compute calculations:\n" + dbContext,
         messages: messages,
@@ -67,7 +60,13 @@ CRITICAL NAMING CONVENTIONS TO REMEMBER:
     });
 
     const data = await anthropicResponse.json();
-    if (!anthropicResponse.ok) return res.status(400).json({ error: data.error?.message || 'Anthropic Error' });
+    
+    // NEW: We now stringify the entire error object so Anthropic can't hide the real reason!
+    if (!anthropicResponse.ok) {
+      return res.status(400).json({ 
+        error: data.error ? JSON.stringify(data.error) : 'Unknown Anthropic Error' 
+      });
+    }
 
     return res.status(200).json(data);
   } catch (error) {
