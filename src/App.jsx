@@ -222,7 +222,7 @@ const RAW=`313~172~BHV3000-315~CyFair~Enrolling~Enrolling~Biohaven~Synteract~Mig
 1651~2738~NN9388-4894~Martin Diagnostic Center~Maintenance~Maintenance~Novo Norsdisk~Unknown~Diabetes~Endocrine & Metaboli~23~0~23~25166~1.0~330803~330803~8476~8476~8476~0~7328,1148,0,0~Non-Vaccine~No Priority~Dr. Earl F. Martin~Novo Nordisk-NN9388-4894-Phase~Active~Jan26:4199|Feb26:3129|Mar26:1148|Dec26:8476
 1490~2003~UPB-CP-04~Tomball 13406~Maintenance~Maintenance~Upstream Bio~Syneos Health~Asthma~Respiratory~1~0~1~57926~1.0~15654~15654~25842~25842~25842~0~10900,14942,0,0~Non-Vaccine~No Priority~Dr. Mustafa Naeem~Syneos-7045302-Phase 2/3 Asthm~Active~Feb26:10900|Mar26:11512|Apr26:3430|Dec26:25842
 1452~1914~VAD00004~CyFair~Maintenance~Maintenance~Sanofi~PPD~RSV Vaccine~Vaccine-Respiratory~2~0~2~7497~1.0~56872~56872~7495~6498~6996~498~5271,1726,498,0~Vaccine~No Priority~Dr. Kashif Ali~Sanofi/PPD-RSV Vaccine-VAD0000~Active~Jan26:4900|Feb26:371|Mar26:1227|May26:498|Jun26:498|Dec26:7495
-1498~2014~HZNP-DAZ-303~Tomball 13414~Maintenance~Maintenance~Horizon Therapeutics~PPD~Sjogren's Syndrome~Allergy/Immunology~2~0~2~53761~1.0~22993~22993~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Shaikh Arif Ali~PPD- Sjogren’s Syndrome- HZNP-~Active~
+1498~2014~HZNP-DAZ-303~Tomball 13414~Maintenance~Maintenance~Horizon Therapeutics~PPD~Sjogren's Syndrome~Allergy/Immunology~2~0~2~53761~1.0~22993~22993~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Shaikh Arif Ali~PPD- Sjogren's Syndrome- HZNP-~Active~
 1685~3184~125207-01/ALN-AGT01-007~Bellaire~Maintenance~Maintenance~Alnylam Pharmaceuticals, Inc.~PPD~Hypertension~Cardiovascular~8~0~8~20656~1.0~135197~135197~4859~4859~4859~0~-110,4969,0,0~Non-Vaccine~No Priority~Dr. Teresa Becker~Alnylam - Hypertension-Phase 2~Active~Mar26:4969|Dec26:4859
 1804~3499~CT-155-E-001~Bellaire~Maintenance~Maintenance~Click Therapeutics~IQVIA~Schizophrenia~Psychiatry~2~0~2~9657~1.0~19313~19313~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Shonna Piegari~Click Therapeutics-CT-155-E-00~Active~
 1630~2555~220735~Tomball 13406~Maintenance~Maintenance~GSK~IQVIA~Asthma~Respiratory~6~0~6~17725~1.0~115652~115652~0~0~0~0~0,0,0,0~Non-Vaccine~No Priority~Dr. Mustafa Naeem~GSK- 220735-Phase 3 Severe Ast~Active~
@@ -554,7 +554,7 @@ const THEMES={
   "Forest Green":{bg:"#071210",surf:"#0D1F1C",surf2:"#132B27",surf3:"#193632",bdr:"#1E4038",bdr2:"#265248",teal:"#34D399",blue:"#60A5FA",amber:"#FBBF24",red:"#F87171",green:"#4ADE80",purple:"#A78BFA",slate:"#6B7280",text:"#ECFDF5",muted:"#6EAF96",muted2:"#3D7A64"},
 };
 
-const fm=(n,d=1)=>{if(n==null||isNaN(+n))return"—";const s=+n<0?"-":"",a=Math.abs(+n);if(a>=1e6)return`${s}$${(a/1e6).toFixed(d)}M`;if(a>=1e3)return`${s}$${(a/1e3).toFixed(0)}K`;return`${s}$${a.toFixed(0)}`;};
+const fm=(n,d=1)=>{if(n==null||isNaN(+n))return"--";const s=+n<0?"-":"",a=Math.abs(+n);if(a>=1e6)return`${s}$${(a/1e6).toFixed(d)}M`;if(a>=1e3)return`${s}$${(a/1e3).toFixed(0)}K`;return`${s}$${a.toFixed(0)}`;};
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const useT=()=>window.__T__||THEMES["Dark Navy"];
 
@@ -615,17 +615,17 @@ const SD={
   awards:{ytdStudies:115,tgtStudies:313,vaxAct:35,vaxTgt:30,nvaxAct:80,nvaxTgt:283,fcvYtd:29700000,fcvTgt:83200000,
     quarterly:[{q:"Q1",tgt:38,act:38,fcvTgt:10200000,fcvAct:10200000},{q:"Q2",tgt:55,act:77,fcvTgt:13400000,fcvAct:19500000},{q:"Q3",tgt:110,act:null,fcvTgt:26000000,fcvAct:null},{q:"Q4",tgt:110,act:null,fcvTgt:33600000,fcvAct:null}]},
   wow:[
-    {cat:"Backlog",prev:28100000,curr:27200000,drivers:["mRNA-1403-P301-AC (Moderna,Vax): -$200K — 114 discontinued subjects","VYD2311-PREV-002 (Ichnos,LID:2544): -$400K — discontinued subjects","Other Maintenance: -$300K"]},
-    {cat:"Enrolling",prev:12300000,curr:11500000,drivers:["VYD2311-PREV-002 (Ichnos,LID:2544,ATOM:6912): -$400K — 11 discontinued subjects","C4771002 (Pfizer,Vax): -$200K — Goals 37→30 by PMO","VP-VHX-896-3201 (Vanda): -$100K — Goals 5→4","K9531-3104 (Kailera): -$100K — Goals 7→4"]},
-    {cat:"Awarded",prev:7500000,curr:9000000,drivers:["C6511002 (Pfizer,LID:2525): +$1.0M — Goals 17→21, PPB $38K→$80K","VRB-101-202 (Verdiva Bio): +$0.3M — reactivated","AIC316-01-III-01 (AiCuris): cancelled -$187K"]},
-    {cat:"Pipeline",prev:9800000,curr:9000000,drivers:["D7266C00001 (AstraZeneca): +$337K — CL 30→77%","VCA23395 (Sanofi): +$128K — 3 new opps","AIC316 (AiCuris): cancelled -$187K","218130 (GSK): -$180K — CL→25%"]},
-    {cat:"Go-Get",prev:13200000,curr:13168000,drivers:["Minor portfolio adjustments — net flat"]},
+    {cat:"Backlog",prev:28100000,curr:27200000,drivers:["mRNA-1403-P301-AC (Moderna,Vax): -$200K -- 114 discontinued subjects","VYD2311-PREV-002 (Ichnos,LID:2544): -$400K -- discontinued subjects","Other Maintenance: -$300K"]},
+    {cat:"Enrolling",prev:12300000,curr:11500000,drivers:["VYD2311-PREV-002 (Ichnos,LID:2544,ATOM:6912): -$400K -- 11 discontinued subjects","C4771002 (Pfizer,Vax): -$200K -- Goals 37->30 by PMO","VP-VHX-896-3201 (Vanda): -$100K -- Goals 5->4","K9531-3104 (Kailera): -$100K -- Goals 7->4"]},
+    {cat:"Awarded",prev:7500000,curr:9000000,drivers:["C6511002 (Pfizer,LID:2525): +$1.0M -- Goals 17->21, PPB $38K->$80K","VRB-101-202 (Verdiva Bio): +$0.3M -- reactivated","AIC316-01-III-01 (AiCuris): cancelled -$187K"]},
+    {cat:"Pipeline",prev:9800000,curr:9000000,drivers:["D7266C00001 (AstraZeneca): +$337K -- CL 30->77%","VCA23395 (Sanofi): +$128K -- 3 new opps","AIC316 (AiCuris): cancelled -$187K","218130 (GSK): -$180K -- CL->25%"]},
+    {cat:"Go-Get",prev:13200000,curr:13168000,drivers:["Minor portfolio adjustments -- net flat"]},
   ],
   variance:{
     fc_mom:[
       {cat:"Grand Total",old:67963656,new_v:72882175,old_cnt:2165,new_cnt:2296,reason:"Pipeline additions (+285 opps), 6 new awards, revenue optimization in Enrolling"},
       {cat:"Pipeline",old:7633816,new_v:8832261,old_cnt:2179,new_cnt:2464,reason:"+285 pipeline opportunities added. New entries: VCA23395 Sanofi, D7266C00001 AstraZeneca, 218130 GSK, ALV-101-1 Therapeutic"},
-      {cat:"Awarded",old:10831118,new_v:11961955,old_cnt:82,new_cnt:88,reason:"+6 new awards this month. Key: C6511002 Pfizer +$1M (goals 17→21, PPB increase), VRB-101-202 Verdiva Bio reactivated"},
+      {cat:"Awarded",old:10831118,new_v:11961955,old_cnt:82,new_cnt:88,reason:"+6 new awards this month. Key: C6511002 Pfizer +$1M (goals 17->21, PPB increase), VRB-101-202 Verdiva Bio reactivated"},
       {cat:"Enrolling",old:23328627,new_v:24824412,old_cnt:83,new_cnt:83,reason:"+$1.5M from enrollment optimization and additional patient visits. May actuals captured ($6.99M)"},
       {cat:"Maintenance",old:25740503,new_v:26856427,old_cnt:282,new_cnt:279,reason:"-3 studies moved out, revenue up +$1.1M from actualized May maintenance revenue ($6.99M ACT)"},
     ],
@@ -649,10 +649,10 @@ const SD={
 const Tip=({active,payload,label})=>{const T=useT();if(!active||!payload?.length)return null;return(<div style={{background:T.surf3,border:`1px solid ${T.bdr2}`,borderRadius:8,padding:"10px 14px",fontSize:12,color:T.text}}><div style={{color:T.muted,marginBottom:4}}>{label}</div>{payload.map((p,i)=>p.value!=null&&<div key={i} style={{color:p.color||T.teal}}>{p.name}: {fm(p.value)}</div>)}</div>);};
 function Card({children,style={}}){const T=useT();return<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"18px 20px",...style}}>{children}</div>;}
 function SH({title,badge,right}){const T=useT();return(<div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}><div style={{display:"flex",alignItems:"center",gap:8}}><div style={{width:3,height:16,background:T.teal,borderRadius:2}}/><span style={{fontSize:12,fontWeight:600,color:T.text,textTransform:"uppercase",letterSpacing:"0.07em"}}>{title}</span>{badge&&<span style={{fontSize:10,background:T.teal+"20",color:T.teal,padding:"2px 8px",borderRadius:20}}>{badge}</span>}</div>{right}</div>);}
-function KPI({label,value,sub,accent,pct,badge,change}){const T=useT();const ac=accent||T.teal;return(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:"0 0 auto 0",height:2,background:ac}}/>{(badge!=null||pct!=null)&&<div style={{position:"absolute",top:10,right:10,fontSize:11,color:pct>1?T.green:pct>0.5?T.amber:pct!=null?T.red:T.muted,fontWeight:700}}>{badge!=null?badge:pct!=null?`${Math.round(pct*100)}%`:''}</div>}<div style={{fontSize:11,color:T.muted,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:5}}>{label}</div><div style={{fontSize:20,fontWeight:700,color:T.text,lineHeight:1.1}}>{value}</div>{sub&&<div style={{fontSize:11,color:T.muted,marginTop:3}}>{sub}</div>}{change!=null&&<div style={{fontSize:11,color:change>0?T.green:change<0?T.red:T.muted,marginTop:3}}>{change>0?"▲":change<0?"▼":"●"} {Math.abs(change*100).toFixed(1)}% vs prior</div>}{pct!=null&&<div style={{height:3,background:T.bdr,borderRadius:2,marginTop:8,overflow:"hidden"}}><div style={{width:`${clamp(pct*100,0,100)}%`,height:"100%",background:ac}}/></div>}</div>);}
+function KPI({label,value,sub,accent,pct,badge,change}){const T=useT();const ac=accent||T.teal;return(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",position:"relative",overflow:"hidden"}}><div style={{position:"absolute",inset:"0 0 auto 0",height:2,background:ac}}/>{(badge!=null||pct!=null)&&<div style={{position:"absolute",top:10,right:10,fontSize:11,color:pct>1?T.green:pct>0.5?T.amber:pct!=null?T.red:T.muted,fontWeight:700}}>{badge!=null?badge:pct!=null?`${Math.round(pct*100)}%`:''}</div>}<div style={{fontSize:11,color:T.muted,textTransform:"uppercase",letterSpacing:"0.07em",marginBottom:5}}>{label}</div><div style={{fontSize:20,fontWeight:700,color:T.text,lineHeight:1.1}}>{value}</div>{sub&&<div style={{fontSize:11,color:T.muted,marginTop:3}}>{sub}</div>}{change!=null&&<div style={{fontSize:11,color:change>0?T.green:change<0?T.red:T.muted,marginTop:3}}>{change>0?"?":change<0?"?":"?"} {Math.abs(change*100).toFixed(1)}% vs prior</div>}{pct!=null&&<div style={{height:3,background:T.bdr,borderRadius:2,marginTop:8,overflow:"hidden"}}><div style={{width:`${clamp(pct*100,0,100)}%`,height:"100%",background:ac}}/></div>}</div>);}
 function Sel({label,options,value,onChange}){const T=useT();return(<div style={{display:"flex",gap:3,background:T.surf2,borderRadius:8,padding:3}}>{options.map(o=><button key={o} onClick={()=>onChange(o)} style={{padding:"5px 12px",borderRadius:6,border:"none",background:value===o?T.teal:"transparent",color:value===o?"#000":T.muted,fontSize:11,cursor:"pointer"}}>{o}</button>)}</div>);}
 
-// ── AT A GLANCE ───────────────────────────────────────────────────────────────
+// ?? AT A GLANCE ???????????????????????????????????????????????????????????????
 function AtAGlanceTab(){
   const T=useT();
   const [period,setPeriod]=useState("Quarter");
@@ -692,29 +692,29 @@ function AtAGlanceTab(){
       </div>
       <div style={{display:"flex",gap:8,alignItems:"center"}}>
         {[2025,2026,2027].map(y=><button key={y} onClick={()=>setYear(y)} style={{padding:"5px 12px",borderRadius:6,border:`1px solid ${year===y?T.teal:T.bdr}`,background:year===y?T.teal:"transparent",color:year===y?"#000":T.muted,fontSize:12,cursor:"pointer"}}>{y}</button>)}
-        <button onClick={()=>window.open("https://docs.google.com/spreadsheets/d/1EhakCoITL493SMGhdvrmusLlSKevF8SoJpEteKWc4rw","_blank")} style={{padding:"6px 14px",borderRadius:6,border:`1px solid ${T.bdr}`,background:T.surf2,color:T.teal,fontSize:12,cursor:"pointer"}}>📊 View Source Data ↗</button>
+        <button onClick={()=>window.open("https://docs.google.com/spreadsheets/d/1EhakCoITL493SMGhdvrmusLlSKevF8SoJpEteKWc4rw")} style={{padding:"6px 14px",borderRadius:6,border:`1px solid ${T.bdr}`,background:T.surf2,color:T.teal,fontSize:12,cursor:"pointer"}}>? View Source Data ?</button>
       </div>
     </div>
 
     <div style={{fontSize:11,color:T.muted,background:T.surf2,padding:"7px 14px",borderRadius:6}}>
-      AT A GLANCE — {period} · {year} · {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue (BPS × Patients) · Updated: May 26, 2026
+      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue (BPS ? Patients) . Updated: May 26, 2026
     </div>
 
     {/* KPIs */}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M target · ${SD.counts.grand.toLocaleString()} studies`} accent={T.teal}/>
-      <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue · Combine Table" accent={T.amber} pct={totalFcv/aw.fcvTgt}/>
+      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M target . ${SD.counts.grand.toLocaleString()} studies`} accent={T.teal}/>
+      <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue . Combine Table" accent={T.amber} pct={totalFcv/aw.fcvTgt}/>
       <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.teal} pct={vaxAwd.length/aw.vaxTgt}/>
       <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.red} pct={nvaxAwd.length/aw.nvaxTgt}/>
     </div>
 
     {/* Executive Highlights */}
     <div>
-      <div style={{fontSize:11,color:T.amber,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>⚡ EXECUTIVE HIGHLIGHTS</div>
+      <div style={{fontSize:11,color:T.amber,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>? EXECUTIVE HIGHLIGHTS</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
         {[
           {color:T.amber,title:"Vaccine: Count Ahead but FCV Below Plan",body:`Vaccine awarded ${vaxAwd.length}/${aw.vaxTgt} (${Math.round(vaxAwd.length/aw.vaxTgt*100)}%). Avg FCV $${(vaxAwd.reduce((s,x)=>s+x.fcv,0)/Math.max(1,vaxAwd.length)/1000).toFixed(0)}K per study. Count outperformance does not offset the value gap.`},
-          {color:T.red,title:"Non-Vaccine FCV — Most Critical Risk",body:`${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies. FCV gap: ${fm(aw.fcvTgt-totalFcv)}.`},
+          {color:T.red,title:"Non-Vaccine FCV -- Most Critical Risk",body:`${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies. FCV gap: ${fm(aw.fcvTgt-totalFcv)}.`},
           {color:T.blue,title:"Industry Norm: Book-to-Bill 1.2x",body:"For every $1 of revenue, book $1.20 in new contract value. Declining average study values mean the team must award more studies to maintain revenue levels."},
         ].map(h=><div key={h.title} style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",borderLeft:`3px solid ${h.color}`}}><div style={{fontSize:12,fontWeight:600,color:T.text,marginBottom:6}}>{h.title}</div><div style={{fontSize:12,color:T.muted,lineHeight:1.6}}>{h.body}</div></div>)}
       </div>
@@ -722,7 +722,7 @@ function AtAGlanceTab(){
 
     {/* Next Target */}
     <Card>
-      <div style={{fontSize:11,color:T.teal,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>🎯 WHAT'S MY NEXT TARGET?</div>
+      <div style={{fontSize:11,color:T.teal,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>? WHAT'S MY NEXT TARGET?</div>
       <div style={{background:T.surf2,borderRadius:8,padding:"12px 16px",marginBottom:12,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
           <span style={{background:T.teal+"22",color:T.teal,fontSize:11,padding:"3px 10px",borderRadius:20,fontWeight:600}}>{period==="Week"?"Next Week":period==="Month"?"Next Month":period==="Quarter"?"Next Quarter":"Next Year"}</span>
@@ -742,7 +742,7 @@ function AtAGlanceTab(){
     {/* Dynamic Revenue Chart */}
     <div style={{display:"grid",gridTemplateColumns:"1.4fr 1fr",gap:16}}>
       <Card>
-        <SH title={`Revenue by ${period}`} badge={`${period==="Year"?"2023–2026":period==="Quarter"?"Q1–Q4 2026":period==="Week"?"Last 15 Weeks":"Jan–Dec 2026"}`}/>
+        <SH title={`Revenue by ${period}`} badge={`${period==="Year"?"2023-2026":period==="Quarter"?"Q1-Q4 2026":period==="Week"?"Last 15 Weeks":"Jan-Dec 2026"}`}/>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={chartData} barSize={24}>
             <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -767,9 +767,9 @@ function AtAGlanceTab(){
               return(<tr key={q.q} style={{borderBottom:`1px solid ${T.bdr}22`,fontWeight:q.q==="Total"?600:400}}>
                 <td style={{padding:"7px 8px",color:T.text}}>{q.q}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.muted}}>{q.tgt}</td>
-                <td style={{textAlign:"right",padding:"7px 8px",color:T.text}}>{q.act??'—'}</td>
-                <td style={{textAlign:"right",padding:"7px 8px",color:rate==null?T.muted:rate>=1?T.green:rate>0.5?T.amber:T.red}}>{rate!=null?`${Math.round(rate*100)}%`:'—'}</td>
-                <td style={{textAlign:"right",padding:"7px 8px",color:T.teal}}>{q.fcvAct!=null?fm(q.fcvAct):'—'}</td>
+                <td style={{textAlign:"right",padding:"7px 8px",color:T.text}}>{q.act??'--'}</td>
+                <td style={{textAlign:"right",padding:"7px 8px",color:rate==null?T.muted:rate>=1?T.green:rate>0.5?T.amber:T.red}}>{rate!=null?`${Math.round(rate*100)}%`:'--'}</td>
+                <td style={{textAlign:"right",padding:"7px 8px",color:T.teal}}>{q.fcvAct!=null?fm(q.fcvAct):'--'}</td>
               </tr>);
             })}
           </tbody>
@@ -779,11 +779,11 @@ function AtAGlanceTab(){
   </div>);
 }
 
-// ── WATERFALL TAB ─────────────────────────────────────────────────────────────
+// ?? WATERFALL TAB ?????????????????????????????????????????????????????????????
 function WoWTable(){
   const T=useT();const[open,setOpen]=useState(null);
   return(<table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
-    <thead><tr>{["Category","Last Week","This Week","Δ $","Δ %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
+    <thead><tr>{["Category","Last Week","This Week","? $","? %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
     <tbody>{SD.wow.map(d=>{
       const chg=d.curr-d.prev,pct=d.prev?(d.curr-d.prev)/d.prev:0,col=chg>0?T.green:chg<0?T.red:T.muted,isOpen=open===d.cat;
       return(<>
@@ -795,10 +795,10 @@ function WoWTable(){
           <td style={{textAlign:"right",padding:"9px 10px",color:T.text,fontFamily:"monospace",fontWeight:600}}>{fm(d.curr)}</td>
           <td style={{textAlign:"right",padding:"9px 10px",color:col,fontFamily:"monospace"}}>{chg>0?"+":""}{fm(chg)}</td>
           <td style={{textAlign:"right",padding:"9px 10px",color:col}}>{chg>0?"+":""}{(pct*100).toFixed(1)}%</td>
-          <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"▲":chg<0?"▼":"●"}</span></td>
-          <td style={{textAlign:"right",padding:"9px 10px",color:T.teal,fontSize:11}}>{isOpen?"▲":"▼ Drivers"}</td>
+          <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"?":chg<0?"?":"?"}</span></td>
+          <td style={{textAlign:"right",padding:"9px 10px",color:T.teal,fontSize:11}}>{isOpen?"?":"? Drivers"}</td>
         </tr>
-        {isOpen&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"−"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
+        {isOpen&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"?"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
       </>);
     })}</tbody>
   </table>);
@@ -820,8 +820,8 @@ function WaterfallTab({reg}){
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest (May 26 · 4th Week)</button>
-      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous (May 19 · 3rd Week)</button>
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest (May 26 . 4th Week)</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous (May 19 . 3rd Week)</button>
       <div style={{marginLeft:"auto",display:"flex",gap:6,flexWrap:"wrap"}}>
         {(hist.length?hist:["May 26 W4","May 19 W3","May 12 W2","May 5 W1"]).slice(-5).map((v,i,a)=>(
           <span key={i} style={{fontSize:10,padding:"2px 9px",borderRadius:20,background:i===a.length-1?T.teal+"22":T.surf2,color:i===a.length-1?T.teal:T.muted,border:`1px solid ${i===a.length-1?T.teal+"44":T.bdr}`}}>{typeof v==="object"?v.date:v}</span>
@@ -830,13 +830,13 @@ function WaterfallTab({reg}){
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       <KPI label="Baseline Target" value="$85.0M" sub="FY 2026 annual goal" accent={T.amber} badge="TARGET"/>
-      <KPI label="H1 Total" value={fm(wfData.h1)} sub={`Q1: ${fm(wfData.q1)} · Q2: ${fm(wfData.q2)}`} accent={T.teal} change={ver==="previous"?null:(wfData.h1-SD.wf_prev.h1)/SD.wf_prev.h1}/>
-      <KPI label="H2 Total" value={fm(wfData.h2)} sub={`Q3: ${fm(wfData.q3)} · Q4: ${fm(wfData.q4)}`} accent={T.blue} change={ver==="previous"?null:(wfData.h2-SD.wf_prev.h2)/SD.wf_prev.h2}/>
+      <KPI label="H1 Total" value={fm(wfData.h1)} sub={`Q1: ${fm(wfData.q1)} . Q2: ${fm(wfData.q2)}`} accent={T.teal} change={ver==="previous"?null:(wfData.h1-SD.wf_prev.h1)/SD.wf_prev.h1}/>
+      <KPI label="H2 Total" value={fm(wfData.h2)} sub={`Q3: ${fm(wfData.q3)} . Q4: ${fm(wfData.q4)}`} accent={T.blue} change={ver==="previous"?null:(wfData.h2-SD.wf_prev.h2)/SD.wf_prev.h2}/>
       <KPI label="Gap to $85M (Forecaster)" value={fm(SD.baseline-SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of baseline achieved`} accent={T.red}/>
     </div>
-    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>⚠️ Showing Previous Waterfall (May 19 · 3rd Week) — H1: ${(SD.wf_prev.h1/1e6).toFixed(2)}M · H2: ${(SD.wf_prev.h2/1e6).toFixed(2)}M · Total: $85.00M</div>}
+    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>?? Showing Previous Waterfall (May 19 . 3rd Week) -- H1: ${(SD.wf_prev.h1/1e6).toFixed(2)}M . H2: ${(SD.wf_prev.h2/1e6).toFixed(2)}M . Total: $85.00M</div>}
     <Card>
-      <SH title={`Revenue Waterfall Bridge 2026 — ${ver==="current"?"4th Week (May 26)":"3rd Week (May 19)"}`} badge="Summary - baseline 85M"/>
+      <SH title={`Revenue Waterfall Bridge 2026 -- ${ver==="current"?"4th Week (May 26)":"3rd Week (May 19)"}`} badge="Summary - baseline 85M"/>
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart data={cd} barSize={44}>
           <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -851,7 +851,7 @@ function WaterfallTab({reg}){
     <Card><SH title="Week-over-Week Movement" badge="Click row to expand study-level drivers"/><WoWTable/></Card>
     <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:16}}>
       <Card>
-        <SH title={`Monthly Revenue — ${ver==="current"?"4th Week":"3rd Week"}`} badge="ACT Jan–May · FCST Jun–Dec"/>
+        <SH title={`Monthly Revenue -- ${ver==="current"?"4th Week":"3rd Week"}`} badge="ACT Jan-May . FCST Jun-Dec"/>
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={monthly} barSize={22}>
             <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -878,7 +878,7 @@ function WaterfallTab({reg}){
   </div>);
 }
 
-// ── FORECASTER TAB ─────────────────────────────────────────────────────────────
+// ?? FORECASTER TAB ?????????????????????????????????????????????????????????????
 function ForecasterTab({reg}){
   const T=useT();
   const[ver,setVer]=useState("current");
@@ -896,16 +896,16 @@ function ForecasterTab({reg}){
         ))}
       </div>
     </div>
-    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>⚠️ Showing Previous Forecaster (Apr 24, 2026) — Grand Total: $67.96M · Studies: 2,165 · YTD (Jan–Apr): $28.71M</div>}
+    {ver==="previous"&&<div style={{background:T.amber+"18",border:`1px solid ${T.amber+"44"}`,borderRadius:8,padding:"10px 16px",fontSize:12,color:T.amber}}>?? Showing Previous Forecaster (Apr 24, 2026) -- Grand Total: $67.96M . Studies: 2,165 . YTD (Jan-Apr): $28.71M</div>}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       <KPI label="Grand Total 2026" value={fm(fcData.grand)} sub={`${Math.round(fcData.grand/SD.baseline*100)}% of $85M`} accent={T.teal} change={ver==="previous"?null:(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
-      <KPI label={ver==="current"?"YTD Jan–May":"YTD Jan–Apr"} value={fm(fcData.ytd)} sub={`${Math.round(fcData.ytd/fcData.grand*100)}% of annual`} accent={T.blue}/>
-      <KPI label="Grand Total Studies" value={ver==="current"?SD.counts.grand.toLocaleString():SD.counts_prev.grand.toLocaleString()} sub={ver==="current"?`${SD.counts.vaxTotal} Vax · ${SD.counts.nvaxTotal} Non-Vax`:`${SD.counts_prev.vaxTotal} Vax · ${SD.counts_prev.nvaxTotal} Non-Vax`} accent={T.purple} change={ver==="previous"?null:(SD.counts.grand-SD.counts_prev.grand)/SD.counts_prev.grand}/>
-      <KPI label="Expected Goals" value={SD.goals.total.toLocaleString()} sub={`H1: ${SD.goals.h1.toLocaleString()} · H2: ${SD.goals.h2.toLocaleString()}`} accent={T.amber}/>
+      <KPI label={ver==="current"?"YTD Jan-May":"YTD Jan-Apr"} value={fm(fcData.ytd)} sub={`${Math.round(fcData.ytd/fcData.grand*100)}% of annual`} accent={T.blue}/>
+      <KPI label="Grand Total Studies" value={ver==="current"?SD.counts.grand.toLocaleString():SD.counts_prev.grand.toLocaleString()} sub={ver==="current"?`${SD.counts.vaxTotal} Vax . ${SD.counts.nvaxTotal} Non-Vax`:`${SD.counts_prev.vaxTotal} Vax . ${SD.counts_prev.nvaxTotal} Non-Vax`} accent={T.purple} change={ver==="previous"?null:(SD.counts.grand-SD.counts_prev.grand)/SD.counts_prev.grand}/>
+      <KPI label="Expected Goals" value={SD.goals.total.toLocaleString()} sub={`H1: ${SD.goals.h1.toLocaleString()} . H2: ${SD.goals.h2.toLocaleString()}`} accent={T.amber}/>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr",gap:16}}>
       <Card>
-        <SH title={`Revenue Forecast — ${ver==="current"?"May 2026 (ACT Jan–May)":"Apr 2026 (ACT Jan–Apr)"}`}/>
+        <SH title={`Revenue Forecast -- ${ver==="current"?"May 2026 (ACT Jan-May)":"Apr 2026 (ACT Jan-Apr)"}`}/>
         <ResponsiveContainer width="100%" height={210}>
           <ComposedChart data={fcData.monthly}>
             <defs><linearGradient id="aG" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.teal} stopOpacity={0.15}/><stop offset="95%" stopColor={T.teal} stopOpacity={0}/></linearGradient></defs>
@@ -913,7 +913,7 @@ function ForecasterTab({reg}){
             <XAxis dataKey="m" tick={{fill:T.muted,fontSize:11}} axisLine={false} tickLine={false}/>
             <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<Tip/>}/>
-            <ReferenceLine x={ver==="current"?"May":"Apr"} stroke={T.amber} strokeDasharray="5 3" label={{value:"ACT→FCST",fill:T.amber,fontSize:10,position:"top"}}/>
+            <ReferenceLine x={ver==="current"?"May":"Apr"} stroke={T.amber} strokeDasharray="5 3" label={{value:"ACT->FCST",fill:T.amber,fontSize:10,position:"top"}}/>
             <Area type="monotone" dataKey="v" name="Revenue" fill="url(#aG)" stroke={T.teal} strokeWidth={2} dot={(p)=><circle key={p.key} cx={p.cx} cy={p.cy} r={p.payload.t==="ACT"?4:3} fill={p.payload.t==="ACT"?T.teal:T.teal+"88"}/>}/>
           </ComposedChart>
         </ResponsiveContainer>
@@ -966,7 +966,7 @@ function ForecasterTab({reg}){
   </div>);
 }
 
-// ── VARIANCE ANALYSIS TAB ─────────────────────────────────────────────────────
+// ?? VARIANCE ANALYSIS TAB ?????????????????????????????????????????????????????
 function VarianceTab(){
   const T=useT();
   const[view,setView]=useState("forecaster");
@@ -989,16 +989,16 @@ function VarianceTab(){
     <div style={{display:"flex",alignItems:"center",gap:8}}>
       <span style={{fontSize:11,color:T.muted,fontWeight:600}}>VIEW:</span>
       <Sel options={["forecaster","waterfall"]} value={view} onChange={setView}/>
-      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?"Apr 24 → May 22, 2026 (Month-over-Month)":"May 19 W3 → May 26 W4 (Week-over-Week)"}</span>
+      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?"Apr 24 -> May 22, 2026 (Month-over-Month)":"May 19 W3 -> May 26 W4 (Week-over-Week)"}</span>
     </div>
 
     {/* Summary KPIs */}
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       {view==="forecaster"?(<>
-        <KPI label="Grand Total Change" value={fm(SD.fc.grand-SD.fc_prev.grand)} sub={`$${(SD.fc_prev.grand/1e6).toFixed(2)}M → $${(SD.fc.grand/1e6).toFixed(2)}M`} accent={T.green} change={(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
-        <KPI label="Study Count Change" value={`+${SD.counts.grand-SD.counts_prev.grand}`} sub={`${SD.counts_prev.grand} → ${SD.counts.grand} studies`} accent={T.blue}/>
-        <KPI label="Pipeline Growth" value={`+${SD.counts.pipeline-SD.counts_prev.pipeline}`} sub={`${SD.counts_prev.pipeline} → ${SD.counts.pipeline} opps`} accent={T.purple}/>
-        <KPI label="New Awards" value={`+${SD.counts.awarded-SD.counts_prev.awarded}`} sub={`${SD.counts_prev.awarded} → ${SD.counts.awarded} awarded`} accent={T.amber}/>
+        <KPI label="Grand Total Change" value={fm(SD.fc.grand-SD.fc_prev.grand)} sub={`$${(SD.fc_prev.grand/1e6).toFixed(2)}M -> $${(SD.fc.grand/1e6).toFixed(2)}M`} accent={T.green} change={(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
+        <KPI label="Study Count Change" value={`+${SD.counts.grand-SD.counts_prev.grand}`} sub={`${SD.counts_prev.grand} -> ${SD.counts.grand} studies`} accent={T.blue}/>
+        <KPI label="Pipeline Growth" value={`+${SD.counts.pipeline-SD.counts_prev.pipeline}`} sub={`${SD.counts_prev.pipeline} -> ${SD.counts.pipeline} opps`} accent={T.purple}/>
+        <KPI label="New Awards" value={`+${SD.counts.awarded-SD.counts_prev.awarded}`} sub={`${SD.counts_prev.awarded} -> ${SD.counts.awarded} awarded`} accent={T.amber}/>
       </>):(<>
         <KPI label="WoW Revenue Change" value={fm(SD.wf.grand-SD.wf_prev.grand)} sub="$85.0M baseline unchanged" accent={T.muted}/>
         <KPI label="Enrolling Change" value={fm(SD.variance.wf_wow[1]?.diff||0)} sub="May 26 vs May 19" accent={T.red}/>
@@ -1009,7 +1009,7 @@ function VarianceTab(){
 
     {/* Variance table */}
     <Card>
-      <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?"Apr 24 → May 22":"May 19 W3 → May 26 W4"}/>
+      <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?"Apr 24 -> May 22":"May 19 W3 -> May 26 W4"}/>
       <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
         <thead><tr>
           {["Category","Previous","Current","Change $","Change %","Reason"].map(h=><th key={h} style={{textAlign:h==="Category"||h==="Reason"?"left":"right",padding:"8px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11,fontWeight:500}}>{h}</th>)}
@@ -1033,7 +1033,7 @@ function VarianceTab(){
 
     {/* Comparison chart */}
     <Card>
-      <SH title={`Monthly Revenue Comparison — ${view==="forecaster"?"Apr vs May Forecaster":"3rd vs 4th Week Waterfall"}`}/>
+      <SH title={`Monthly Revenue Comparison -- ${view==="forecaster"?"Apr vs May Forecaster":"3rd vs 4th Week Waterfall"}`}/>
       <ResponsiveContainer width="100%" height={220}>
         <BarChart data={view==="forecaster"?compareData:wfCompareData} barSize={16}>
           <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -1052,7 +1052,7 @@ function VarianceTab(){
 
     {/* Forecaster-specific count changes */}
     {view==="forecaster"&&<Card>
-      <SH title="Study Count Changes (Apr → May 2026)" badge="Executive Summary"/>
+      <SH title="Study Count Changes (Apr -> May 2026)" badge="Executive Summary"/>
       <div style={{display:"grid",gridTemplateColumns:"repeat(5,1fr)",gap:12}}>
         {[
           {l:"Grand Total",old:SD.counts_prev.grand,new_v:SD.counts.grand},
@@ -1074,7 +1074,7 @@ function VarianceTab(){
   </div>);
 }
 
-// ── STUDY SEARCH ──────────────────────────────────────────────────────────────
+// ?? STUDY SEARCH ??????????????????????????????????????????????????????????????
 function StudySearchTab(){
   const T=useT();
   const[q,setQ]=useState("");
@@ -1093,10 +1093,10 @@ function StudySearchTab(){
   },[q,fSt,fVax]);
   return(<div style={{display:"flex",flexDirection:"column",gap:14}}>
     <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
-      📊 Study database contains <b style={{color:T.text}}>510 key studies</b> (all 83 Enrolling + 88 Awarded + 279 Maintenance + top 60 Pipeline by FCV). Full database: 2,296 studies — add more via registry as live data connects.
+      ? Study database contains <b style={{color:T.text}}>510 key studies</b> (all 83 Enrolling + 88 Awarded + 279 Maintenance + top 60 Pipeline by FCV). Full database: 2,296 studies -- add more via registry as live data connects.
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr auto auto auto",gap:8}}>
-      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="🔍  Search Lead ID, ATOM No, Protocol, Sponsor, CRO, PI, Indication, Study Name..."
+      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="?  Search Lead ID, ATOM No, Protocol, Sponsor, CRO, PI, Indication, Study Name..."
         style={{background:T.surf2,border:`1px solid ${T.bdr2}`,borderRadius:8,padding:"10px 16px",color:T.text,fontSize:13,outline:"none"}}/>
       <select value={fSt} onChange={e=>setFSt(e.target.value)} style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"10px 12px",color:T.muted,fontSize:12,cursor:"pointer"}}>
         {["All","Enrolling","Awarded","Maintenance","Pipeline","Cancelled"].map(s=><option key={s} value={s}>{s}</option>)}
@@ -1107,10 +1107,10 @@ function StudySearchTab(){
       <button onClick={()=>{setQ("");setFSt("All");setFVax("All");setSel(null);}} style={{padding:"10px 14px",borderRadius:8,border:`1px solid ${T.bdr}`,background:"transparent",color:T.muted,fontSize:12,cursor:"pointer"}}>Clear</button>
     </div>
     <div style={{fontSize:12,color:T.muted}}>
-      Showing <b style={{color:T.teal}}>{results.length}</b> of <b style={{color:T.text}}>{STUDIES.length}</b> loaded ·
-      <span style={{color:T.blue}}> {STUDIES.filter(s=>s.status==="Enrolling").length} Enrolling</span> ·
-      <span style={{color:T.amber}}> {STUDIES.filter(s=>s.status==="Awarded").length} Awarded</span> ·
-      <span style={{color:T.teal}}> {STUDIES.filter(s=>s.status==="Maintenance").length} Maintenance</span> ·
+      Showing <b style={{color:T.teal}}>{results.length}</b> of <b style={{color:T.text}}>{STUDIES.length}</b> loaded .
+      <span style={{color:T.blue}}> {STUDIES.filter(s=>s.status==="Enrolling").length} Enrolling</span> .
+      <span style={{color:T.amber}}> {STUDIES.filter(s=>s.status==="Awarded").length} Awarded</span> .
+      <span style={{color:T.teal}}> {STUDIES.filter(s=>s.status==="Maintenance").length} Maintenance</span> .
       <span style={{color:T.purple}}> {STUDIES.filter(s=>s.status==="Pipeline").length} Pipeline</span>
     </div>
     <div style={{display:"grid",gridTemplateColumns:sel?"1fr 360px":"1fr",gap:14,alignItems:"start"}}>
@@ -1147,14 +1147,14 @@ function StudySearchTab(){
       {sel&&(<div style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"16px",position:"sticky",top:70,maxHeight:"82vh",overflowY:"auto"}}>
         <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
           <span style={{fontSize:13,fontWeight:700,color:T.text}}>Study Detail</span>
-          <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:T.muted,cursor:"pointer",fontSize:18}}>×</button>
+          <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:T.muted,cursor:"pointer",fontSize:18}}>?</button>
         </div>
         <div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>
           <span style={{fontSize:12,background:T.teal+"22",color:T.teal,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>LID: {sel.lid}</span>
           <span style={{fontSize:12,background:T.blue+"22",color:T.blue,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>ATOM: {sel.atom}</span>
           <span style={{fontSize:11,background:(sc[sel.status]||T.muted)+"22",color:sc[sel.status]||T.muted,padding:"3px 10px",borderRadius:20}}>{sel.status}</span>
         </div>
-        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",fm(sel.q4)]].filter(([,v])=>v&&v!="—"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
+        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",fm(sel.q4)]].filter(([,v])=>v&&v!="--"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
           <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.bdr}22`}}>
             <span style={{fontSize:11,color:T.muted}}>{k}</span>
             <span style={{fontSize:12,color:T.text,fontWeight:500,textAlign:"right",maxWidth:"60%"}}>{String(v)}</span>
@@ -1176,10 +1176,10 @@ function StudySearchTab(){
   </div>);
 }
 
-// ── AI AGENT ──────────────────────────────────────────────────────────────────
+// ?? AI AGENT ??????????????????????????????????????????????????????????????????
 function AgentTab({reg}){
   const T=useT();
-  const[msgs,setMsgs]=useState([{role:"assistant",content:`Hello! I'm the DM Clinical Revenue Intelligence Agent 🤖\n\nVerified data loaded:\n• Forecaster: May 22, 2026 — $72.88M grand total, 2,296 studies\n• Waterfall: May 26, 2026 (4th Week) — $85M baseline\n• 510 studies with Lead IDs + ATOM numbers\n\nI can answer detailed questions about any study, sponsor, variance, or revenue figure. Go ahead!`}]);
+  const[msgs,setMsgs]=useState([{role:"assistant",content:`Hello! I'm the DM Clinical Revenue Intelligence Agent ?\n\nVerified data loaded:\n? Forecaster: May 22, 2026 -- $72.88M grand total, 2,296 studies\n? Waterfall: May 26, 2026 (4th Week) -- $85M baseline\n? 510 studies with Lead IDs + ATOM numbers\n\nI can answer detailed questions about any study, sponsor, variance, or revenue figure. Go ahead!`}]);
   const[inp,setInp]=useState("");
   const[thinking,setThinking]=useState(false);
   const ref=useRef(null);
@@ -1188,7 +1188,7 @@ function AgentTab({reg}){
 
   const sysPrompt=`You are the DM Clinical Revenue Intelligence Agent for DM Clinical Research.
 
-REGISTRY AUTO-UPDATE: New Forecaster (monthly) or Waterfall (weekly) → add Apps Script URL to registry → portal auto-detects. NO code changes needed.
+REGISTRY AUTO-UPDATE: New Forecaster (monthly) or Waterfall (weekly) -> add Apps Script URL to registry -> portal auto-detects. NO code changes needed.
 Forecaster: ${reg?.forecaster?.current?.date||"May 22, 2026"} | Waterfall: ${reg?.waterfall?.current?.date||"May 26 W4"}
 
 VERIFIED FORECASTER DATA (May 22, 2026):
@@ -1209,23 +1209,23 @@ Maintenance: 279 (Vax:211, Non-Vax:68) | Closed: 390
 Vaccine Total: 981 | Non-Vaccine Total: 1,315
 ATOM Dump total: 6,259 ATOM IDs (all historical across all sites/years)
 
-FCV = Estimated Potential Revenue (BPS × Total Patients) from Combine Table BEFORE confidence level.
+FCV = Estimated Potential Revenue (BPS ? Total Patients) from Combine Table BEFORE confidence level.
 
-MoM VARIANCE (Apr 24 → May 22):
-Grand Total: +$4,918,519 (+7.2%) from $67.96M → $72.88M
+MoM VARIANCE (Apr 24 -> May 22):
+Grand Total: +$4,918,519 (+7.2%) from $67.96M -> $72.88M
 Pipeline: +$1,198,445 (+15.7%) | +285 new opps (VCA23395 Sanofi, D7266 AstraZeneca)
 Awarded: +$1,130,837 (+10.4%) | +6 new awards (C6511002 Pfizer +$1M, VRB-101-202 Verdiva)
 Enrolling: +$1,495,785 (+6.4%) | May actuals captured ($6.99M)
 Maintenance: +$1,115,924 (+4.3%) | -3 studies, May actuals added
 
-WoW VARIANCE (May 19 W3 → May 26 W4):
+WoW VARIANCE (May 19 W3 -> May 26 W4):
 Enrolling: -$4,525 (minimal) | Go-Get: +$4,702 (minimal) | Total: essentially flat
 
 SITES 2026: Tomball:$18.44M | CyFair:$16.77M | Sugarland:$14.78M | Bellaire:$11.09M | River Forest:$9.74M | Philadelphia:$8.23M | Southfield:$7.81M | Brookline:$3.60M | Jersey City:$3.53M
 
 WoW STUDY DRIVERS:
-Enrolling ▼: VYD2311-PREV-002 (LID:2544,ATOM:6912) -$400K; C4771002 Pfizer -$200K; VP-VHX-896-3201 Vanda -$100K; K9531-3104 Kailera -$100K
-Awarded ▲: C6511002 Pfizer (LID:2525,ATOM:6807) +$1M goals 17→21 PPB $38K→$80K; VRB-101-202 Verdiva +$300K
+Enrolling ?: VYD2311-PREV-002 (LID:2544,ATOM:6912) -$400K; C4771002 Pfizer -$200K; VP-VHX-896-3201 Vanda -$100K; K9531-3104 Kailera -$100K
+Awarded ?: C6511002 Pfizer (LID:2525,ATOM:6807) +$1M goals 17->21 PPB $38K->$80K; VRB-101-202 Verdiva +$300K
 
 ${AI_CTX}
 
@@ -1249,14 +1249,14 @@ Answer precisely with Lead IDs, ATOM numbers, exact figures. Explain FCV source 
       const reply=d.content?.[0]?.text||d.error||"No response received.";
       setMsgs(p=>[...p,{role:"assistant",content:reply}]);
     }catch(e){
-      setMsgs(p=>[...p,{role:"assistant",content:`Error: ${e.message}\n\nMake sure ANTHROPIC_API_KEY is set in Vercel Environment Variables:\n1. Go to Vercel → your project → Settings → Environment Variables\n2. Add: ANTHROPIC_API_KEY = your-key-here\n3. Redeploy`}]);
+      setMsgs(p=>[...p,{role:"assistant",content:`Error: ${e.message}\n\nMake sure ANTHROPIC_API_KEY is set in Vercel Environment Variables:\n1. Go to Vercel -> your project -> Settings -> Environment Variables\n2. Add: ANTHROPIC_API_KEY = your-key-here\n3. Redeploy`}]);
     }
     setThinking(false);
   };
 
   return(<div style={{display:"flex",flexDirection:"column",gap:12,height:"calc(100vh - 200px)"}}>
     <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
-      🔑 AI Agent requires <b style={{color:T.amber}}>ANTHROPIC_API_KEY</b> set in Vercel → Settings → Environment Variables. Then redeploy. The agent calls <code style={{color:T.teal}}>/api/chat</code> (secure server-side proxy).
+      ? AI Agent requires <b style={{color:T.amber}}>ANTHROPIC_API_KEY</b> set in Vercel -> Settings -> Environment Variables. Then redeploy. The agent calls <code style={{color:T.teal}}>/api/chat</code> (secure server-side proxy).
     </div>
     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
       {SUGG.map(q=><button key={q} onClick={()=>send(q)} style={{fontSize:11,padding:"5px 12px",borderRadius:20,border:`1px solid ${T.bdr2}`,background:T.surf2,color:T.muted,cursor:"pointer"}}
@@ -1285,8 +1285,8 @@ Answer precisely with Lead IDs, ATOM numbers, exact figures. Explain FCV source 
   </div>);
 }
 
-// ── MAIN APP ──────────────────────────────────────────────────────────────────
-const TABS=[{id:"glance",label:"At a Glance"},{id:"waterfall",label:"Waterfall"},{id:"forecaster",label:"Forecaster"},{id:"variance",label:"Variance Analysis 📊"},{id:"search",label:"Study Search 🔍"},{id:"agent",label:"AI Agent 🤖"}];
+// ?? MAIN APP ??????????????????????????????????????????????????????????????????
+const TABS=[{id:"glance",label:"At a Glance"},{id:"waterfall",label:"Waterfall"},{id:"forecaster",label:"Forecaster"},{id:"variance",label:"Variance Analysis ?"},{id:"search",label:"Study Search ?"},{id:"agent",label:"AI Agent ?"}];
 
 export default function App(){
   const[tab,setTab]=useState("glance");
@@ -1314,14 +1314,14 @@ export default function App(){
           {TABS.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{background:tab===t.id?T.teal+"18":"transparent",border:"none",color:tab===t.id?T.teal:T.muted,padding:"5px 10px",borderRadius:6,fontSize:11,cursor:"pointer",fontWeight:tab===t.id?600:400}}>{t.label}</button>)}
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <div style={{fontSize:10,background:T.amber+"22",color:T.amber,padding:"2px 8px",borderRadius:20}}>FY 2026 · $85M</div>
+          <div style={{fontSize:10,background:T.amber+"22",color:T.amber,padding:"2px 8px",borderRadius:20}}>FY 2026 . $85M</div>
           <div style={{position:"relative"}}>
-            <button onClick={()=>setShowDrop(!showDrop)} style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:7,padding:"5px 10px",color:T.muted,fontSize:11,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>🎨 {theme} ▾</button>
+            <button onClick={()=>setShowDrop(!showDrop)} style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:7,padding:"5px 10px",color:T.muted,fontSize:11,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>? {theme} ?</button>
             {showDrop&&<><div style={{position:"fixed",inset:0,zIndex:198}} onClick={()=>setShowDrop(false)}/>
               <div style={{position:"absolute",right:0,top:"calc(100% + 4px)",background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:10,overflow:"hidden",zIndex:199,minWidth:170,boxShadow:`0 8px 24px ${T.bg}bb`}}>
                 {Object.keys(THEMES).map(th=>(
                   <button key={th} onClick={()=>{setTheme(th);setShowDrop(false);}} style={{width:"100%",padding:"9px 14px",background:theme===th?T.teal+"18":"transparent",border:"none",color:theme===th?T.teal:T.text,fontSize:12,cursor:"pointer",textAlign:"left",display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${T.bdr}22`}}>
-                    <span style={{width:10,height:10,borderRadius:"50%",background:THEMES[th].teal,display:"inline-block"}}/>{th}{theme===th&&<span style={{marginLeft:"auto"}}>✓</span>}
+                    <span style={{width:10,height:10,borderRadius:"50%",background:THEMES[th].teal,display:"inline-block"}}/>{th}{theme===th&&<span style={{marginLeft:"auto"}}>?</span>}
                   </button>
                 ))}
               </div>
@@ -1331,8 +1331,8 @@ export default function App(){
       </div>
       <div style={{padding:"18px 20px",maxWidth:1400,margin:"0 auto"}}>
         <div style={{fontSize:11,color:T.muted,marginBottom:14,display:"flex",alignItems:"center",gap:4}}>
-          <span>FP&A</span><span>›</span><span style={{color:T.text}}>{TABS.find(t=>t.id===tab)?.label}</span>
-          <span style={{marginLeft:"auto",fontSize:10,color:T.muted2}}>FC: May 22 · WF: May 26 W4 · {STUDIES.length} studies loaded</span>
+          <span>FP&A</span><span>?</span><span style={{color:T.text}}>{TABS.find(t=>t.id===tab)?.label}</span>
+          <span style={{marginLeft:"auto",fontSize:10,color:T.muted2}}>FC: May 22 . WF: May 26 W4 . {STUDIES.length} studies loaded</span>
         </div>
         {tab==="glance"   &&<AtAGlanceTab/>}
         {tab==="waterfall"&&<WaterfallTab reg={reg}/>}
