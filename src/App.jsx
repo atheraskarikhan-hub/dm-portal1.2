@@ -1256,7 +1256,7 @@ Answer precisely with Lead IDs, ATOM numbers, exact figures. Explain FCV source 
 
   return(<div style={{display:"flex",flexDirection:"column",gap:12,height:"calc(100vh - 200px)"}}>
     <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
-      ? AI Agent requires <b style={{color:T.amber}}>ANTHROPIC_API_KEY</b> set in Vercel -> Settings -> Environment Variables. Then redeploy. The agent calls <code style={{color:T.teal}}>/api/chat</code> (secure server-side proxy).
+      ? AI Agent requires <b style={{color:T.amber}}>ANTHROPIC_API_KEY</b> set in Vercel. Go to Settings, then Environment Variables. Then redeploy. The agent calls <code style={{color:T.teal}}>/api/chat</code> (secure server-side proxy).
     </div>
     <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
       {SUGG.map(q=><button key={q} onClick={()=>send(q)} style={{fontSize:11,padding:"5px 12px",borderRadius:20,border:`1px solid ${T.bdr2}`,background:T.surf2,color:T.muted,cursor:"pointer"}}
