@@ -17,7 +17,7 @@ class ReactErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: "100vh", background: "#080F1C", color: "#EF4444", display: "flex", flexDirection: "column", alignItems: "center", justifyValue: "center", padding: 40, textAlign: "center", fontFamily: "monospace" }}>
+        <div style={{ minHeight: "100vh", background: "#080F1C", color: "#EF4444", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 40, textAlign: "center", fontFamily: "monospace" }}>
           <h2 style={{ fontSize: "24px", marginBottom: "10px" }}>🚨 Frontend Rendering Execution Interrupted</h2>
           <div style={{ background: "#0E1A2E", padding: "24px", borderRadius: 12, border: "1px solid #EF4444", marginTop: 10, maxWidth: "900px", textAlign: "left", overflowX: "auto" }}>
             <p style={{ fontWeight: "bold", fontSize: "16px" }}>Error Details: {this.state.error?.toString()}</p>
@@ -221,7 +221,7 @@ function WaterfallTab({ SD }){
 function ForecasterTab({ SD, STUDIES }){
   const T=useT();
   const[ver,setVer]=useState("current");
-  const fcData=ver==="current"?SD?.fc:SD?.fc_prev;
+  const fcData=ver==="current"?SD?.fc : SD?.fc_prev;
   const byStatus=st=>(STUDIES || []).filter(s=>s && s.status===st);
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -390,7 +390,7 @@ function StudySearchTab({ STUDIES }){
               <td style={{padding:"8px 10px",color:T.muted,textAlign:"right"}}>{Math.round(s.cl*100)}%</td>
               <td style={{padding:"8px 10px",color:T.amber,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.fcv)}</td>
               <td style={{padding:"8px 10px",color:T.teal,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.total2026)}</td>
-              <td style={{padding:"8px 10px",color:s.vax?.includes("Non")?T.blue:T.teal,fontSize:10}}>{s.vax?.includes("Non")?"Non-Vax":"Vaccine"}</td>
+              <td style={{padding:"8px 10px",color:(s.vax||'').includes("Non")?T.blue:T.teal,fontSize:10}}>{(s.vax||'').includes("Non")?"Non-Vax":"Vaccine"}</td>
             </tr>);
           })}</tbody>
         </table>
@@ -405,7 +405,7 @@ function StudySearchTab({ STUDIES }){
           <span style={{fontSize:12,background:T.blue+"22",color:T.blue,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>ATOM: {sel.atom}</span>
           <span style={{fontSize:11,background:(sc[sel.status]||T.muted)+"22",color:sc[sel.status]||T.muted,padding:"3px 10px",borderRadius:20}}>{sel.status}</span>
         </div>
-        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",sel.q4]]].filter(([,v])=>v&&v!="--"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
+        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",sel.q4]].filter(([,v])=>v&&v!="--"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
           <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.bdr}22`}}>
             <span style={{fontSize:11,color:T.muted}}>{k}</span>
             <span style={{fontSize:12,color:T.text,fontWeight:500,textAlign:"right",maxWidth:"60%"}}>{String(v)}</span>
@@ -466,7 +466,7 @@ function AgentTab(){
   </div>);
 }
 
-// MAIN WRAPPER WITH INCORPORATED ERROR BOUNDARY
+// MAIN WRAPPER
 const TABS_UI = { glance: AtAGlanceTab, waterfall: WaterfallTab, forecaster: ForecasterTab, variance: VarianceTab, search: StudySearchTab, agent: AgentTab };
 
 export default function App(){
@@ -510,7 +510,7 @@ export default function App(){
         <div style={{background:T.surf2,padding:"20px",borderRadius:8,border:`1px solid ${T.red}`,marginTop:10,maxWidth:800}}>
           <p style={{fontFamily:"monospace",fontSize:14,color:T.red}}>{errorMsg}</p>
         </div>
-        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please copy the red error text above and paste it back into the chat!</p>
+        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please check your configuration or data columns structure.</p>
       </div>
     );
   }
