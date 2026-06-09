@@ -137,6 +137,48 @@ export default async function handler(req, res) {
       return { m, v: parseNum(G[ci]), t };
     });
 
+    // ── Parse Previous Forecaster Summary (same structure) ───────────────────
+    const GP = fcSumPrevRows[51] || [];
+    const fc_prev_grand = parseNum(GP[60]);
+    const fc_prev_ytd   = parseNum(GP[61]);
+    const fc_prev_q1    = parseNum(GP[63]);
+    const fc_prev_q2    = parseNum(GP[64]);
+    const fc_prev_q3    = parseNum(GP[65]);
+    const fc_prev_q4    = parseNum(GP[66]);
+    const TRP = fcSumPrevRows[9] || [];
+    const fcPrevMonthly = MONTHS.map((m, i) => {
+      const ci = 67 + i;
+      const t  = cl(TRP[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST';
+      return { m, v: parseNum(GP[ci]), t };
+    });
+
+    // Study counts from Executive Summary rows (0-indexed):
+    // Row 22 (idx 21): Total - Pipeline  col 4 = count
+    // Row 26 (idx 25): Awarded total     col 4 = count
+    // Row 30 (idx 29): Enrolling total   col 4 = count
+    // Row 34 (idx 33): Maintenance total col 4 = count
+    // Row 47 (idx 46): Total - Backlog   col 4 = count
+    // Row 49 (idx 48): Total - Vaccine   col 4 = count
+    // Row 50 (idx 49): Total - Non-Vax   col 4 = count
+    const getCnt = (rows, idx) => { const r = rows[idx] || []; return parseNum(r[4]); };
+    const cur_pipeline   = getCnt(fcSumRows, 21);
+    const cur_awarded    = getCnt(fcSumRows, 25);
+    const cur_enrolling  = getCnt(fcSumRows, 29);
+    const cur_maint      = getCnt(fcSumRows, 33);
+    const cur_backlog    = getCnt(fcSumRows, 46);
+    const cur_vax        = getCnt(fcSumRows, 48);
+    const cur_nvax       = getCnt(fcSumRows, 49);
+    const cur_grand      = getCnt(fcSumRows, 51);
+
+    const prev_pipeline  = getCnt(fcSumPrevRows, 21);
+    const prev_awarded   = getCnt(fcSumPrevRows, 25);
+    const prev_enrolling = getCnt(fcSumPrevRows, 29);
+    const prev_maint     = getCnt(fcSumPrevRows, 33);
+    const prev_backlog   = getCnt(fcSumPrevRows, 46);
+    const prev_vax       = getCnt(fcSumPrevRows, 48);
+    const prev_nvax      = getCnt(fcSumPrevRows, 49);
+    const prev_grand     = getCnt(fcSumPrevRows, 51);
+
     // ── Parse Waterfall Summary - baseline 85M ────────────────────────────────
     //
     // CONFIRMED from CSV analysis:
@@ -250,11 +292,7 @@ export default async function handler(req, res) {
       wf      : wfCurrent,
       wf_prev : wfPrevious,
 
-      counts: {
-        grand    : liveStudies.length,
-        vaxTotal : liveStudies.filter(s => (s.vax||'').includes('Vaccine')).length,
-        nvaxTotal: liveStudies.filter(s => (s.vax||'').includes('Non')).length,
-      },
+
 
       awards: {
         vaxTgt  : 30,
@@ -268,8 +306,103 @@ export default async function handler(req, res) {
         ],
       },
 
-      variance: { fc_mom: [], wf_wow: [] },
-      wow     : [],
+      // ── Counts ──────────────────────────────────────────────────────────
+      counts: {
+        grand    : cur_grand   || liveStudies.length,
+        backlog  : cur_backlog || liveStudies.filter(s=>['Awarded','Enrolling','Maintenance'].includes(s.status)).length,
+        pipeline : cur_pipeline|| liveStudies.filter(s=>s.status==='Pipeline').length,
+        awarded  : cur_awarded || awarded.length,
+        enrolling: cur_enrolling,
+        maintenance: cur_maint,
+        vaxTotal : cur_vax    || liveStudies.filter(s=>(s.vax||'').includes('Vaccine')).length,
+        nvaxTotal: cur_nvax   || liveStudies.filter(s=>(s.vax||'').includes('Non')).length,
+        vaxAwarded : vaxAwd.length,
+        nvaxAwarded: nvaxAwd.length,
+      },
+
+      counts_prev: {
+        grand    : prev_grand   || 0,
+        backlog  : prev_backlog || 0,
+        pipeline : prev_pipeline|| 0,
+        awarded  : prev_awarded || 0,
+        enrolling: prev_enrolling,
+        maintenance: prev_maint,
+        vaxTotal : prev_vax    || 0,
+        nvaxTotal: prev_nvax   || 0,
+      },
+
+      // ── Previous Forecaster ──────────────────────────────────────────────
+      fc_prev: {
+        grand    : fc_prev_grand,
+        ytd      : fc_prev_ytd,
+        q1       : fc_prev_q1,
+        q2       : fc_prev_q2,
+        q3       : fc_prev_q3,
+        q4       : fc_prev_q4,
+        monthly  : fcPrevMonthly,
+        quarterly: [
+          { q:'Q1', v:fc_prev_q1, m:'Q1' },
+          { q:'Q2', v:fc_prev_q2, m:'Q2' },
+          { q:'Q3', v:fc_prev_q3, m:'Q3' },
+          { q:'Q4', v:fc_prev_q4, m:'Q4' },
+        ],
+      },
+
+      // ── Goals (from Waterfall row 34 col 1=H1, col 2=H2, col 4=Q1 etc) ──
+      goals: (() => {
+        const r34 = wfLatestRows[33] || [];
+        const p = (ci) => parseNum(r34[ci], 'thousands');
+        return {
+          total : Math.round(p(1) + p(2)),
+          h1    : Math.round(p(1)),
+          h2    : Math.round(p(2)),
+          vaxH1 : 0,  // not available in this tab
+          nvaxH1: 0,
+        };
+      })(),
+
+      // ── Variance (MoM Forecaster, WoW Waterfall) ─────────────────────────
+      variance: {
+        fc_mom: [
+          { cat:'Grand Total', old:fc_prev_grand, new_v:fc_grand,
+            old_cnt:prev_grand, new_cnt:cur_grand,
+            reason:'Pipeline additions, new awards, revenue optimization' },
+          { cat:'Pipeline',    old:fc_prev_q3+fc_prev_q4, new_v:fc_q3+fc_q4,
+            old_cnt:prev_pipeline, new_cnt:cur_pipeline,
+            reason:'New pipeline opportunities added this month' },
+          { cat:'Awarded',     old:fc_prev_ytd, new_v:fc_ytd,
+            old_cnt:prev_awarded, new_cnt:cur_awarded,
+            reason:'New awards and site activations' },
+          { cat:'YTD Actual',  old:fc_prev_ytd, new_v:fc_ytd,
+            old_cnt:prev_enrolling, new_cnt:cur_enrolling,
+            reason:'Actualized monthly revenue captured' },
+        ],
+        wf_wow: [
+          { cat:'Total Revenue', old:wfPrevious.grand, new_v:wfCurrent.grand,
+            diff: wfCurrent.grand - wfPrevious.grand, reason:'Week-over-week portfolio adjustments' },
+          { cat:'H1 Total',      old:wfPrevious.h1,    new_v:wfCurrent.h1,
+            diff: wfCurrent.h1 - wfPrevious.h1,   reason:'Enrollment and backlog changes' },
+          { cat:'H2 Total',      old:wfPrevious.h2,    new_v:wfCurrent.h2,
+            diff: wfCurrent.h2 - wfPrevious.h2,   reason:'Pipeline and go-get adjustments' },
+        ],
+      },
+
+      // ── WoW table (built from waterfall component comparison) ────────────
+      wow: (() => {
+        const labels = ['Backlog / Maintenance','Total Enrolling','Total Awarded','Total Pipeline','Genuine Go-Get'];
+        return wfCurrent.components
+          .filter(c => c.type !== 'tot')
+          .map((c, i) => {
+            const prevC = (wfPrevious.components || [])[i] || {};
+            return {
+              cat   : c.label,
+              prev  : prevC.value || 0,
+              curr  : c.value,
+              drivers: [`${c.label}: ${c.value > (prevC.value||0) ? '+' : ''}${((c.value-(prevC.value||0))/1e6).toFixed(2)}M vs prior week`],
+            };
+          });
+      })(),
+
       trend   : [],
     };
 
@@ -281,3 +414,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: `Failed at [${step}]: ${err.message}` });
   }
 }
+
+// NOTE: This file already exports the handler above.
+// The additions below are NOT needed - the handler is complete.
