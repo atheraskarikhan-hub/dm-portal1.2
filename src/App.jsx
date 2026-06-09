@@ -24,24 +24,25 @@ function AtAGlanceTab({ SD, STUDIES }){
   const [period,setPeriod]=useState("Quarter");
   const [stype,setStype]=useState("All");
   const [year,setYear]=useState(2026);
-  const aw=SD.awards;
+  const aw=SD?.awards || { fcvTgt: 1, vaxTgt: 1, nvaxTgt: 1, quarterly: [] };
 
-  const awd=useMemo(()=>STUDIES.filter(s=>s.status==="Awarded"&&(stype==="All"||(stype==="Vaccine"?s.vax.includes("Vaccine")&&!s.vax.includes("Non"):s.vax.includes("Non")))),[stype, STUDIES]);
-  const totalFcv=awd.reduce((s,x)=>s+x.fcv,0);
-  const vaxAwd=awd.filter(s=>s.vax.includes("Vaccine")&&!s.vax.includes("Non"));
-  const nvaxAwd=awd.filter(s=>s.vax.includes("Non"));
+  const awd=useMemo(()=>STUDIES.filter(s=>s && s.status==="Awarded"&&(stype==="All"||(stype==="Vaccine"?(s.vax||'').includes("Vaccine")&&!(s.vax||'').includes("Non"):(s.vax||'').includes("Non")))),[stype, STUDIES]);
+  const totalFcv=awd.reduce((s,x)=>s+(x.fcv || 0),0);
+  const vaxAwd=awd.filter(s=>(s.vax||'').includes("Vaccine")&&!(s.vax||'').includes("Non"));
+  const nvaxAwd=awd.filter(s=>(s.vax||'').includes("Non"));
 
   const chartData=useMemo(()=>{
-    if(period==="Month") return SD.fc.monthly;
-    if(period==="Quarter") return SD.fc.quarterly.map(q=>({...q,m:q.q,v:q.v}));
-    if(period==="Year") return [{m:"2023",v:110346580,t:"ACT"},{m:"2024",v:79347852,t:"ACT"},{m:"2025",v:66556480,t:"ACT"},{m:"2026",v:SD.fc.grand,t:"ACT/FCST"}];
-    return SD.trend.map(d=>({m:d.wk,v:d.v*1000000}));
+    if(period==="Month") return SD?.fc?.monthly || [];
+    if(period==="Quarter") return (SD?.fc?.quarterly || []).map(q=>({...q,m:q.q,v:q.v}));
+    if(period==="Year") return [{m:"2023",v:110346580,t:"ACT"},{m:"2024",v:79347852,t:"ACT"},{m:"2025",v:66556480,t:"ACT"},{m:"2026",v:SD?.fc?.grand || 0,t:"ACT/FCST"}];
+    return (SD?.trend || []).map(d=>({m:d.wk,v:d.v*1000000}));
   },[period, SD]);
 
   const kpiData=useMemo(()=>{
-    if(period==="Month"||period==="Quarter") return {total:SD.fc.grand,ytd:SD.fc.ytd,q1:SD.fc.q1,q2:SD.fc.q2};
-    if(period==="Year") return {total:110346580+79347852+66556480+SD.fc.grand,ytd:SD.fc.ytd,q1:110346580,q2:79347852};
-    return {total:SD.fc.grand,ytd:SD.fc.ytd};
+    const grandFc = SD?.fc?.grand || 0;
+    if(period==="Month"||period==="Quarter") return {total:grandFc,ytd:SD?.fc?.ytd || 0,q1:SD?.fc?.q1 || 0,q2:SD?.fc?.q2 || 0};
+    if(period==="Year") return {total:110346580+79347852+66556480+grandFc,ytd:SD?.fc?.ytd || 0,q1:110346580,q2:79347852};
+    return {total:grandFc,ytd:SD?.fc?.ytd || 0};
   },[period, SD]);
 
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
@@ -58,22 +59,22 @@ function AtAGlanceTab({ SD, STUDIES }){
     </div>
 
     <div style={{fontSize:11,color:T.muted,background:T.surf2,padding:"7px 14px",borderRadius:6}}>
-      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD.meta?.latestFcName || "Current Period"}
+      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD?.meta?.latestFcName || "Current Month"}
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of $85M target`} accent={T.teal}/>
-      <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue" accent={T.amber} pct={totalFcv/aw.fcvTgt}/>
-      <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.teal} pct={vaxAwd.length/aw.vaxTgt}/>
-      <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+x.fcv,0))}`} accent={T.red} pct={nvaxAwd.length/aw.nvaxTgt}/>
+      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round((SD?.fc?.grand || 0)/(SD?.baseline || 1)*100)}% of $85M target`} accent={T.teal}/>
+      <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue" accent={T.amber} pct={totalFcv/(aw.fcvTgt || 1)}/>
+      <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.teal} pct={vaxAwd.length/(aw.vaxTgt || 1)}/>
+      <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.red} pct={nvaxAwd.length/(aw.nvaxTgt || 1)}/>
     </div>
 
     <div>
       <div style={{fontSize:11,color:T.amber,fontWeight:600,letterSpacing:"0.08em",marginBottom:10}}>EXECUTIVE HIGHLIGHTS</div>
       <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
         {[
-          {color:T.amber,title:"Vaccine: Count Ahead but FCV Below Plan",body:`Vaccine awarded ${vaxAwd.length}/${aw.vaxTgt} (${Math.round(vaxAwd.length/aw.vaxTgt*100)}%). Avg FCV $${(vaxAwd.reduce((s,x)=>s+x.fcv,0)/Math.max(1,vaxAwd.length)/1000).toFixed(0)}K per study.`},
-          {color:T.red,title:"Non-Vaccine FCV -- Most Critical Risk",body:`${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies.`},
+          {color:T.amber,title:"Vaccine: Count Ahead but FCV Below Plan",body:aw.vaxTgt ? `Vaccine awarded ${vaxAwd.length}/${aw.vaxTgt} (${Math.round(vaxAwd.length/aw.vaxTgt*100)}%). Avg FCV $${(vaxAwd.reduce((s,x)=>s+(x.fcv||0),0)/Math.max(1,vaxAwd.length)/1000).toFixed(0)}K per study.` : "--"},
+          {color:T.red,title:"Non-Vaccine FCV -- Most Critical Risk",body:aw.nvaxTgt ? `${nvaxAwd.length} of ${aw.nvaxTgt} Non-Vaccine awarded (${Math.round(nvaxAwd.length/aw.nvaxTgt*100)}%). Q3+Q4 must deliver ${aw.nvaxTgt-nvaxAwd.length} more Non-Vaccine studies.` : "--"},
           {color:T.blue,title:"Industry Norm: Book-to-Bill 1.2x",body:"For every $1 of revenue, book $1.20 in new contract value. Declining average study values mean the team must award more studies to maintain revenue levels."},
         ].map(h=><div key={h.title} style={{background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12,padding:"14px 16px",borderLeft:`3px solid ${h.color}`}}><div style={{fontSize:12,fontWeight:600,color:T.text,marginBottom:6}}>{h.title}</div><div style={{fontSize:12,color:T.muted,lineHeight:1.6}}>{h.body}</div></div>)}
       </div>
@@ -88,7 +89,7 @@ function AtAGlanceTab({ SD, STUDIES }){
             <XAxis dataKey="m" tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <YAxis tickFormatter={v=>`$${(v/1e6).toFixed(0)}M`} tick={{fill:T.muted,fontSize:10}} axisLine={false} tickLine={false}/>
             <Tooltip content={<Tip/>}/>
-            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{chartData.map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:d.t==="ACT/FCST"?T.blue:T.teal+"44"}/>)}</Bar>
+            <Bar dataKey="v" name="Revenue" radius={[3,3,0,0]}>{(chartData || []).map((d,i)=><Cell key={i} fill={d.t==="ACT"?T.teal:d.t==="ACT/FCST"?T.blue:T.teal+"44"}/>)}</Bar>
           </BarChart>
         </ResponsiveContainer>
       </Card>
@@ -97,9 +98,10 @@ function AtAGlanceTab({ SD, STUDIES }){
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
           <thead><tr>{["QTR","TGT","ACT","RATE","FCV ACT"].map(h=><th key={h} style={{textAlign:h==="QTR"?"left":"right",padding:"6px 8px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:10}}>{h}</th>)}</tr></thead>
           <tbody>
-            {[...aw.quarterly,{q:"Total",tgt:313,act:awd.length,fcvTgt:aw.fcvTgt,fcvAct:totalFcv}].map(q=>{
-              const rate=q.act!=null?q.act/q.tgt:null;
-              return(<tr key={q.q} style={{borderBottom:`1px solid ${T.bdr}22`,fontWeight:q.q==="Total"?600:400}}>
+            {[(aw.quarterly || []),{q:"Total",tgt:313,act:awd.length,fcvTgt:aw.fcvTgt,fcvAct:totalFcv}].flat().map((q, idx)=>{
+              if (!q) return null;
+              const rate=q.tgt && q.act!=null?q.act/q.tgt:null;
+              return(<tr key={idx} style={{borderBottom:`1px solid ${T.bdr}22`,fontWeight:q.q==="Total"?600:400}}>
                 <td style={{padding:"7px 8px",color:T.text}}>{q.q}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.muted}}>{q.tgt}</td>
                 <td style={{textAlign:"right",padding:"7px 8px",color:T.text}}>{q.act??'--'}</td>
@@ -117,7 +119,7 @@ function AtAGlanceTab({ SD, STUDIES }){
 // TAB: WATERFALL
 function WoWTable({ SD }){
   const T=useT();const[open,setOpen]=useState(null);
-  if (!SD.wow) return null;
+  if (!SD || !SD.wow) return null;
   
   return(<table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
     <thead><tr>{["Category","Last Week","This Week","Δ $","Δ %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
@@ -144,8 +146,8 @@ function WoWTable({ SD }){
 function WaterfallTab({ SD }){
   const T=useT();
   const[ver,setVer]=useState("current");
-  const wfData=ver==="current"?SD.wf:SD.wf_prev;
-  const wf=wfData.components||(SD.wf && SD.wf.components) || [];
+  const wfData=ver==="current"?SD?.wf:SD?.wf_prev;
+  const wf=wfData?.components||(SD?.wf && SD?.wf?.components) || [];
   
   const cd=wf.map((d,i)=>{
     const base=wf.slice(0,i).reduce((s,x)=>x.type==="neg"?s-Math.abs(x.value):x.type==="tot"?s:s+x.value,0);
@@ -157,17 +159,17 @@ function WaterfallTab({ SD }){
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta?.latestWfName || "Current Week"})</button>
-      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta?.prevWfName || "Previous Week"})</button>
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD?.meta?.latestWfName || "Current Week"})</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD?.meta?.prevWfName || "Previous Week"})</button>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       <KPI label="Baseline Target" value="$85.0M" sub="FY 2026 annual goal" accent={T.amber} badge="TARGET"/>
-      <KPI label="H1 Total" value={fm(wfData.h1)} sub={`Q1: ${fm(wfData.q1)} . Q2: ${fm(wfData.q2)}`} accent={T.teal} change={ver==="previous"?null:(wfData.h1-SD.wf_prev.h1)/SD.wf_prev.h1}/>
-      <KPI label="H2 Total" value={fm(wfData.h2)} sub={`Q3: ${fm(wfData.q3)} . Q4: ${fm(wfData.q4)}`} accent={T.blue} change={ver==="previous"?null:(wfData.h2-SD.wf_prev.h2)/SD.wf_prev.h2}/>
-      <KPI label="Gap to $85M (Forecaster)" value={fm(SD.baseline-SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of baseline achieved`} accent={T.red}/>
+      <KPI label="H1 Total" value={fm(wfData?.h1)} sub={`Q1: ${fm(wfData?.q1)} . Q2: ${fm(wfData?.q2)}`} accent={T.teal} change={ver==="previous" ? null : (SD?.wf_prev?.h1 ? ((wfData?.h1 || 0) - SD.wf_prev.h1) / SD.wf_prev.h1 : 0)}/>
+      <KPI label="H2 Total" value={fm(wfData?.h2)} sub={`Q3: ${fm(wfData?.q3)} . Q4: ${fm(wfData?.q4)}`} accent={T.blue} change={ver==="previous" ? null : (SD?.wf_prev?.h2 ? ((wfData?.h2 || 0) - SD.wf_prev.h2) / SD.wf_prev.h2 : 0)}/>
+      <KPI label="Gap to $85M (Forecaster)" value={fm((SD?.baseline || 85000000)-(SD?.fc?.grand || 0))} sub={`${Math.round((SD?.fc?.grand || 0)/(SD?.baseline || 85000000)*100)}% of baseline achieved`} accent={T.red}/>
     </div>
     <Card>
-      <SH title={`Revenue Waterfall Bridge 2026 -- ${ver==="current"?(SD.meta?.latestWfName || "Current"):(SD.meta?.prevWfName || "Previous")}`} badge="Summary - baseline 85M"/>
+      <SH title={`Revenue Waterfall Bridge 2026 -- ${ver==="current"?(SD?.meta?.latestWfName || "Current"):(SD?.meta?.prevWfName || "Previous")}`} badge="Summary - baseline 85M"/>
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart data={cd} barSize={44}>
           <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -187,25 +189,25 @@ function WaterfallTab({ SD }){
 function ForecasterTab({ SD, STUDIES }){
   const T=useT();
   const[ver,setVer]=useState("current");
-  const fcData=ver==="current"?SD.fc:SD.fc_prev;
-  const byStatus=st=>STUDIES.filter(s=>s.status===st);
+  const fcData=ver==="current"?SD?.fc:SD?.fc_prev;
+  const byStatus=st=>STUDIES.filter(s=>s && s.status===st);
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta?.latestFcName || "Current Month"})</button>
-      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta?.prevFcName || "Previous Month"})</button>
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD?.meta?.latestFcName || "Current Month"})</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD?.meta?.prevFcName || "Previous Month"})</button>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label="Grand Total 2026" value={fm(fcData.grand)} sub={`${Math.round(fcData.grand/SD.baseline*100)}% of $85M`} accent={T.teal} change={ver==="previous"?null:(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
-      <KPI label="YTD Revenue" value={fm(fcData.ytd)} sub={`${Math.round(fcData.ytd/fcData.grand*100)}% of annual`} accent={T.blue}/>
-      <KPI label="Grand Total Studies" value={ver==="current"?SD.counts.grand.toLocaleString():SD.counts_prev.grand.toLocaleString()} sub={ver==="current"?`${SD.counts.vaxTotal} Vax . ${SD.counts.nvaxTotal} Non-Vax`:`${SD.counts_prev.vaxTotal} Vax . ${SD.counts_prev.nvaxTotal} Non-Vax`} accent={T.purple} change={ver==="previous"?null:(SD.counts.grand-SD.counts_prev.grand)/SD.counts_prev.grand}/>
-      <KPI label="Expected Goals" value={SD.goals?.total?.toLocaleString() || "--"} sub={`H1: ${SD.goals?.h1?.toLocaleString() || "--"} . H2: ${SD.goals?.h2?.toLocaleString() || "--"}`} accent={T.amber}/>
+      <KPI label="Grand Total 2026" value={fm(fcData?.grand)} sub={`${Math.round((fcData?.grand || 0)/(SD?.baseline || 85000000)*100)}% of $85M`} accent={T.teal} change={ver==="previous" ? null : (SD?.fc_prev?.grand ? ((SD.fc.grand || 0) - SD.fc_prev.grand) / SD.fc_prev.grand : 0)}/>
+      <KPI label="YTD Revenue" value={fm(fcData?.ytd)} sub={`${Math.round((fcData?.ytd || 0)/(fcData?.grand || 1)*100)}% of annual`} accent={T.blue}/>
+      <KPI label="Grand Total Studies" value={ver==="current"? (SD?.counts?.grand || 0).toLocaleString(): (SD?.counts_prev?.grand || 0).toLocaleString()} sub={ver==="current"?`${SD?.counts?.vaxTotal || 0} Vax . ${SD?.counts?.nvaxTotal || 0} Non-Vax`:`${SD?.counts_prev?.vaxTotal || 0} Vax . ${SD?.counts_prev?.nvaxTotal || 0} Non-Vax`} accent={T.purple} change={ver==="previous"?null: (SD?.counts_prev?.grand ? ((SD?.counts?.grand || 0) - SD.counts_prev.grand)/SD.counts_prev.grand : 0)}/>
+      <KPI label="Expected Goals" value={SD?.goals?.total?.toLocaleString() || "--"} sub={`H1: ${SD?.goals?.h1?.toLocaleString() || "--"} . H2: ${SD?.goals?.h2?.toLocaleString() || "--"}`} accent={T.amber}/>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr",gap:16}}>
       <Card>
-        <SH title={`Revenue Forecast -- ${ver==="current"?(SD.meta?.latestFcName || "Current"):(SD.meta?.prevFcName || "Previous")}`}/>
+        <SH title={`Revenue Forecast -- ${ver==="current"?(SD?.meta?.latestFcName || "Current"):(SD?.meta?.prevFcName || "Previous")}`}/>
         <ResponsiveContainer width="100%" height={210}>
-          <ComposedChart data={fcData.monthly}>
+          <ComposedChart data={fcData?.monthly || []}>
             <defs><linearGradient id="aG" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.teal} stopOpacity={0.15}/><stop offset="95%" stopColor={T.teal} stopOpacity={0}/></linearGradient></defs>
             <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
             <XAxis dataKey="m" tick={{fill:T.muted,fontSize:11}} axisLine={false} tickLine={false}/>
@@ -218,14 +220,15 @@ function ForecasterTab({ SD, STUDIES }){
       <Card>
         <SH title="Revenue by Status"/>
         {[{l:"Maintenance",c:T.teal},{l:"Enrolling",c:T.blue},{l:"Awarded",c:T.amber},{l:"Pipeline",c:T.purple}].map(d=>{
-          const totalRev = byStatus(d.l).reduce((sum, item) => sum + item.total2026, 0);
+          const totalRev = byStatus(d.l).reduce((sum, item) => sum + (item.total2026 || 0), 0);
+          const grandTotal = fcData?.grand || 1;
           return (
           <div key={d.l} style={{marginBottom:9}}>
             <div style={{display:"flex",justifyContent:"space-between",fontSize:12,marginBottom:3}}>
               <span style={{color:T.text}}>{d.l} <span style={{color:T.muted,fontSize:10}}>({byStatus(d.l).length})</span></span>
               <span style={{color:d.c,fontFamily:"monospace"}}>{fm(ver==="current"?totalRev:totalRev*0.93)}</span>
             </div>
-            <div style={{height:4,background:T.bdr,borderRadius:2,overflow:"hidden"}}><div style={{width:`${Math.min(100,totalRev/fcData.grand*100)}%`,height:"100%",background:d.c}}/></div>
+            <div style={{height:4,background:T.bdr,borderRadius:2,overflow:"hidden"} }><div style={{width:`${Math.min(100,totalRev/grandTotal*100)}%`,height:"100%",background:d.c}}/></div>
           </div>
         )})}
       </Card>
@@ -237,32 +240,32 @@ function ForecasterTab({ SD, STUDIES }){
 function VarianceTab({ SD }){
   const T=useT();
   const[view,setView]=useState("forecaster");
-  const varData=view==="forecaster"?SD.variance?.fc_mom:SD.variance?.wf_wow;
+  const varData=view==="forecaster"?SD?.variance?.fc_mom:SD?.variance?.wf_wow;
 
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8}}>
       <span style={{fontSize:11,color:T.muted,fontWeight:600}}>VIEW:</span>
       <Sel options={["forecaster","waterfall"]} value={view} onChange={setView}/>
-      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?`${SD.meta?.prevFcName || "Prev"} -> ${SD.meta?.latestFcName || "Latest"} (MoM)`:`${SD.meta?.prevWfName || "Prev"} -> ${SD.meta?.latestWfName || "Latest"} (WoW)`}</span>
+      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?`${SD?.meta?.prevFcName || "Prev"} -> ${SD?.meta?.latestFcName || "Latest"} (MoM)`:`${SD?.meta?.prevWfName || "Prev"} -> ${SD?.meta?.latestWfName || "Latest"} (WoW)`}</span>
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       {view==="forecaster"?(<>
-        <KPI label="Grand Total Change" value={fm(SD.fc.grand-SD.fc_prev.grand)} sub={`$${(SD.fc_prev.grand/1e6).toFixed(2)}M -> $${(SD.fc.grand/1e6).toFixed(2)}M`} accent={T.green} change={(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
-        <KPI label="Study Count Change" value={`+${SD.counts.grand-SD.counts_prev.grand}`} sub={`${SD.counts_prev.grand} -> ${SD.counts.grand} studies`} accent={T.blue}/>
-        <KPI label="Pipeline Growth" value={`+${SD.counts.pipeline-SD.counts_prev.pipeline}`} sub={`${SD.counts_prev.pipeline} -> ${SD.counts.pipeline} opps`} accent={T.purple}/>
-        <KPI label="New Awards" value={`+${SD.counts.awarded-SD.counts_prev.awarded}`} sub={`${SD.counts_prev.awarded} -> ${SD.counts.awarded} awarded`} accent={T.amber}/>
+        <KPI label="Grand Total Change" value={fm((SD?.fc?.grand || 0)-(SD?.fc_prev?.grand || 0))} sub={`$${((SD?.fc_prev?.grand || 0)/1e6).toFixed(2)}M -> $${((SD?.fc?.grand || 0)/1e6).toFixed(2)}M`} accent={T.green} change={SD?.fc_prev?.grand ? ((SD.fc.grand || 0) - SD.fc_prev.grand)/SD.fc_prev.grand : 0}/>
+        <KPI label="Study Count Change" value={`+${(SD?.counts?.grand || 0)-(SD?.counts_prev?.grand || 0)}`} sub={`${SD?.counts_prev?.grand || 0} -> ${SD?.counts?.grand || 0} studies`} accent={T.blue}/>
+        <KPI label="Pipeline Growth" value={`+${(SD?.counts?.pipeline || 0)-(SD?.counts_prev?.pipeline || 0)}`} sub={`${SD?.counts_prev?.pipeline || 0} -> ${SD?.counts?.pipeline || 0} opps`} accent={T.purple}/>
+        <KPI label="New Awards" value={`+${(SD?.counts?.awarded || 0)-(SD?.counts_prev?.awarded || 0)}`} sub={`${SD?.counts_prev?.awarded || 0} -> ${SD?.counts?.awarded || 0} awarded`} accent={T.amber}/>
       </>):(<>
-        <KPI label="WoW Revenue Change" value={fm(SD.wf.grand-SD.wf_prev.grand)} sub="$85.0M baseline unchanged" accent={T.muted}/>
-        <KPI label="Enrolling Change" value={fm(SD.variance?.wf_wow?.[1]?.diff||0)} sub={`${SD.meta?.latestWfName} vs ${SD.meta?.prevWfName}`} accent={T.red}/>
-        <KPI label="Go-Get Change" value={fm(SD.variance?.wf_wow?.[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
+        <KPI label="WoW Revenue Change" value={fm((SD?.wf?.grand || 0)-(SD?.wf_prev?.grand || 0))} sub="$85.0M baseline unchanged" accent={T.muted}/>
+        <KPI label="Enrolling Change" value={fm(SD?.variance?.wf_wow?.[1]?.diff||0)} sub={`${SD?.meta?.latestWfName} vs ${SD?.meta?.prevWfName}`} accent={T.red}/>
+        <KPI label="Go-Get Change" value={fm(SD?.variance?.wf_wow?.[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
         <KPI label="Overall Impact" value="Minimal" sub="$85M target maintained" accent={T.blue}/>
       </>)}
     </div>
 
     {varData && varData.length > 0 && (
       <Card>
-        <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?`${SD.meta?.prevFcName} -> ${SD.meta?.latestFcName}`:`${SD.meta?.prevWfName} -> ${SD.meta?.latestWfName}`}/>
+        <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?`${SD?.meta?.prevFcName} -> ${SD?.meta?.latestFcName}`:`${SD?.meta?.prevWfName} -> ${SD?.meta?.latestWfName}`}/>
         <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
           <thead><tr>
             {["Category","Previous","Current","Change $","Change %","Reason"].map(h=><th key={h} style={{textAlign:h==="Category"||h==="Reason"?"left":"right",padding:"8px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11,fontWeight:500}}>{h}</th>)}
@@ -299,9 +302,10 @@ function StudySearchTab({ STUDIES }){
   const results=useMemo(()=>{
     const ql=q.toLowerCase().trim();
     return Array.isArray(STUDIES) ? STUDIES.filter(s=>{
+      if(!s) return false;
       const mQ=!ql||[s.lid,s.atom,s.protocol,s.sponsor,s.cro,s.indication,s.ta,s.pi,s.leadName].some(v=>String(v||'').toLowerCase().includes(ql));
       const mSt=fSt==="All"||s.status===fSt;
-      const mVax=fVax==="All"||(fVax==="Vaccine"?s.vax?.includes("Vaccine")&&!s.vax?.includes("Non"):s.vax?.includes("Non"));
+      const mVax=fVax==="All"||(fVax==="Vaccine"?(s.vax || '').includes("Vaccine")&&!(s.vax || '').includes("Non"):(s.vax || '').includes("Non"));
       return mQ&&mSt&&mVax;
     }).slice(0, 150) : [];
   },[q,fSt,fVax, STUDIES]);
@@ -322,11 +326,11 @@ function StudySearchTab({ STUDIES }){
       <button onClick={()=>{setQ("");setFSt("All");setFVax("All");setSel(null);}} style={{padding:"10px 14px",borderRadius:8,border:`1px solid ${T.bdr}`,background:"transparent",color:T.muted,fontSize:12,cursor:"pointer"}}>Clear</button>
     </div>
     <div style={{fontSize:12,color:T.muted}}>
-      Showing top <b style={{color:T.teal}}>{results.length}</b> rows out of <b style={{color:T.text}}>{STUDIES?.length || 0}</b> matching entries.
-      <span style={{color:T.blue}}> {STUDIES?.filter(s=>s.status==="Enrolling").length || 0} Enrolling</span> .
-      <span style={{color:T.amber}}> {STUDIES?.filter(s=>s.status==="Awarded").length || 0} Awarded</span> .
-      <span style={{color:T.teal}}> {STUDIES?.filter(s=>s.status==="Maintenance").length || 0} Maintenance</span> .
-      <span style={{color:T.purple}}> {STUDIES?.filter(s=>s.status==="Pipeline").length || 0} Pipeline</span>
+      Showing top <b style={{color:T.teal}}>{results.length}</b> rows out of <b style={{color:T.text}}>{STUDIES?.length || 0}</b> matching database entries.
+      <span style={{color:T.blue}}> {STUDIES?.filter(s=>s && s.status==="Enrolling").length || 0} Enrolling</span> .
+      <span style={{color:T.amber}}> {STUDIES?.filter(s=>s && s.status==="Awarded").length || 0} Awarded</span> .
+      <span style={{color:T.teal}}> {STUDIES?.filter(s=>s && s.status==="Maintenance").length || 0} Maintenance</span> .
+      <span style={{color:T.purple}}> {STUDIES?.filter(s=>s && s.status==="Pipeline").length || 0} Pipeline</span>
     </div>
     <div style={{display:"grid",gridTemplateColumns:sel?"1fr 360px":"1fr",gap:14,alignItems:"start"}}>
       <div style={{overflowX:"auto",background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12}}>
@@ -354,7 +358,7 @@ function StudySearchTab({ STUDIES }){
               <td style={{padding:"8px 10px",color:T.muted,textAlign:"right"}}>{Math.round(s.cl*100)}%</td>
               <td style={{padding:"8px 10px",color:T.amber,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.fcv)}</td>
               <td style={{padding:"8px 10px",color:T.teal,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.total2026)}</td>
-              <td style={{padding:"8px 10px",color:s.vax?.includes("Non")?T.blue:T.teal,fontSize:10}}>{s.vax?.includes("Non")?"Non-Vax":"Vaccine"}</td>
+              <td style={{padding:"8px 10px",color:(s.vax||'').includes("Non")?T.blue:T.teal,fontSize:10}}>{(s.vax||'').includes("Non")?"Non-Vax":"Vaccine"}</td>
             </tr>);
           })}</tbody>
         </table>
@@ -474,7 +478,7 @@ export default function App(){
         <div style={{background:T.surf2,padding:"20px",borderRadius:8,border:`1px solid ${T.red}`,marginTop:10,maxWidth:800}}>
           <p style={{fontFamily:"monospace",fontSize:14,color:T.red}}>{errorMsg}</p>
         </div>
-        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please copy the red error text above and paste it back into the chat!</p>
+        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please check your configuration or data columns structure.</p>
       </div>
     );
   }
