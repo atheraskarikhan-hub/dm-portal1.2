@@ -6,25 +6,30 @@ export default async function handler(req, res) {
   if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
   res.setHeader('Access-Control-Allow-Origin', '*');
 
+  let debugStep = "Starting";
+
   try {
+    debugStep = "Checking Environment Variables";
     if (!process.env.GOOGLE_CLIENT_EMAIL || !process.env.GOOGLE_PRIVATE_KEY) {
-      return res.status(500).json({ error: 'Missing Google Credentials in environment variables.' });
+      return res.status(500).json({ error: 'Missing Google Credentials in Vercel.' });
     }
 
+    debugStep = "Authenticating with Google Cloud";
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n').replace(/"/g, ''), // Strips accidental quotes
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // 1. Read Forecaster Registry
+    debugStep = "Reading Forecaster Registry (Sheet ID: 1B7m7DOSLCXj9vMHTwuXAjLVkuw0i3f0aUrbYweAj6xU)";
     const fcRegistryResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: '1B7m7DOSLCXj9vMHTwuXAjLVkuw0i3f0aUrbYweAj6xU', range: 'A:F', 
     });
-    // Read Waterfall Registry
+    
+    debugStep = "Reading Waterfall Registry (Sheet ID: 169w2PQ22gt1ItcQTOXQP-F9XHVocY17OLv3fzoA1_3E)";
     const wfRegistryResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: '169w2PQ22gt1ItcQTOXQP-F9XHVocY17OLv3fzoA1_3E', range: 'A:F', 
     });
@@ -32,19 +37,16 @@ export default async function handler(req, res) {
     const fcRows = fcRegistryResponse.data.values ? fcRegistryResponse.data.values.slice(1) : [];
     const wfRows = wfRegistryResponse.data.values ? wfRegistryResponse.data.values.slice(1) : [];
 
-    // 2. Extract the Dynamic Labels (Month/Week from Column B)
     const fcDetails = fcRows.filter(row => (row[5] && row[5].trim().toLowerCase() === 'details') || row[4] === 'DATATAB');
     const wfDetails = wfRows.filter(row => (row[5] && row[5].trim().toLowerCase() === 'details') || row[4] === 'DATATAB');
 
     const latestFcRow = fcDetails[fcDetails.length - 1];
     const prevFcRow = fcDetails.length > 1 ? fcDetails[fcDetails.length - 2] : null;
-    
     const latestWfRow = wfDetails[wfDetails.length - 1];
     const prevWfRow = wfDetails.length > 1 ? wfDetails[wfDetails.length - 2] : null;
 
     if (!latestFcRow) return res.status(404).json({ error: 'Could not find Details tab in registry.' });
 
-    // Build dynamic metadata object
     const dynamicMetadata = {
       latestFcName: latestFcRow[1] || "Current Month",
       prevFcName: prevFcRow ? prevFcRow[1] : "Previous Month",
@@ -52,15 +54,18 @@ export default async function handler(req, res) {
       prevWfName: prevWfRow ? prevWfRow[1] : "Previous Week",
     };
 
-    // 3. Fetch ALL LIVE DATA from Google Sheets (up to 3000 rows!)
+    const targetSpreadsheetId = latestFcRow[3];
+    const targetTabName = latestFcRow[4];
+
+    debugStep = `Reading ACTUAL Data Sheet (Sheet ID: ${targetSpreadsheetId}, Tab: ${targetTabName})`;
     const liveDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: latestFcRow[3],
-      range: `${latestFcRow[4]}!A2:Z3000`, 
+      spreadsheetId: targetSpreadsheetId,
+      range: `${targetTabName}!A2:Z3000`, 
     });
 
     const liveRows = liveDataResponse.data.values || [];
 
-    // 4. Parse data
+    debugStep = "Parsing Data";
     const liveStudies = liveRows.map(p => {
       const qs = (p[21] || '').split(',').map(Number);
       const mo = {}; 
@@ -79,9 +84,9 @@ export default async function handler(req, res) {
       };
     }).filter(s => s.lid && s.lid !== 'undefined' && s.lid !== 'Source');
 
-    // 5. Manual Metrics
+    // Manual Metrics
     const SD = {
-      meta: dynamicMetadata, // <--- We pass the dynamic labels to the frontend here!
+      meta: dynamicMetadata, 
       asOf: dynamicMetadata.latestFcName, baseline: 85000000,
       fc:{
         grand:72882175,ytd:35665389,fcstRem:37216786,
@@ -137,8 +142,11 @@ export default async function handler(req, res) {
       trend:[{wk:"Dec W1",v:23},{wk:"Jan W1",v:14},{wk:"Feb W1",v:25},{wk:"Mar W2",v:20},{wk:"Apr W5",v:18},{wk:"May W3",v:13}],
     };
 
+    debugStep = "Sending Success Response";
     return res.status(200).json({ source: targetTabName, studies: liveStudies, sdMetrics: SD });
   } catch (error) {
-    return res.status(500).json({ error: `Server error: ${error.message}` });
+    // THIS WILL TELL US EXACTLY WHERE IT BROKE
+    console.error(`ERROR at step: [${debugStep}] - ${error.message}`);
+    return res.status(500).json({ error: `Failed at step: [${debugStep}]. Google Error: ${error.message}` });
   }
 }
