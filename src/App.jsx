@@ -434,19 +434,42 @@ export default function App(){
   const[studies, setStudies] = useState([]);
   const[sdMetrics, setSdMetrics] = useState(null);
   const[isLoading, setIsLoading] = useState(true);
+  const[errorMsg, setErrorMsg] = useState(null); // <-- Added error state
   
   window.__T__=THEMES[theme];const T=THEMES[theme];
 
   useEffect(()=>{
     fetch('/api/dashboard')
-      .then(res => res.json())
+      .then(async (res) => {
+        const data = await res.json();
+        // If the backend sends an error, throw it so we can catch it!
+        if (!res.ok) throw new Error(data.error || 'Unknown Server Error');
+        return data;
+      })
       .then(data => { 
         if(data.studies) setStudies(data.studies); 
         if(data.sdMetrics) setSdMetrics(data.sdMetrics);
         setIsLoading(false); 
       })
-      .catch(() => setIsLoading(false));
+      .catch((err) => {
+        console.error("Dashboard Error:", err);
+        setErrorMsg(err.message); // <-- Save the error message
+        setIsLoading(false); 
+      });
   },[]);
+
+  // IF THERE IS AN ERROR, SHOW THIS SCREEN INSTEAD OF LOADING FOREVER!
+  if (errorMsg) {
+    return (
+      <div style={{minHeight:"100vh",background:T.bg,color:T.red,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,textAlign:"center"}}>
+        <h2>🚨 Connection Error</h2>
+        <div style={{background:T.surf2,padding:"20px",borderRadius:8,border:`1px solid ${T.red}`,marginTop:10,maxWidth:800}}>
+          <p style={{fontFamily:"monospace",fontSize:14,color:T.red}}>{errorMsg}</p>
+        </div>
+        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please copy the red error text above and paste it back into the chat!</p>
+      </div>
+    );
+  }
 
   if (isLoading || !sdMetrics) return <div style={{minHeight:"100vh",background:T.bg,color:T.text,display:"flex",alignItems:"center",justifyContent:"center"}}><h2>Loading Live Google Sheets Data...</h2></div>;
 
