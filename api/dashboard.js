@@ -45,6 +45,7 @@ export default async function handler(req, res) {
     const fcRows = fcRegistryResponse.data.values ? fcRegistryResponse.data.values.slice(1) : [];
     const wfRows = wfRegistryResponse.data.values ? wfRegistryResponse.data.values.slice(1) : [];
 
+    // Filters for "Details" rows strictly inside column index 5 (Column F)
     const fcDetails = fcRows.filter(row => row[5] && row[5].trim().toLowerCase() === 'details');
     const wfDetails = wfRows.filter(row => row[5] && row[5].trim().toLowerCase() === 'details');
 
@@ -56,14 +57,15 @@ export default async function handler(req, res) {
     if (!latestFcRow) return res.status(404).json({ error: 'Could not find a details row inside the Forecaster Registry.' });
 
     const dynamicMetadata = {
-      latestFcName: latestFcRow[0] || "Current Month",
+      latestFcName: latestFcRow[0] || "Current Month", // Column A (index 0) is Week_Date
       prevFcName: prevFcRow ? prevFcRow[0] : "Previous Month",
       latestWfName: latestWfRow ? latestWfRow[0] : "Current Week",
       prevWfName: prevWfRow ? prevWfRow[0] : "Previous Week",
     };
 
-    const targetSpreadsheetId = latestFcRow[2]; 
-    const targetTabName = latestFcRow[4];       
+    // FIXED EXACT TARGETS ACCORDING TO YOUR REGISTRY HEADER VERIFICATION:
+    const targetSpreadsheetId = latestFcRow[2]; // Spreadsheet_ID is in Column C (index 2)
+    const targetTabName = latestFcRow[4];       // Tab_Name is in Column E (index 4)
 
     debugStep = `Reading ACTUAL Data Sheet (Sheet ID: ${targetSpreadsheetId}, Tab: ${targetTabName})`;
     const liveDataResponse = await sheets.spreadsheets.values.get({
