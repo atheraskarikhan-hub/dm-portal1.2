@@ -18,8 +18,11 @@ export default async function handler(req, res) {
     try {
       debugStep = "Parsing GOOGLE_CREDENTIALS_JSON";
       credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+      if (credentials.private_key) {
+        credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+      }
     } catch (e) {
-      return res.status(500).json({ error: 'Invalid JSON format in Vercel GOOGLE_CREDENTIALS_JSON variable. Make sure you pasted the entire file exactly as downloaded.' });
+      return res.status(500).json({ error: 'Invalid JSON format in Vercel GOOGLE_CREDENTIALS_JSON variable.' });
     }
 
     debugStep = "Authenticating with Google Cloud";
@@ -42,35 +45,37 @@ export default async function handler(req, res) {
     const fcRows = fcRegistryResponse.data.values ? fcRegistryResponse.data.values.slice(1) : [];
     const wfRows = wfRegistryResponse.data.values ? wfRegistryResponse.data.values.slice(1) : [];
 
-    const fcDetails = fcRows.filter(row => (row[5] && row[5].trim().toLowerCase() === 'details') || row[4] === 'DATATAB');
-    const wfDetails = wfRows.filter(row => (row[5] && row[5].trim().toLowerCase() === 'details') || row[4] === 'DATATAB');
+    // Filter for rows where Data_Type (Column F / index 5) is 'details'
+    const fcDetails = fcRows.filter(row => row[5] && row[5].trim().toLowerCase() === 'details');
+    const wfDetails = wfRows.filter(row => row[5] && row[5].trim().toLowerCase() === 'details');
 
     const latestFcRow = fcDetails[fcDetails.length - 1];
     const prevFcRow = fcDetails.length > 1 ? fcDetails[fcDetails.length - 2] : null;
     const latestWfRow = wfDetails[wfDetails.length - 1];
     const prevWfRow = wfDetails.length > 1 ? wfDetails[wfDetails.length - 2] : null;
 
-    if (!latestFcRow) return res.status(404).json({ error: 'Could not find Details tab in registry.' });
+    if (!latestFcRow) return res.status(404).json({ error: 'Could not find a details row inside the Forecaster Registry.' });
 
     const dynamicMetadata = {
-      latestFcName: latestFcRow[1] || "Current Month",
-      prevFcName: prevFcRow ? prevFcRow[1] : "Previous Month",
-      latestWfName: latestWfRow ? latestWfRow[1] : "Current Week",
-      prevWfName: prevWfRow ? prevWfRow[1] : "Previous Week",
+      latestFcName: latestFcRow[0] || "Current Month", // Column A (index 0) is Week_Date
+      prevFcName: prevFcRow ? prevFcRow[0] : "Previous Month",
+      latestWfName: latestWfRow ? latestWfRow[0] : "Current Week",
+      prevWfName: prevWfRow ? prevWfRow[0] : "Previous Week",
     };
 
-    const targetSpreadsheetId = latestFcRow[3];
-    const targetTabName = latestFcRow[4];
+    // ACCURATE MAP MATCHING YOUR SCHEMA:
+    const targetSpreadsheetId = latestFcRow[2]; // Spreadsheet_ID is Column C (index 2)
+    const targetTabName = latestFcRow[4];       // Tab_Name is Column E (index 4)
 
     debugStep = `Reading ACTUAL Data Sheet (Sheet ID: ${targetSpreadsheetId}, Tab: ${targetTabName})`;
     const liveDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: targetSpreadsheetId,
-      range: `${targetTabName}!A2:Z3000`, 
+      spreadsheetId: targetSpreadsheetId.trim(),
+      range: `${targetTabName.trim()}!A2:Z3000`, 
     });
 
     const liveRows = liveDataResponse.data.values || [];
 
-    debugStep = "Parsing Data";
+    debugStep = "Parsing Data Rows";
     const liveStudies = liveRows.map(p => {
       const qs = (p[21] || '').split(',').map(Number);
       const mo = {}; 
@@ -89,7 +94,6 @@ export default async function handler(req, res) {
       };
     }).filter(s => s.lid && s.lid !== 'undefined' && s.lid !== 'Source');
 
-    // Minimal dynamic metrics to prevent charts from crashing
     const totalRev = liveStudies.reduce((a, c) => a + (c.total2026 || 0), 0);
     const SD = {
       meta: dynamicMetadata, 

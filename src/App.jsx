@@ -58,7 +58,7 @@ function AtAGlanceTab({ SD, STUDIES }){
     </div>
 
     <div style={{fontSize:11,color:T.muted,background:T.surf2,padding:"7px 14px",borderRadius:6}}>
-      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD.meta?.latestFcName || "Current Month"}
+      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD.meta?.latestFcName || "Current Period"}
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -296,20 +296,19 @@ function StudySearchTab({ STUDIES }){
   const[sel,setSel]=useState(null);
   const sc={Enrolling:T.blue,Awarded:T.amber,Maintenance:T.teal,Pipeline:T.purple,Cancelled:T.red};
   
-  // Uses the FULL 2,600+ Google Sheets Database
   const results=useMemo(()=>{
     const ql=q.toLowerCase().trim();
-    return STUDIES.filter(s=>{
+    return Array.isArray(STUDIES) ? STUDIES.filter(s=>{
       const mQ=!ql||[s.lid,s.atom,s.protocol,s.sponsor,s.cro,s.indication,s.ta,s.pi,s.leadName].some(v=>String(v||'').toLowerCase().includes(ql));
       const mSt=fSt==="All"||s.status===fSt;
-      const mVax=fVax==="All"||(fVax==="Vaccine"?s.vax.includes("Vaccine")&&!s.vax.includes("Non"):s.vax.includes("Non"));
+      const mVax=fVax==="All"||(fVax==="Vaccine"?s.vax?.includes("Vaccine")&&!s.vax?.includes("Non"):s.vax?.includes("Non"));
       return mQ&&mSt&&mVax;
-    }).slice(0, 150); // Slices rendering so browser doesn't freeze, but counts below are 100% accurate!
+    }).slice(0, 150) : [];
   },[q,fSt,fVax, STUDIES]);
 
   return(<div style={{display:"flex",flexDirection:"column",gap:14}}>
     <div style={{background:T.surf2,border:`1px solid ${T.bdr}`,borderRadius:8,padding:"8px 14px",fontSize:11,color:T.muted}}>
-      LIVE Google Sheets Database Synced. Study database contains <b style={{color:T.text}}>{STUDIES.length} total studies</b>.
+      LIVE Google Sheets Database Synced. Study database contains <b style={{color:T.text}}>{STUDIES?.length || 0} total studies</b>.
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1fr auto auto auto",gap:8}}>
       <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search Lead ID, ATOM No, Protocol, Sponsor, CRO, PI, Indication, Study Name..."
@@ -323,11 +322,11 @@ function StudySearchTab({ STUDIES }){
       <button onClick={()=>{setQ("");setFSt("All");setFVax("All");setSel(null);}} style={{padding:"10px 14px",borderRadius:8,border:`1px solid ${T.bdr}`,background:"transparent",color:T.muted,fontSize:12,cursor:"pointer"}}>Clear</button>
     </div>
     <div style={{fontSize:12,color:T.muted}}>
-      Showing top <b style={{color:T.teal}}>{results.length}</b> rows out of <b style={{color:T.text}}>{STUDIES.length}</b> matching database entries.
-      <span style={{color:T.blue}}> {STUDIES.filter(s=>s.status==="Enrolling").length} Enrolling</span> .
-      <span style={{color:T.amber}}> {STUDIES.filter(s=>s.status==="Awarded").length} Awarded</span> .
-      <span style={{color:T.teal}}> {STUDIES.filter(s=>s.status==="Maintenance").length} Maintenance</span> .
-      <span style={{color:T.purple}}> {STUDIES.filter(s=>s.status==="Pipeline").length} Pipeline</span>
+      Showing top <b style={{color:T.teal}}>{results.length}</b> rows out of <b style={{color:T.text}}>{STUDIES?.length || 0}</b> matching entries.
+      <span style={{color:T.blue}}> {STUDIES?.filter(s=>s.status==="Enrolling").length || 0} Enrolling</span> .
+      <span style={{color:T.amber}}> {STUDIES?.filter(s=>s.status==="Awarded").length || 0} Awarded</span> .
+      <span style={{color:T.teal}}> {STUDIES?.filter(s=>s.status==="Maintenance").length || 0} Maintenance</span> .
+      <span style={{color:T.purple}}> {STUDIES?.filter(s=>s.status==="Pipeline").length || 0} Pipeline</span>
     </div>
     <div style={{display:"grid",gridTemplateColumns:sel?"1fr 360px":"1fr",gap:14,alignItems:"start"}}>
       <div style={{overflowX:"auto",background:T.surf,border:`1px solid ${T.bdr}`,borderRadius:12}}>
@@ -339,7 +338,7 @@ function StudySearchTab({ STUDIES }){
           </tr></thead>
           <tbody>{results.map((s,i)=>{
             const isSel=sel?.lid===s.lid&&sel?.atom===s.atom;const col=sc[s.status]||T.muted;
-            return(<tr key={i} onClick={()=>setSel(isSel?null:s)} style={{borderBottom:`1px solid ${T.bdr}22`,cursor:"pointer",background:isSel?T.surf2:"transparent"}}
+            return(<tr key={i} onClick={()=>setSel(isSel?null:s)} style={{borderBottom:`1px solid ${T.bdr}22`,cursor:"pointer",background:isSel?T.surf2:"transparent"} }
               onMouseEnter={e=>!isSel&&(e.currentTarget.style.background=T.surf2)} onMouseLeave={e=>!isSel&&(e.currentTarget.style.background="transparent")}>
               <td style={{padding:"8px 10px",color:T.teal,fontFamily:"monospace",fontWeight:600,whiteSpace:"nowrap"}}>{s.lid}</td>
               <td style={{padding:"8px 10px",color:T.muted,fontFamily:"monospace"}}>{s.atom}</td>
@@ -355,7 +354,7 @@ function StudySearchTab({ STUDIES }){
               <td style={{padding:"8px 10px",color:T.muted,textAlign:"right"}}>{Math.round(s.cl*100)}%</td>
               <td style={{padding:"8px 10px",color:T.amber,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.fcv)}</td>
               <td style={{padding:"8px 10px",color:T.teal,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.total2026)}</td>
-              <td style={{padding:"8px 10px",color:s.vax.includes("Non")?T.blue:T.teal,fontSize:10}}>{s.vax.includes("Non")?"Non-Vax":"Vaccine"}</td>
+              <td style={{padding:"8px 10px",color:s.vax?.includes("Non")?T.blue:T.teal,fontSize:10}}>{s.vax?.includes("Non")?"Non-Vax":"Vaccine"}</td>
             </tr>);
           })}</tbody>
         </table>
