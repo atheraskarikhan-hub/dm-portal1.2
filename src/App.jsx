@@ -494,6 +494,14 @@ function AgentTab(){
 }
 
 // MAIN WRAPPER WITH INCORPORATED ERROR BOUNDARY
+const TABS = [
+  { id: "glance",     label: "At a Glance"  },
+  { id: "waterfall",  label: "Waterfall"    },
+  { id: "forecaster", label: "Forecaster"   },
+  { id: "variance",   label: "Variance"     },
+  { id: "search",     label: "Study Search" },
+  { id: "agent",      label: "AI Agent"     },
+];
 const TABS_UI = { glance: AtAGlanceTab, waterfall: WaterfallTab, forecaster: ForecasterTab, variance: VarianceTab, search: StudySearchTab, agent: AgentTab };
 
 export default function App(){

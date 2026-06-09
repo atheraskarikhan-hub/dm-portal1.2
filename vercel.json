@@ -1,0 +1,10 @@
+{
+    "rewrites": [
+      { "source": "/api/dashboard", "destination": "/api/dashboard.js" },
+      { "source": "/api/chat",      "destination": "/api/chat.js"      }
+    ],
+    "functions": {
+      "api/dashboard.js": { "maxDuration": 60 },
+      "api/chat.js":      { "maxDuration": 60 }
+    }
+  }
