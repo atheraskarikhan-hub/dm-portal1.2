@@ -85,9 +85,10 @@ export default async function handler(req, res) {
       }
     };
 
-    const [fcSumRows, fcDetRows, wfLatestRows, wfPrevRows] = await Promise.all([
-      fetchSheet(fcSumLatest[2], fcSumLatest[4], 'A1:FZ60'),      // Executive Summary
-      fetchSheet(fcDetLatest[2], fcDetLatest[4], 'A2:Z3000'),      // Detail rows
+    const [fcSumRows, fcSumPrevRows, fcDetRows, wfLatestRows, wfPrevRows] = await Promise.all([
+      fetchSheet(fcSumLatest[2], fcSumLatest[4], 'A1:FZ60'),
+      fcSumPrev ? fetchSheet(fcSumPrev[2], fcSumPrev[4], 'A1:FZ60') : [],
+      fetchSheet(fcDetLatest[2], fcDetLatest[4], 'A2:Z3000'),
       wfSumLatest ? fetchSheet(wfSumLatest[2], wfSumLatest[4], 'A1:AJ40') : [],
       wfSumPrev   ? fetchSheet(wfSumPrev[2],   wfSumPrev[4],   'A1:AJ40') : [],
     ]);
@@ -137,47 +138,38 @@ export default async function handler(req, res) {
       return { m, v: parseNum(G[ci]), t };
     });
 
-    // ── Parse Previous Forecaster Summary (same structure) ───────────────────
-    const GP = fcSumPrevRows[51] || [];
+    // ── Parse Previous Forecaster (for fc_prev + counts_prev) ──────────────
+    const GP  = fcSumPrevRows[51] || [];
+    const TRP = fcSumPrevRows[9]  || [];
     const fc_prev_grand = parseNum(GP[60]);
     const fc_prev_ytd   = parseNum(GP[61]);
     const fc_prev_q1    = parseNum(GP[63]);
     const fc_prev_q2    = parseNum(GP[64]);
     const fc_prev_q3    = parseNum(GP[65]);
     const fc_prev_q4    = parseNum(GP[66]);
-    const TRP = fcSumPrevRows[9] || [];
-    const fcPrevMonthly = MONTHS.map((m, i) => {
+    const fcPrevMonthly = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].map((m, i) => {
       const ci = 67 + i;
-      const t  = cl(TRP[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST';
-      return { m, v: parseNum(GP[ci]), t };
+      return { m, v: parseNum(GP[ci]), t: cl(TRP[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST' };
     });
 
-    // Study counts from Executive Summary rows (0-indexed):
-    // Row 22 (idx 21): Total - Pipeline  col 4 = count
-    // Row 26 (idx 25): Awarded total     col 4 = count
-    // Row 30 (idx 29): Enrolling total   col 4 = count
-    // Row 34 (idx 33): Maintenance total col 4 = count
-    // Row 47 (idx 46): Total - Backlog   col 4 = count
-    // Row 49 (idx 48): Total - Vaccine   col 4 = count
-    // Row 50 (idx 49): Total - Non-Vax   col 4 = count
-    const getCnt = (rows, idx) => { const r = rows[idx] || []; return parseNum(r[4]); };
-    const cur_pipeline   = getCnt(fcSumRows, 21);
-    const cur_awarded    = getCnt(fcSumRows, 25);
-    const cur_enrolling  = getCnt(fcSumRows, 29);
-    const cur_maint      = getCnt(fcSumRows, 33);
-    const cur_backlog    = getCnt(fcSumRows, 46);
-    const cur_vax        = getCnt(fcSumRows, 48);
-    const cur_nvax       = getCnt(fcSumRows, 49);
-    const cur_grand      = getCnt(fcSumRows, 51);
-
-    const prev_pipeline  = getCnt(fcSumPrevRows, 21);
-    const prev_awarded   = getCnt(fcSumPrevRows, 25);
-    const prev_enrolling = getCnt(fcSumPrevRows, 29);
-    const prev_maint     = getCnt(fcSumPrevRows, 33);
-    const prev_backlog   = getCnt(fcSumPrevRows, 46);
-    const prev_vax       = getCnt(fcSumPrevRows, 48);
-    const prev_nvax      = getCnt(fcSumPrevRows, 49);
-    const prev_grand     = getCnt(fcSumPrevRows, 51);
+    // Study counts from Executive Summary (col 4 = count column)
+    const getCnt = (rows, rowIdx) => parseNum((rows[rowIdx] || [])[4]);
+    const cur_pipeline    = getCnt(fcSumRows, 21);
+    const cur_awarded = getCnt(fcSumRows, 25);
+    const cur_enrolling   = getCnt(fcSumRows, 29);
+    const cur_maint       = getCnt(fcSumRows, 33);
+    const cur_backlog     = getCnt(fcSumRows, 46);
+    const cur_vax         = getCnt(fcSumRows, 48);
+    const cur_nvax        = getCnt(fcSumRows, 49);
+    const cur_grand       = getCnt(fcSumRows, 51);
+    const prev_pipeline   = getCnt(fcSumPrevRows, 21);
+    const prev_awarded= getCnt(fcSumPrevRows, 25);
+    const prev_enrolling  = getCnt(fcSumPrevRows, 29);
+    const prev_maint      = getCnt(fcSumPrevRows, 33);
+    const prev_backlog    = getCnt(fcSumPrevRows, 46);
+    const prev_vax        = getCnt(fcSumPrevRows, 48);
+    const prev_nvax       = getCnt(fcSumPrevRows, 49);
+    const prev_grand      = getCnt(fcSumPrevRows, 51);
 
     // ── Parse Waterfall Summary - baseline 85M ────────────────────────────────
     //
