@@ -2,8 +2,20 @@ import { google } from 'googleapis';
 
 export const maxDuration = 60;
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-const n  = v => { const x = parseFloat(String(v ?? '').replace(/[$,%\s]/g, '')); return isNaN(x) ? 0 : x; };
+// ─── Parse a number string that may have commas, spaces, parens for negatives
+// mode: 'full' = raw dollars (Forecaster), 'thousands' = multiply by 1000 (Waterfall)
+const parseNum = (v, mode = 'full') => {
+  if (v == null) return 0;
+  const s = String(v).trim();
+  if (!s || s === '-') return 0;
+  // Handle accounting negatives: (1,234) → -1234
+  const neg = s.startsWith('(') && s.endsWith(')');
+  const clean = s.replace(/[$()\s,]/g, '').replace('%', '');
+  const n = parseFloat(clean);
+  if (isNaN(n)) return 0;
+  const val = neg ? -n : n;
+  return mode === 'thousands' ? val * 1000 : val;
+};
 const cl = v => String(v ?? '').trim();
 
 export default async function handler(req, res) {
@@ -27,7 +39,7 @@ export default async function handler(req, res) {
     const sheets = google.sheets({ version: 'v4', auth });
 
     // ── Read Registries ───────────────────────────────────────────────────────
-    // Registry columns: A=Date, B=Latest/Previous/Old, C=Spreadsheet_ID, D=Notes, E=Tab_Name, F=Data_Type
+    // Columns: A=Date, B=Latest/Previous/Old, C=Spreadsheet_ID, D=Notes, E=Tab_Name, F=Data_Type
     step = "registries";
     const [fcReg, wfReg] = await Promise.all([
       sheets.spreadsheets.values.get({ spreadsheetId: '1B7m7DOSLCXj9vMHTwuXAjLVkuw0i3f0aUrbYweAj6xU', range: 'A:F' }),
@@ -42,14 +54,10 @@ export default async function handler(req, res) {
     const isSummary  = r => cl(r[5]).toLowerCase() === 'summary';
     const isDetails  = r => cl(r[5]).toLowerCase() === 'details';
 
-    // Forecaster: latest Summary row → "Executive Summary" tab
     const fcSumLatest = fcRows.filter(r => isSummary(r) && isLatest(r)).pop();
     const fcSumPrev   = fcRows.filter(r => isSummary(r) && isPrevious(r)).pop();
-    // Forecaster: latest Details row → study-level data tab
     const fcDetLatest = fcRows.filter(r => isDetails(r) && isLatest(r)).pop()
                      || fcRows.filter(r => isDetails(r)).pop();
-
-    // Waterfall: latest + previous Summary rows → "Summary - baseline 85M" tab
     const wfSumLatest = wfRows.filter(r => isSummary(r) && isLatest(r)).pop();
     const wfSumPrev   = wfRows.filter(r => isSummary(r) && isPrevious(r)).pop();
 
@@ -63,9 +71,8 @@ export default async function handler(req, res) {
       prevWfName   : cl(wfSumPrev?.[0])  || "Previous Week",
     };
 
-    // ── Fetch all sheets in parallel ──────────────────────────────────────────
+    // ── Fetch sheets ──────────────────────────────────────────────────────────
     step = "fetch-sheets";
-
     const fetchSheet = async (sheetId, tabName, range = 'A1:Z200') => {
       try {
         const r = await sheets.spreadsheets.values.get({
@@ -73,114 +80,121 @@ export default async function handler(req, res) {
         });
         return r.data.values || [];
       } catch (e) {
-        console.warn(`Failed ${tabName} from ${sheetId}: ${e.message}`);
+        console.warn(`Failed ${tabName}: ${e.message}`);
         return [];
       }
     };
 
     const [fcSumRows, fcDetRows, wfLatestRows, wfPrevRows] = await Promise.all([
-      fetchSheet(fcSumLatest[2], fcSumLatest[4]),                          // Executive Summary (latest)
-      fetchSheet(fcDetLatest[2], fcDetLatest[4], 'A2:Z3000'),              // Details (study rows)
-      wfSumLatest ? fetchSheet(wfSumLatest[2], wfSumLatest[4]) : [],       // WF Summary latest
-      wfSumPrev   ? fetchSheet(wfSumPrev[2],   wfSumPrev[4])   : [],       // WF Summary previous
+      fetchSheet(fcSumLatest[2], fcSumLatest[4], 'A1:FZ60'),      // Executive Summary
+      fetchSheet(fcDetLatest[2], fcDetLatest[4], 'A2:Z3000'),      // Detail rows
+      wfSumLatest ? fetchSheet(wfSumLatest[2], wfSumLatest[4], 'A1:AJ40') : [],
+      wfSumPrev   ? fetchSheet(wfSumPrev[2],   wfSumPrev[4],   'A1:AJ40') : [],
     ]);
 
     // ── Parse Executive Summary (Forecaster) ──────────────────────────────────
-    // EXACT cell positions verified from XLSX inspection:
-    //   Row 9  (index 8)  = header row with year/month labels
-    //   Row 10 (index 9)  = ACT/FCST type row
-    //   Row 52 (index 51) = "Grand Total" row
     //
-    //   2026 columns (0-indexed):
-    //     col 60 = 2026 Grand Total (ACT+FCST combined)
-    //     col 61 = 2026 YTD Actual
-    //     col 62 = 2026 Remaining Forecast
-    //     col 63 = Q1 2026
-    //     col 64 = Q2 2026
-    //     col 65 = Q3 2026
-    //     col 66 = Q4 2026
-    //     col 67 = Jan 2026  (ACT)
-    //     col 68 = Feb 2026  (ACT)
-    //     col 69 = Mar 2026  (ACT)
-    //     col 70 = Apr 2026  (ACT)
-    //     col 71 = May 2026  (ACT)
-    //     col 72 = Jun 2026  (FCST)
-    //     col 73 = Jul 2026  (FCST)
-    //     col 74 = Aug 2026  (FCST)
-    //     col 75 = Sep 2026  (FCST)
-    //     col 76 = Oct 2026  (FCST)
-    //     col 77 = Nov 2026  (FCST)
-    //     col 78 = Dec 2026  (FCST)
+    // CONFIRMED from CSV analysis:
+    //   Row 9  (idx 8)  = column headers  (year labels, month names)
+    //   Row 10 (idx 9)  = ACT/FCST type row
+    //   Row 52 (idx 51) = "Grand Total" — values in FULL DOLLARS
+    //
+    //   2026 column indices (0-based):
+    //     60 = 2026 Grand Total (ACT+FCST)   e.g. "  72,882,175 "
+    //     61 = 2026 YTD Actual               e.g. "  35,665,389 "
+    //     62 = 2026 Remaining Forecast
+    //     63 = Q1 2026
+    //     64 = Q2 2026
+    //     65 = Q3 2026
+    //     66 = Q4 2026
+    //     67 = Jan 2026 (ACT)
+    //     68 = Feb 2026 (ACT)
+    //     69 = Mar 2026 (ACT)
+    //     70 = Apr 2026 (ACT)
+    //     71 = May 2026 (ACT)
+    //     72 = Jun 2026 (FCST)
+    //     73 = Jul 2026 (FCST)
+    //     74 = Aug 2026 (FCST)
+    //     75 = Sep 2026 (FCST)
+    //     76 = Oct 2026 (FCST)
+    //     77 = Nov 2026 (FCST)
+    //     78 = Dec 2026 (FCST)
 
-    const GRAND_ROW = fcSumRows[51] || []; // Row 52 (0-indexed = 51)
+    const G  = fcSumRows[51] || [];  // Grand Total row (row 52, 0-indexed = 51)
+    const TR = fcSumRows[9]  || [];  // Type row (ACT/FCST)
 
-    const grandTotal = n(GRAND_ROW[60]);
-    const ytdActual  = n(GRAND_ROW[61]);
+    const fc_grand = parseNum(G[60]);
+    const fc_ytd   = parseNum(G[61]);
+    const fc_q1    = parseNum(G[63]);
+    const fc_q2    = parseNum(G[64]);
+    const fc_q3    = parseNum(G[65]);
+    const fc_q4    = parseNum(G[66]);
 
-    const fcQ1 = n(GRAND_ROW[63]);
-    const fcQ2 = n(GRAND_ROW[64]);
-    const fcQ3 = n(GRAND_ROW[65]);
-    const fcQ4 = n(GRAND_ROW[66]);
-
-    const MONTH_LABELS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    // Type row (index 9): col 67-78 = Jan-Dec. ACT = actual, else FCST
-    const typeRow = fcSumRows[9] || [];
-    const fcMonthly = MONTH_LABELS.map((m, i) => {
+    const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const fcMonthly = MONTHS.map((m, i) => {
       const ci = 67 + i;
-      const t  = cl(typeRow[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST';
-      return { m, v: n(GRAND_ROW[ci]), t };
+      const t  = cl(TR[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST';
+      return { m, v: parseNum(G[ci]), t };
     });
 
-    // Status-level rows for study counts (rows 24-26 = Awarded Vax/NonVax/Total)
-    // Row 24 (idx 23): Awarded - Vaccine  col 4 = count
-    // Row 25 (idx 24): Awarded - Non-Vaccine
-    // Row 26 (idx 25): Awarded total
-    const awdVaxCount  = n((fcSumRows[23] || [])[4]);
-    const awdNvaxCount = n((fcSumRows[24] || [])[4]);
-
     // ── Parse Waterfall Summary - baseline 85M ────────────────────────────────
-    // EXACT row/column positions verified from XLSX inspection:
-    //   Row 7  = "Revenue Waterfall - Baseline Goals" (grand total)
-    //     col B (idx 1) = H1,  col C (idx 2) = H2
-    //     col E (idx 4) = Q1,  col F (idx 5) = Q2,  col G (idx 6) = Q3,  col H (idx 7) = Q4
-    //     col J-U (idx 9-20)  = Jan-Dec monthly values
-    //   Row 8  = "Backlog (Maintenance)"
-    //   Row 9  = "Total Enrolling"
-    //   Row 13 = "Total Awarded"
-    //   Row 17 = "Total Pipeline"
-    //   Row 26 = "Genuine Go-Get"
+    //
+    // CONFIRMED from CSV analysis:
+    //   Row 6  (idx 5)  = headers: H1(col1), H2(col2), Q1(col4), Q2(col5), Q3(col6), Q4(col7)
+    //                              Jan(col9)..Dec(col20), Total(col21)
+    //   Row 5  (idx 4)  = ACT/FCST type row for monthly cols
+    //
+    //   VALUES ARE IN THOUSANDS → multiply by 1000
+    //
+    //   Key rows (0-indexed):
+    //     6  = "Revenue Waterfall - Baseline Goals"  ← Grand Total
+    //     7  = "Backlog (Maintenance)"
+    //     8  = "Total Enrolling"
+    //     12 = "Total Awarded"
+    //     16 = "Total Pipeline"
+    //     25 = "Genuine Go-Get"
 
     const parseWF = (rows) => {
-      if (!rows.length) return { grand: 0, h1: 0, h2: 0, q1: 0, q2: 0, q3: 0, q4: 0, components: [], monthly: [] };
-      const r7  = rows[6]  || [];
-      const r8  = rows[7]  || [];
-      const r9  = rows[8]  || [];
-      const r13 = rows[12] || [];
-      const r17 = rows[16] || [];
-      const r26 = rows[25] || [];
+      if (!rows || !rows.length) return { grand: 0, h1: 0, h2: 0, q1: 0, q2: 0, q3: 0, q4: 0, components: [], monthly: [] };
 
-      const h1 = n(r7[1]), h2 = n(r7[2]);
-      const q1 = n(r7[4]), q2 = n(r7[5]), q3 = n(r7[6]), q4 = n(r7[7]);
+      const p = (row, ci) => parseNum((row || [])[ci], 'thousands');
 
-      const monthly = MONTH_LABELS.map((m, i) => ({
-        m,
-        v: n(r7[9 + i]),
-        t: i < 5 ? 'ACT' : 'FCST',   // Jan-May = ACT, Jun-Dec = FCST (as of May 26)
-      }));
+      const r7  = rows[6]  || [];  // Baseline Goals (grand total)
+      const r8  = rows[7]  || [];  // Backlog
+      const r9  = rows[8]  || [];  // Total Enrolling
+      const r13 = rows[12] || [];  // Total Awarded
+      const r17 = rows[16] || [];  // Total Pipeline
+      const r26 = rows[25] || [];  // Genuine Go-Get
+
+      // Type row (idx 4): cols 9-20 = Jan-Dec, values "ACT" or "FCST"
+      const typeRow = rows[4] || [];
+
+      const h1 = p(r7, 1);
+      const h2 = p(r7, 2);
+      const q1 = p(r7, 4);
+      const q2 = p(r7, 5);
+      const q3 = p(r7, 6);
+      const q4 = p(r7, 7);
+
+      const monthly = MONTHS.map((m, i) => {
+        const ci = 9 + i;
+        const t  = cl(typeRow[ci]).toLowerCase().includes('act') ? 'ACT' : 'FCST';
+        return { m, v: p(r7, ci), t };
+      });
 
       const components = [
-        { label: 'Backlog / Maintenance', value: n(r8[1])  + n(r8[2]),  type: 'pos' },
-        { label: 'Total Enrolling',       value: n(r9[1])  + n(r9[2]),  type: 'pos' },
-        { label: 'Total Awarded',         value: n(r13[1]) + n(r13[2]), type: 'pos' },
-        { label: 'Total Pipeline',        value: n(r17[1]) + n(r17[2]), type: 'pos' },
-        { label: 'Genuine Go-Get',        value: n(r26[1]) + n(r26[2]), type: 'pos' },
+        { label: 'Backlog / Maintenance', value: p(r8,  1) + p(r8,  2), type: 'pos' },
+        { label: 'Total Enrolling',       value: p(r9,  1) + p(r9,  2), type: 'pos' },
+        { label: 'Total Awarded',         value: p(r13, 1) + p(r13, 2), type: 'pos' },
+        { label: 'Total Pipeline',        value: p(r17, 1) + p(r17, 2), type: 'pos' },
+        { label: 'Genuine Go-Get',        value: p(r26, 1) + p(r26, 2), type: 'pos' },
         { label: 'Grand Total',           value: h1 + h2,               type: 'tot' },
       ];
 
       return { grand: h1 + h2, h1, h2, q1, q2, q3, q4, monthly, components };
     };
 
-    const wfCurrent = parseWF(wfLatestRows);
+    const wfCurrent  = parseWF(wfLatestRows);
     const wfPrevious = parseWF(wfPrevRows);
 
     // ── Parse Study-Level Detail Rows ─────────────────────────────────────────
@@ -190,48 +204,46 @@ export default async function handler(req, res) {
       const qs = (p[21] || '').split(',').map(Number);
       const mo = {};
       (p[27] || '').split('|').forEach(m => {
-        if (!m) return;
-        const [k, v] = m.split(':');
-        if (k && v) mo[k] = +v || 0;
+        const [k, v] = (m || '').split(':');
+        if (k && v) mo[k] = parseFloat(v) || 0;
       });
       return {
         lid: p[0]||'', atom: p[1]||'', protocol: p[2]||'', site: p[3]||'',
         status: p[4]||'', substatus: p[5]||'', sponsor: p[6]||'', cro: p[7]||'',
         indication: p[8]||'', ta: p[9]||'',
-        actRando: n(p[10]), goals: n(p[11]), totalPts: n(p[12]),
-        bps: n(p[13]), cl: n(p[14]), fcv: n(p[15]), rev: n(p[16]),
-        total2026: n(p[17]), actual2026: n(p[18]), h1: n(p[19]), h2: n(p[20]),
+        actRando: parseNum(p[10]), goals: parseNum(p[11]), totalPts: parseNum(p[12]),
+        bps: parseNum(p[13]), cl: parseNum(p[14]), fcv: parseNum(p[15]), rev: parseNum(p[16]),
+        total2026: parseNum(p[17]), actual2026: parseNum(p[18]), h1: parseNum(p[19]), h2: parseNum(p[20]),
         q1: qs[0]||0, q2: qs[1]||0, q3: qs[2]||0, q4: qs[3]||0,
         vax: p[22]||'', priority: p[23]||'', pi: p[24]||'',
         leadName: p[25]||'', active: p[26]||'', mo,
       };
     }).filter(s => s && s.lid && s.lid !== 'undefined' && s.lid !== 'Source');
 
-    // ── Awards summary from study list ────────────────────────────────────────
+    // ── Awards ────────────────────────────────────────────────────────────────
     const awarded  = liveStudies.filter(s => s.status === 'Awarded');
     const vaxAwd   = awarded.filter(s => (s.vax||'').includes('Vaccine') && !(s.vax||'').includes('Non'));
     const nvaxAwd  = awarded.filter(s => (s.vax||'').includes('Non'));
-    const totalFcv = awarded.reduce((a, c) => a + c.fcv, 0);
 
-    // ── Assemble SD metrics object ────────────────────────────────────────────
+    // ── Assemble final SD object ──────────────────────────────────────────────
     const SD = {
       meta,
       asOf    : meta.latestFcName,
       baseline: 85000000,
 
       fc: {
-        grand    : grandTotal,
-        ytd      : ytdActual,
-        q1       : fcQ1,
-        q2       : fcQ2,
-        q3       : fcQ3,
-        q4       : fcQ4,
+        grand    : fc_grand,
+        ytd      : fc_ytd,
+        q1       : fc_q1,
+        q2       : fc_q2,
+        q3       : fc_q3,
+        q4       : fc_q4,
         monthly  : fcMonthly,
         quarterly: [
-          { q: 'Q1', v: fcQ1, m: 'Q1' },
-          { q: 'Q2', v: fcQ2, m: 'Q2' },
-          { q: 'Q3', v: fcQ3, m: 'Q3' },
-          { q: 'Q4', v: fcQ4, m: 'Q4' },
+          { q: 'Q1', v: fc_q1, m: 'Q1' },
+          { q: 'Q2', v: fc_q2, m: 'Q2' },
+          { q: 'Q3', v: fc_q3, m: 'Q3' },
+          { q: 'Q4', v: fc_q4, m: 'Q4' },
         ],
       },
 
@@ -249,10 +261,10 @@ export default async function handler(req, res) {
         nvaxTgt : 283,
         fcvTgt  : 83200000,
         quarterly: [
-          { q: 'Q1', tgt: 78, act: awarded.filter(s => s.q1 > 0).length, fcvAct: awarded.filter(s => s.q1 > 0).reduce((a,c) => a+c.fcv, 0) },
-          { q: 'Q2', tgt: 78, act: awarded.filter(s => s.q2 > 0).length, fcvAct: awarded.filter(s => s.q2 > 0).reduce((a,c) => a+c.fcv, 0) },
-          { q: 'Q3', tgt: 78, act: awarded.filter(s => s.q3 > 0).length, fcvAct: awarded.filter(s => s.q3 > 0).reduce((a,c) => a+c.fcv, 0) },
-          { q: 'Q4', tgt: 79, act: awarded.filter(s => s.q4 > 0).length, fcvAct: awarded.filter(s => s.q4 > 0).reduce((a,c) => a+c.fcv, 0) },
+          { q:'Q1', tgt:78, act: awarded.filter(s=>s.q1>0).length, fcvAct: awarded.filter(s=>s.q1>0).reduce((a,c)=>a+c.fcv,0) },
+          { q:'Q2', tgt:78, act: awarded.filter(s=>s.q2>0).length, fcvAct: awarded.filter(s=>s.q2>0).reduce((a,c)=>a+c.fcv,0) },
+          { q:'Q3', tgt:78, act: awarded.filter(s=>s.q3>0).length, fcvAct: awarded.filter(s=>s.q3>0).reduce((a,c)=>a+c.fcv,0) },
+          { q:'Q4', tgt:79, act: awarded.filter(s=>s.q4>0).length, fcvAct: awarded.filter(s=>s.q4>0).reduce((a,c)=>a+c.fcv,0) },
         ],
       },
 
