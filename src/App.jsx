@@ -58,7 +58,7 @@ function AtAGlanceTab({ SD, STUDIES }){
     </div>
 
     <div style={{fontSize:11,color:T.muted,background:T.surf2,padding:"7px 14px",borderRadius:6}}>
-      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD.meta.latestFcName}
+      AT A GLANCE -- {period} . {year} . {stype} &nbsp;|&nbsp; FCV = Estimated Potential Revenue . As of {SD.meta?.latestFcName || "Current Month"}
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -117,6 +117,8 @@ function AtAGlanceTab({ SD, STUDIES }){
 // TAB: WATERFALL
 function WoWTable({ SD }){
   const T=useT();const[open,setOpen]=useState(null);
+  if (!SD.wow) return null;
+  
   return(<table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
     <thead><tr>{["Category","Last Week","This Week","Δ $","Δ %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
     <tbody>{SD.wow.map(d=>{
@@ -133,7 +135,7 @@ function WoWTable({ SD }){
           <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"▲":chg<0?"▼":"-"}</span></td>
           <td style={{textAlign:"right",padding:"9px 10px",color:T.teal,fontSize:11}}>{isOpen?"▲":"▼ Drivers"}</td>
         </tr>
-        {isOpen&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"-"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
+        {isOpen&&d.drivers&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"-"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
       </>);
     })}</tbody>
   </table>);
@@ -143,18 +145,20 @@ function WaterfallTab({ SD }){
   const T=useT();
   const[ver,setVer]=useState("current");
   const wfData=ver==="current"?SD.wf:SD.wf_prev;
-  const wf=wfData.components||SD.wf.components;
+  const wf=wfData.components||(SD.wf && SD.wf.components) || [];
+  
   const cd=wf.map((d,i)=>{
     const base=wf.slice(0,i).reduce((s,x)=>x.type==="neg"?s-Math.abs(x.value):x.type==="tot"?s:s+x.value,0);
     if(d.type==="tot")return{...d,base:0,bar:d.value};
     if(d.type==="neg")return{...d,base:base-Math.abs(d.value),bar:Math.abs(d.value)};
     return{...d,base,bar:d.value};
   });
+  
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta.latestWfName})</button>
-      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta.prevWfName})</button>
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta?.latestWfName || "Current Week"})</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta?.prevWfName || "Previous Week"})</button>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       <KPI label="Baseline Target" value="$85.0M" sub="FY 2026 annual goal" accent={T.amber} badge="TARGET"/>
@@ -163,7 +167,7 @@ function WaterfallTab({ SD }){
       <KPI label="Gap to $85M (Forecaster)" value={fm(SD.baseline-SD.fc.grand)} sub={`${Math.round(SD.fc.grand/SD.baseline*100)}% of baseline achieved`} accent={T.red}/>
     </div>
     <Card>
-      <SH title={`Revenue Waterfall Bridge 2026 -- ${ver==="current"?SD.meta.latestWfName:SD.meta.prevWfName}`} badge="Summary - baseline 85M"/>
+      <SH title={`Revenue Waterfall Bridge 2026 -- ${ver==="current"?(SD.meta?.latestWfName || "Current"):(SD.meta?.prevWfName || "Previous")}`} badge="Summary - baseline 85M"/>
       <ResponsiveContainer width="100%" height={280}>
         <ComposedChart data={cd} barSize={44}>
           <CartesianGrid strokeDasharray="3 3" stroke={T.bdr} vertical={false}/>
@@ -188,18 +192,18 @@ function ForecasterTab({ SD, STUDIES }){
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
       <span style={{fontSize:11,color:T.muted}}>VERSION:</span>
-      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta.latestFcName})</button>
-      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta.prevFcName})</button>
+      <button onClick={()=>setVer("current")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="current"?T.teal:"transparent",color:ver==="current"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Latest ({SD.meta?.latestFcName || "Current Month"})</button>
+      <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD.meta?.prevFcName || "Previous Month"})</button>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       <KPI label="Grand Total 2026" value={fm(fcData.grand)} sub={`${Math.round(fcData.grand/SD.baseline*100)}% of $85M`} accent={T.teal} change={ver==="previous"?null:(SD.fc.grand-SD.fc_prev.grand)/SD.fc_prev.grand}/>
       <KPI label="YTD Revenue" value={fm(fcData.ytd)} sub={`${Math.round(fcData.ytd/fcData.grand*100)}% of annual`} accent={T.blue}/>
       <KPI label="Grand Total Studies" value={ver==="current"?SD.counts.grand.toLocaleString():SD.counts_prev.grand.toLocaleString()} sub={ver==="current"?`${SD.counts.vaxTotal} Vax . ${SD.counts.nvaxTotal} Non-Vax`:`${SD.counts_prev.vaxTotal} Vax . ${SD.counts_prev.nvaxTotal} Non-Vax`} accent={T.purple} change={ver==="previous"?null:(SD.counts.grand-SD.counts_prev.grand)/SD.counts_prev.grand}/>
-      <KPI label="Expected Goals" value={SD.goals.total.toLocaleString()} sub={`H1: ${SD.goals.h1.toLocaleString()} . H2: ${SD.goals.h2.toLocaleString()}`} accent={T.amber}/>
+      <KPI label="Expected Goals" value={SD.goals?.total?.toLocaleString() || "--"} sub={`H1: ${SD.goals?.h1?.toLocaleString() || "--"} . H2: ${SD.goals?.h2?.toLocaleString() || "--"}`} accent={T.amber}/>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr",gap:16}}>
       <Card>
-        <SH title={`Revenue Forecast -- ${ver==="current"?SD.meta.latestFcName:SD.meta.prevFcName}`}/>
+        <SH title={`Revenue Forecast -- ${ver==="current"?(SD.meta?.latestFcName || "Current"):(SD.meta?.prevFcName || "Previous")}`}/>
         <ResponsiveContainer width="100%" height={210}>
           <ComposedChart data={fcData.monthly}>
             <defs><linearGradient id="aG" x1="0" y1="0" x2="0" y2="1"><stop offset="5%" stopColor={T.teal} stopOpacity={0.15}/><stop offset="95%" stopColor={T.teal} stopOpacity={0}/></linearGradient></defs>
@@ -233,13 +237,13 @@ function ForecasterTab({ SD, STUDIES }){
 function VarianceTab({ SD }){
   const T=useT();
   const[view,setView]=useState("forecaster");
-  const varData=view==="forecaster"?SD.variance.fc_mom:SD.variance.wf_wow;
+  const varData=view==="forecaster"?SD.variance?.fc_mom:SD.variance?.wf_wow;
 
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8}}>
       <span style={{fontSize:11,color:T.muted,fontWeight:600}}>VIEW:</span>
       <Sel options={["forecaster","waterfall"]} value={view} onChange={setView}/>
-      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?`${SD.meta.prevFcName} -> ${SD.meta.latestFcName} (MoM)`:`${SD.meta.prevWfName} -> ${SD.meta.latestWfName} (WoW)`}</span>
+      <span style={{fontSize:12,color:T.muted,marginLeft:8}}>{view==="forecaster"?`${SD.meta?.prevFcName || "Prev"} -> ${SD.meta?.latestFcName || "Latest"} (MoM)`:`${SD.meta?.prevWfName || "Prev"} -> ${SD.meta?.latestWfName || "Latest"} (WoW)`}</span>
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
@@ -250,34 +254,36 @@ function VarianceTab({ SD }){
         <KPI label="New Awards" value={`+${SD.counts.awarded-SD.counts_prev.awarded}`} sub={`${SD.counts_prev.awarded} -> ${SD.counts.awarded} awarded`} accent={T.amber}/>
       </>):(<>
         <KPI label="WoW Revenue Change" value={fm(SD.wf.grand-SD.wf_prev.grand)} sub="$85.0M baseline unchanged" accent={T.muted}/>
-        <KPI label="Enrolling Change" value={fm(SD.variance.wf_wow[1]?.diff||0)} sub={`${SD.meta.latestWfName} vs ${SD.meta.prevWfName}`} accent={T.red}/>
-        <KPI label="Go-Get Change" value={fm(SD.variance.wf_wow[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
+        <KPI label="Enrolling Change" value={fm(SD.variance?.wf_wow?.[1]?.diff||0)} sub={`${SD.meta?.latestWfName} vs ${SD.meta?.prevWfName}`} accent={T.red}/>
+        <KPI label="Go-Get Change" value={fm(SD.variance?.wf_wow?.[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
         <KPI label="Overall Impact" value="Minimal" sub="$85M target maintained" accent={T.blue}/>
       </>)}
     </div>
 
-    <Card>
-      <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?`${SD.meta.prevFcName} -> ${SD.meta.latestFcName}`:`${SD.meta.prevWfName} -> ${SD.meta.latestWfName}`}/>
-      <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
-        <thead><tr>
-          {["Category","Previous","Current","Change $","Change %","Reason"].map(h=><th key={h} style={{textAlign:h==="Category"||h==="Reason"?"left":"right",padding:"8px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11,fontWeight:500}}>{h}</th>)}
-        </tr></thead>
-        <tbody>
-          {varData.map((d,i)=>{
-            const chg=d.new_v-d.old,pct=d.old?(d.new_v-d.old)/d.old:0,col=chg>0?T.green:chg<0?T.red:T.muted;
-            return(<tr key={i} style={{borderBottom:`1px solid ${T.bdr}22`}}
-              onMouseEnter={e=>e.currentTarget.style.background=T.surf2} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <td style={{padding:"10px",color:T.text,fontWeight:600}}>{d.cat}</td>
-              <td style={{textAlign:"right",padding:"10px",color:T.muted,fontFamily:"monospace"}}>{fm(d.old)}</td>
-              <td style={{textAlign:"right",padding:"10px",color:T.text,fontFamily:"monospace",fontWeight:600}}>{fm(d.new_v)}</td>
-              <td style={{textAlign:"right",padding:"10px",color:col,fontFamily:"monospace"}}>{chg>=0?"+":""}{fm(chg)}</td>
-              <td style={{textAlign:"right",padding:"10px",color:col}}>{chg>=0?"+":""}{(pct*100).toFixed(1)}%</td>
-              <td style={{padding:"10px",color:T.muted,fontSize:12,maxWidth:300}}>{d.reason}</td>
-            </tr>);
-          })}
-        </tbody>
-      </table>
-    </Card>
+    {varData && varData.length > 0 && (
+      <Card>
+        <SH title={view==="forecaster"?"Forecaster Month-over-Month Variance":"Waterfall Week-over-Week Variance"} badge={view==="forecaster"?`${SD.meta?.prevFcName} -> ${SD.meta?.latestFcName}`:`${SD.meta?.prevWfName} -> ${SD.meta?.latestWfName}`}/>
+        <table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}>
+          <thead><tr>
+            {["Category","Previous","Current","Change $","Change %","Reason"].map(h=><th key={h} style={{textAlign:h==="Category"||h==="Reason"?"left":"right",padding:"8px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11,fontWeight:500}}>{h}</th>)}
+          </tr></thead>
+          <tbody>
+            {varData.map((d,i)=>{
+              const chg=d.new_v-d.old,pct=d.old?(d.new_v-d.old)/d.old:0,col=chg>0?T.green:chg<0?T.red:T.muted;
+              return(<tr key={i} style={{borderBottom:`1px solid ${T.bdr}22`}}
+                onMouseEnter={e=>e.currentTarget.style.background=T.surf2} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+                <td style={{padding:"10px",color:T.text,fontWeight:600}}>{d.cat}</td>
+                <td style={{textAlign:"right",padding:"10px",color:T.muted,fontFamily:"monospace"}}>{fm(d.old)}</td>
+                <td style={{textAlign:"right",padding:"10px",color:T.text,fontFamily:"monospace",fontWeight:600}}>{fm(d.new_v)}</td>
+                <td style={{textAlign:"right",padding:"10px",color:col,fontFamily:"monospace"}}>{chg>=0?"+":""}{fm(chg)}</td>
+                <td style={{textAlign:"right",padding:"10px",color:col}}>{chg>=0?"+":""}{(pct*100).toFixed(1)}%</td>
+                <td style={{padding:"10px",color:T.muted,fontSize:12,maxWidth:300}}>{d.reason}</td>
+              </tr>);
+            })}
+          </tbody>
+        </table>
+      </Card>
+    )}
   </div>);
 }
 
@@ -434,17 +440,21 @@ export default function App(){
   const[studies, setStudies] = useState([]);
   const[sdMetrics, setSdMetrics] = useState(null);
   const[isLoading, setIsLoading] = useState(true);
-  const[errorMsg, setErrorMsg] = useState(null); // <-- Added error state
+  const[errorMsg, setErrorMsg] = useState(null); 
   
   window.__T__=THEMES[theme];const T=THEMES[theme];
 
   useEffect(()=>{
     fetch('/api/dashboard')
       .then(async (res) => {
-        const data = await res.json();
-        // If the backend sends an error, throw it so we can catch it!
-        if (!res.ok) throw new Error(data.error || 'Unknown Server Error');
-        return data;
+        const text = await res.text();
+        try {
+          const data = JSON.parse(text);
+          if (!res.ok) throw new Error(data.error || 'Unknown Server Error');
+          return data;
+        } catch (e) {
+          throw new Error(`Server crashed: ${text}`); 
+        }
       })
       .then(data => { 
         if(data.studies) setStudies(data.studies); 
@@ -453,12 +463,11 @@ export default function App(){
       })
       .catch((err) => {
         console.error("Dashboard Error:", err);
-        setErrorMsg(err.message); // <-- Save the error message
+        setErrorMsg(err.message); 
         setIsLoading(false); 
       });
   },[]);
 
-  // IF THERE IS AN ERROR, SHOW THIS SCREEN INSTEAD OF LOADING FOREVER!
   if (errorMsg) {
     return (
       <div style={{minHeight:"100vh",background:T.bg,color:T.red,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:20,textAlign:"center"}}>
