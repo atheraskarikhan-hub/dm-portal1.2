@@ -64,7 +64,7 @@ const THEMES={
   "Forest Green":{bg:"#071210",surf:"#0D1F1C",surf2:"#132B27",surf3:"#193632",bdr:"#1E4038",bdr2:"#265248",teal:"#34D399",blue:"#60A5FA",amber:"#FBBF24",red:"#F87171",green:"#4ADE80",purple:"#A78BFA",slate:"#6B7280",text:"#ECFDF5",muted:"#6EAF96",muted2:"#3D7A64"},
 };
 
-const fm=(n,d=1)=>{if(n==null||isNaN(+n))return"--";const s=+n<0?"-":"",a=Math.abs(+n);if(a>=1e6)return`${s}$${(a/1e6).toFixed(d)}M`;if(a>=1e3)return`${s}$${(a/1e3).toFixed(0)}K`;return`${s}$${a.toFixed(0)}`;};
+const fm=(n,d=1)=>{if(n==null||isNaN(+n))return"--";const s=+n<0?"-":"",a=Math.abs(+n);if(a>=1e6)return`${s}$${(a/1e6).toFixed(d)}M`;if(a>=1e3)return`${s}$${(a/1e3).toFixed(d)}K`;return`${s}$${a.toFixed(d)}`;};
 const clamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,v));
 const useT=()=>window.__T__||THEMES["Dark Navy"];
 
