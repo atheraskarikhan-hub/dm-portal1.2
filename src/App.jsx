@@ -1,7 +1,32 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, ComposedChart, Area } from "recharts";
 
-// DYNAMIC RUNTIME ERROR BOUNDARY CLASS FOR VISUAL STACK TRACING
+// ============================================================================
+// 🚨 GLOBAL CRASH INTERCEPTOR (Prevents the "White Screen of Death")
+// ============================================================================
+if (typeof window !== "undefined") {
+  window.onerror = function (msg, url, lineNo, columnNo, error) {
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#080F1C;color:#EF4444;padding:40px;font-family:monospace;z-index:99999;box-sizing:border-box;overflow:auto;";
+    errDiv.innerHTML = `<h2>🚨 FATAL BROWSER CRASH CAUGHT</h2>
+      <p style="font-size:16px;color:#FCA5A5;"><strong>Error:</strong> ${msg}</p>
+      <p style="color:#9CA3AF;"><strong>Location:</strong> ${url} (Line: ${lineNo}, Column: ${columnNo})</p>
+      <pre style="background:#0E1A2E;padding:20px;border-radius:8px;color:#6B82A0;border:1px solid #EF4444;white-space:pre-wrap;margin-top:15px;">${error?.stack || 'No stack trace available.'}</pre>
+      <p style="color:white;margin-top:20px;font-size:16px;font-weight:bold;">Please copy this exact red text and paste it back into the chat!</p>`;
+    document.body.appendChild(errDiv);
+    return false;
+  };
+  window.onunhandledrejection = function (event) {
+    const errDiv = document.createElement('div');
+    errDiv.style.cssText = "position:fixed;top:0;left:0;width:100vw;height:100vh;background:#080F1C;color:#EF4444;padding:40px;font-family:monospace;z-index:99999;box-sizing:border-box;overflow:auto;";
+    errDiv.innerHTML = `<h2>🚨 UNHANDLED PROMISE CRASH</h2>
+      <p style="font-size:16px;color:#FCA5A5;"><strong>Reason:</strong> ${event.reason}</p>
+      <pre style="background:#0E1A2E;padding:20px;border-radius:8px;color:#6B82A0;border:1px solid #EF4444;white-space:pre-wrap;margin-top:15px;">${event.reason?.stack || 'No stack trace.'}</pre>
+      <p style="color:white;margin-top:20px;font-size:16px;font-weight:bold;">Please copy this exact red text and paste it back into the chat!</p>`;
+    document.body.appendChild(errDiv);
+  };
+}
+
 class ReactErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -11,27 +36,26 @@ class ReactErrorBoundary extends React.Component {
     return { hasError: true, error };
   }
   componentDidCatch(error, errorInfo) {
-    console.error("Critical Frontend Crash Caught:", error, errorInfo);
+    console.error("React Component Crash:", error, errorInfo);
     this.setState({ errorInfo });
   }
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ minHeight: "100vh", background: "#080F1C", color: "#EF4444", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 40, textAlign: "center", fontFamily: "monospace" }}>
-          <h2 style={{ fontSize: "24px", marginBottom: "10px" }}>🚨 Frontend Rendering Execution Interrupted</h2>
-          <div style={{ background: "#0E1A2E", padding: "24px", borderRadius: 12, border: "1px solid #EF4444", marginTop: 10, maxWidth: "900px", textAlign: "left", overflowX: "auto" }}>
-            <p style={{ fontWeight: "bold", fontSize: "16px" }}>Error Details: {this.state.error?.toString()}</p>
-            <pre style={{ color: "#6B82A0", fontSize: "12px", marginTop: "15px", whiteSpace: "pre-wrap" }}>
-              {this.state.errorInfo?.componentStack || "Component stack location traces generating..."}
-            </pre>
-          </div>
-          <p style={{ color: "#6B82A0", marginTop: 20, fontSize: "14px" }}>Please copy this trace payload completely and supply it right back in the chat window!</p>
+        <div style={{ minHeight: "100vh", background: "#080F1C", color: "#EF4444", padding: 40, fontFamily: "monospace" }}>
+          <h2>🚨 REACT COMPONENT CRASH</h2>
+          <p><strong>Error Details:</strong> {this.state.error?.toString()}</p>
+          <pre style={{ background: "#0E1A2E", padding: "20px", borderRadius: 8, border: "1px solid #EF4444", color: "#6B82A0", whiteSpace: "pre-wrap", marginTop: 15 }}>
+            {this.state.errorInfo?.componentStack || "Trace generating..."}
+          </pre>
+          <p style={{ color: "white", marginTop: 20 }}>Please copy this exact trace payload back to the chat!</p>
         </div>
       );
     }
     return this.props.children;
   }
 }
+// ============================================================================
 
 const THEMES={
   "Dark Navy":{bg:"#080F1C",surf:"#0E1A2E",surf2:"#152035",surf3:"#1C2B42",bdr:"#1E2F48",bdr2:"#253650",teal:"#00D4AA",blue:"#3B82F6",amber:"#F59E0B",red:"#EF4444",green:"#22C55E",purple:"#A855F7",slate:"#64748B",text:"#E8F0FE",muted:"#6B82A0",muted2:"#4A5F7A"},
@@ -56,7 +80,7 @@ function AtAGlanceTab({ SD, STUDIES }){
   const [period,setPeriod]=useState("Quarter");
   const [stype,setStype]=useState("All");
   const [year,setYear]=useState(2026);
-  const aw=SD?.awards || { fcvTgt: 83200000, vaxTgt: 30, nvaxTgt: 283, quarterly: [] };
+  const aw=SD?.awards || { fcvTgt: 1, vaxTgt: 1, nvaxTgt: 1, quarterly: [] };
 
   const awd=useMemo(()=>(STUDIES || []).filter(s=>s && s.status==="Awarded"&&(stype==="All"||(stype==="Vaccine"?(s.vax||'').includes("Vaccine")&&!(s.vax||'').includes("Non"):(s.vax||'').includes("Non")))),[stype, STUDIES]);
   const totalFcv=awd.reduce((s,x)=>s+(x.fcv || 0),0);
@@ -95,10 +119,10 @@ function AtAGlanceTab({ SD, STUDIES }){
     </div>
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round((SD?.fc?.grand || 0)/(SD?.baseline || 85000000)*100)}% of $85M target`} accent={T.teal}/>
+      <KPI label={period==="Year"?"Total Revenue (Multi-Year)":"2026 Grand Total"} value={fm(kpiData.total)} sub={`${Math.round((SD?.fc?.grand || 0)/(SD?.baseline || 1)*100)}% of $85M target`} accent={T.teal}/>
       <KPI label="FCV Captured (Awarded)" value={fm(totalFcv)} sub="Est. Potential Revenue" accent={T.amber} pct={totalFcv/(aw.fcvTgt || 1)}/>
-      <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt || 0}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.teal} pct={vaxAwd.length/(aw.vaxTgt || 1)}/>
-      <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt || 0}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.red} pct={nvaxAwd.length/(aw.nvaxTgt || 1)}/>
+      <KPI label="Vaccine Awarded" value={`${vaxAwd.length} / ${aw.vaxTgt}`} sub={`FCV: ${fm(vaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.teal} pct={vaxAwd.length/(aw.vaxTgt || 1)}/>
+      <KPI label="Non-Vaccine Awarded" value={`${nvaxAwd.length} / ${aw.nvaxTgt}`} sub={`FCV: ${fm(nvaxAwd.reduce((s,x)=>s+(x.fcv || 0),0))}`} accent={T.red} pct={nvaxAwd.length/(aw.nvaxTgt || 1)}/>
     </div>
 
     <div>
@@ -151,14 +175,15 @@ function AtAGlanceTab({ SD, STUDIES }){
 // TAB: WATERFALL
 function WoWTable({ SD }){
   const T=useT();const[open,setOpen]=useState(null);
-  if (!SD || !SD.wow) return null;
+  if (!SD || !SD.wow || !Array.isArray(SD.wow)) return null;
   
   return(<table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}>
     <thead><tr>{["Category","Last Week","This Week","Δ $","Δ %","",""].map(h=><th key={h} style={{textAlign:h==="Category"?"left":"right",padding:"7px 10px",borderBottom:`1px solid ${T.bdr}`,color:T.muted,fontSize:11}}>{h}</th>)}</tr></thead>
     <tbody>{SD.wow.map(d=>{
-      const chg=d.curr-d.prev,pct=d.prev?(d.curr-d.prev)/d.prev:0,col=chg>0?T.green:chg<0?T.red:T.muted,isOpen=open===d.cat;
-      return(<>
-        <tr key={d.cat} style={{borderBottom:`1px solid ${T.bdr}22`,cursor:"pointer"}}
+      if(!d) return null;
+      const chg=(d.curr||0)-(d.prev||0),pct=d.prev?((d.curr||0)-(d.prev||0))/d.prev:0,col=chg>0?T.green:chg<0?T.red:T.muted,isOpen=open===d.cat;
+      return(<React.Fragment key={d.cat || Math.random()}>
+        <tr style={{borderBottom:`1px solid ${T.bdr}22`,cursor:"pointer"}}
           onMouseEnter={e=>e.currentTarget.style.background=T.surf2} onMouseLeave={e=>e.currentTarget.style.background="transparent"}
           onClick={()=>setOpen(isOpen?null:d.cat)}>
           <td style={{padding:"9px 10px",color:T.text,fontWeight:500}}>{d.cat}</td>
@@ -169,8 +194,8 @@ function WoWTable({ SD }){
           <td style={{textAlign:"right",padding:"9px 10px"}}><span style={{fontSize:10,padding:"2px 8px",borderRadius:20,background:col+"20",color:col}}>{chg>0?"▲":chg<0?"▼":"-"}</span></td>
           <td style={{textAlign:"right",padding:"9px 10px",color:T.teal,fontSize:11}}>{isOpen?"▲":"▼ Drivers"}</td>
         </tr>
-        {isOpen&&d.drivers&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:dr.includes("+$")||dr.includes(": +")?T.green:T.red,marginRight:8}}>{dr.includes("+$")||dr.includes(": +")?"+":"-"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
-      </>);
+        {isOpen&&d.drivers&&d.drivers.map((dr,i)=><tr key={i} style={{background:T.surf2,borderBottom:`1px solid ${T.bdr}22`}}><td colSpan={7} style={{padding:"7px 24px"}}><span style={{color:String(dr).includes("+$")||String(dr).includes(": +")?T.green:T.red,marginRight:8}}>{String(dr).includes("+$")||String(dr).includes(": +")?"+":"-"}</span><span style={{fontSize:12,color:T.muted}}>{dr}</span></td></tr>)}
+      </React.Fragment>);
     })}</tbody>
   </table>);
 }
@@ -178,14 +203,15 @@ function WoWTable({ SD }){
 function WaterfallTab({ SD }){
   const T=useT();
   const[ver,setVer]=useState("current");
-  const wfData=ver==="current"?SD?.wf:SD?.wf_prev;
-  const wf=wfData?.components||(SD?.wf && SD?.wf?.components) || [];
+  const wfData=ver==="current"?(SD?.wf||{}):(SD?.wf_prev||{});
+  const wf=wfData?.components||(SD?.wf?.components) || [];
   
   const cd=wf.map((d,i)=>{
-    const base=wf.slice(0,i).reduce((s,x)=>x.type==="neg"?s-Math.abs(x.value):x.type==="tot"?s:s+x.value,0);
-    if(d.type==="tot")return{...d,base:0,bar:d.value};
-    if(d.type==="neg")return{...d,base:base-Math.abs(d.value),bar:Math.abs(d.value)};
-    return{...d,base,bar:d.value};
+    if(!d) return {label:"N/A", base:0, bar:0};
+    const base=wf.slice(0,i).reduce((s,x)=>x?.type==="neg"?s-Math.abs(x?.value||0):x?.type==="tot"?s:s+(x?.value||0),0);
+    if(d.type==="tot")return{...d,base:0,bar:d.value||0};
+    if(d.type==="neg")return{...d,base:base-Math.abs(d.value||0),bar:Math.abs(d.value||0)};
+    return{...d,base,bar:d.value||0};
   });
   
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
@@ -221,7 +247,7 @@ function WaterfallTab({ SD }){
 function ForecasterTab({ SD, STUDIES }){
   const T=useT();
   const[ver,setVer]=useState("current");
-  const fcData=ver==="current"?SD?.fc : SD?.fc_prev;
+  const fcData=ver==="current"?(SD?.fc||{}):(SD?.fc_prev||{});
   const byStatus=st=>(STUDIES || []).filter(s=>s && s.status===st);
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8,flexWrap:"wrap"}}>
@@ -230,7 +256,7 @@ function ForecasterTab({ SD, STUDIES }){
       <button onClick={()=>setVer("previous")} style={{padding:"5px 14px",borderRadius:6,border:"none",background:ver==="previous"?T.amber:"transparent",color:ver==="previous"?"#000":T.muted,fontSize:12,cursor:"pointer"}}>Previous ({SD?.meta?.prevFcName || "Previous Month"})</button>
     </div>
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
-      <KPI label="Grand Total 2026" value={fm(fcData?.grand)} sub={`${Math.round((fcData?.grand || 0)/(SD?.baseline || 85000000)*100)}% of $85M`} accent={T.teal} change={ver==="previous" ? null : (SD?.fc_prev?.grand ? ((SD.fc.grand || 0) - SD.fc_prev.grand) / SD.fc_prev.grand : 0)}/>
+      <KPI label="Grand Total 2026" value={fm(fcData?.grand)} sub={`${Math.round((fcData?.grand || 0)/(SD?.baseline || 85000000)*100)}% of $85M`} accent={T.teal} change={ver==="previous" ? null : (SD?.fc_prev?.grand ? ((SD?.fc?.grand || 0) - SD.fc_prev.grand) / SD.fc_prev.grand : 0)}/>
       <KPI label="YTD Revenue" value={fm(fcData?.ytd)} sub={`${Math.round((fcData?.ytd || 0)/(fcData?.grand || 1)*100)}% of annual`} accent={T.blue}/>
       <KPI label="Grand Total Studies" value={ver==="current"? (SD?.counts?.grand || 0).toLocaleString(): (SD?.counts_prev?.grand || 0).toLocaleString()} sub={ver==="current"?`${SD?.counts?.vaxTotal || 0} Vax . ${SD?.counts?.nvaxTotal || 0} Non-Vax`:`${SD?.counts_prev?.vaxTotal || 0} Vax . ${SD?.counts_prev?.nvaxTotal || 0} Non-Vax`} accent={T.purple} change={ver==="previous"?null: (SD?.counts_prev?.grand ? ((SD?.counts?.grand || 0) - SD.counts_prev.grand)/SD.counts_prev.grand : 0)}/>
       <KPI label="Expected Goals" value={SD?.goals?.total?.toLocaleString() || "--"} sub={`H1: ${SD?.goals?.h1?.toLocaleString() || "--"} . H2: ${SD?.goals?.h2?.toLocaleString() || "--"}`} accent={T.amber}/>
@@ -272,7 +298,7 @@ function ForecasterTab({ SD, STUDIES }){
 function VarianceTab({ SD }){
   const T=useT();
   const[view,setView]=useState("forecaster");
-  const varData=view==="forecaster"?SD?.variance?.fc_mom:SD?.variance?.wf_wow;
+  const varData=view==="forecaster"?(SD?.variance?.fc_mom||[]):(SD?.variance?.wf_wow||[]);
 
   return(<div style={{display:"flex",flexDirection:"column",gap:18}}>
     <div style={{display:"flex",alignItems:"center",gap:8}}>
@@ -283,13 +309,13 @@ function VarianceTab({ SD }){
 
     <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:12}}>
       {view==="forecaster"?(<>
-        <KPI label="Grand Total Change" value={fm((SD?.fc?.grand || 0)-(SD?.fc_prev?.grand || 0))} sub={`$${((SD?.fc_prev?.grand || 0)/1e6).toFixed(2)}M -> $${((SD?.fc?.grand || 0)/1e6).toFixed(2)}M`} accent={T.green} change={SD?.fc_prev?.grand ? ((SD.fc.grand || 0) - SD.fc_prev.grand)/SD.fc_prev.grand : 0}/>
+        <KPI label="Grand Total Change" value={fm((SD?.fc?.grand || 0)-(SD?.fc_prev?.grand || 0))} sub={`$${((SD?.fc_prev?.grand || 0)/1e6).toFixed(2)}M -> $${((SD?.fc?.grand || 0)/1e6).toFixed(2)}M`} accent={T.green} change={SD?.fc_prev?.grand ? ((SD?.fc?.grand || 0) - SD.fc_prev.grand)/SD.fc_prev.grand : 0}/>
         <KPI label="Study Count Change" value={`+${(SD?.counts?.grand || 0)-(SD?.counts_prev?.grand || 0)}`} sub={`${SD?.counts_prev?.grand || 0} -> ${SD?.counts?.grand || 0} studies`} accent={T.blue}/>
         <KPI label="Pipeline Growth" value={`+${(SD?.counts?.pipeline || 0)-(SD?.counts_prev?.pipeline || 0)}`} sub={`${SD?.counts_prev?.pipeline || 0} -> ${SD?.counts?.pipeline || 0} opps`} accent={T.purple}/>
         <KPI label="New Awards" value={`+${(SD?.counts?.awarded || 0)-(SD?.counts_prev?.awarded || 0)}`} sub={`${SD?.counts_prev?.awarded || 0} -> ${SD?.counts?.awarded || 0} awarded`} accent={T.amber}/>
       </>):(<>
         <KPI label="WoW Revenue Change" value={fm((SD?.wf?.grand || 0)-(SD?.wf_prev?.grand || 0))} sub="$85.0M baseline unchanged" accent={T.muted}/>
-        <KPI label="Enrolling Change" value={fm(SD?.variance?.wf_wow?.[1]?.diff||0)} sub={`${SD?.meta?.latestWfName} vs ${SD?.meta?.prevWfName}`} accent={T.red}/>
+        <KPI label="Enrolling Change" value={fm(SD?.variance?.wf_wow?.[1]?.diff||0)} sub={`${SD?.meta?.latestWfName || "Current"} vs ${SD?.meta?.prevWfName || "Prev"}`} accent={T.red}/>
         <KPI label="Go-Get Change" value={fm(SD?.variance?.wf_wow?.[2]?.diff||0)} sub="Pipeline CL adjustments" accent={T.green}/>
         <KPI label="Overall Impact" value="Minimal" sub="$85M target maintained" accent={T.blue}/>
       </>)}
@@ -304,7 +330,8 @@ function VarianceTab({ SD }){
           </tr></thead>
           <tbody>
             {varData.map((d,i)=>{
-              const chg=d.new_v-d.old,pct=d.old?(d.new_v-d.old)/d.old:0,col=chg>0?T.green:chg<0?T.red:T.muted;
+              if(!d) return null;
+              const chg=(d.new_v||0)-(d.old||0),pct=d.old?((d.new_v||0)-(d.old||0))/d.old:0,col=chg>0?T.green:chg<0?T.red:T.muted;
               return(<tr key={i} style={{borderBottom:`1px solid ${T.bdr}22`}}
                 onMouseEnter={e=>e.currentTarget.style.background=T.surf2} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
                 <td style={{padding:"10px",color:T.text,fontWeight:600}}>{d.cat}</td>
@@ -387,7 +414,7 @@ function StudySearchTab({ STUDIES }){
               <td style={{padding:"8px 10px",color:T.text,textAlign:"right",fontFamily:"monospace"}}>{s.actRando}</td>
               <td style={{padding:"8px 10px",color:T.text,textAlign:"right",fontFamily:"monospace"}}>{s.goals}</td>
               <td style={{padding:"8px 10px",color:T.muted,textAlign:"right",fontFamily:"monospace"}}>{fm(s.bps)}</td>
-              <td style={{padding:"8px 10px",color:T.muted,textAlign:"right"}}>{Math.round(s.cl*100)}%</td>
+              <td style={{padding:"8px 10px",color:T.muted,textAlign:"right"}}>{Math.round((s.cl||0)*100)}%</td>
               <td style={{padding:"8px 10px",color:T.amber,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.fcv)}</td>
               <td style={{padding:"8px 10px",color:T.teal,textAlign:"right",fontFamily:"monospace",fontWeight:600}}>{fm(s.total2026)}</td>
               <td style={{padding:"8px 10px",color:(s.vax||'').includes("Non")?T.blue:T.teal,fontSize:10}}>{(s.vax||'').includes("Non")?"Non-Vax":"Vaccine"}</td>
@@ -405,7 +432,7 @@ function StudySearchTab({ STUDIES }){
           <span style={{fontSize:12,background:T.blue+"22",color:T.blue,padding:"3px 10px",borderRadius:20,fontFamily:"monospace"}}>ATOM: {sel.atom}</span>
           <span style={{fontSize:11,background:(sc[sel.status]||T.muted)+"22",color:sc[sel.status]||T.muted,padding:"3px 10px",borderRadius:20}}>{sel.status}</span>
         </div>
-        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round(sel.cl*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",sel.q4]].filter(([,v])=>v&&v!="--"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
+        {[["Protocol",sel.protocol],["Lead Name",sel.leadName],["Site",sel.site],["Sub Status",sel.substatus],["Sponsor",sel.sponsor],["CRO",sel.cro],["Indication",sel.indication],["Therapeutic Area",sel.ta],["PI",sel.pi],["Vaccine/Non-Vax",sel.vax],["Priority",sel.priority],["Actual Rando",sel.actRando],["Future Goals",sel.goals],["Total Patients",sel.totalPts],["Budget/Subject",fm(sel.bps)],["Confidence Level",`${Math.round((sel.cl||0)*100)}%`],["FCV (Est. Potential)",fm(sel.fcv)],["Factored Revenue",fm(sel.rev)],["2026 Total",fm(sel.total2026)],["YTD Actual",fm(sel.actual2026)],["H1 2026",fm(sel.h1)],["H2 2026",fm(sel.h2)],["Q1",fm(sel.q1)],["Q2",fm(sel.q2)],["Q3",fm(sel.q3)],["Q4",fm(sel.q4)]].filter(([,v])=>v&&v!="--"&&String(v)!=="0"&&v!=="undefined").map(([k,v])=>(
           <div key={k} style={{display:"flex",justifyContent:"space-between",padding:"6px 0",borderBottom:`1px solid ${T.bdr}22`}}>
             <span style={{fontSize:11,color:T.muted}}>{k}</span>
             <span style={{fontSize:12,color:T.text,fontWeight:500,textAlign:"right",maxWidth:"60%"}}>{String(v)}</span>
@@ -466,10 +493,18 @@ function AgentTab(){
   </div>);
 }
 
-// MAIN WRAPPER
+// MAIN WRAPPER WITH INCORPORATED ERROR BOUNDARY
 const TABS_UI = { glance: AtAGlanceTab, waterfall: WaterfallTab, forecaster: ForecasterTab, variance: VarianceTab, search: StudySearchTab, agent: AgentTab };
 
 export default function App(){
+  return (
+    <ReactErrorBoundary>
+      <MainAppCore />
+    </ReactErrorBoundary>
+  );
+}
+
+function MainAppCore(){
   const[tab,setTab]=useState("glance");
   const[theme,setTheme]=useState("Dark Navy");
   const[studies, setStudies] = useState([]);
@@ -510,7 +545,7 @@ export default function App(){
         <div style={{background:T.surf2,padding:"20px",borderRadius:8,border:`1px solid ${T.red}`,marginTop:10,maxWidth:800}}>
           <p style={{fontFamily:"monospace",fontSize:14,color:T.red}}>{errorMsg}</p>
         </div>
-        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please check your configuration or data columns structure.</p>
+        <p style={{color:T.text,marginTop:20,fontSize:14}}>Please copy the red error text above and paste it back into the chat!</p>
       </div>
     );
   }
@@ -520,21 +555,19 @@ export default function App(){
   const ActiveTab = TABS_UI[tab] || AtAGlanceTab;
 
   return(
-    <ReactErrorBoundary>
-      <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:"'DM Sans',sans-serif"}}>
-        <div style={{height:52,background:T.surf,borderBottom:`1px solid ${T.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:28,height:28,borderRadius:6,background:T.teal,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#000"}}>DM</div>
-            <span style={{fontSize:13,fontWeight:700}}>DM Clinical Research</span>
-          </div>
-          <div style={{display:"flex",gap:2}}>
-            {TABS.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{background:tab===t.id?T.teal+"18":"transparent",border:"none",color:tab===t.id?T.teal:T.muted,padding:"5px 10px",borderRadius:6,fontSize:11,cursor:"pointer",fontWeight:tab===t.id?700:500}}>{t.label}</button>)}
-          </div>
+    <div style={{minHeight:"100vh",background:T.bg,color:T.text,fontFamily:"'DM Sans',sans-serif"}}>
+      <div style={{height:52,background:T.surf,borderBottom:`1px solid ${T.bdr}`,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 20px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:10}}>
+          <div style={{width:28,height:28,borderRadius:6,background:T.teal,display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,fontWeight:800,color:"#000"}}>DM</div>
+          <span style={{fontSize:13,fontWeight:700}}>DM Clinical Research</span>
         </div>
-        <div style={{padding:"18px 20px",maxWidth:1400,margin:"0 auto"}}>
-          <ActiveTab SD={sdMetrics} STUDIES={studies} />
+        <div style={{display:"flex",gap:2}}>
+          {TABS.map(t=><button key={t.id} onClick={()=>setTab(t.id)} style={{background:tab===t.id?T.teal+"18":"transparent",border:"none",color:tab===t.id?T.teal:T.muted,padding:"5px 10px",borderRadius:6,fontSize:11,cursor:"pointer",fontWeight:tab===t.id?700:500}}>{t.label}</button>)}
         </div>
       </div>
-    </ReactErrorBoundary>
+      <div style={{padding:"18px 20px",maxWidth:1400,margin:"0 auto"}}>
+        <ActiveTab SD={sdMetrics} STUDIES={studies} />
+      </div>
+    </div>
   );
 }
