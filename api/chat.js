@@ -7,13 +7,13 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
   try {
-    const { messages, system, studies, sdMetrics } = req.body;
+    const { messages, system } = req.body;
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return res.status(500).json({ error: 'Missing ANTHROPIC_API_KEY.' });
     }
 
-    // Use GOOGLE_CREDENTIALS_JSON (same as dashboard) with fallback to split keys
+    // ── Auth (supports both credential styles) ────────────────────────────────
     let credentials;
     if (process.env.GOOGLE_CREDENTIALS_JSON) {
       credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
@@ -33,66 +33,78 @@ export default async function handler(req, res) {
     });
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // Fetch both Registries
+    // ── Step 1: Read both Registries ─────────────────────────────────────────
+    // Registry columns: A=Date, B=Latest/Previous/Old, C=Spreadsheet_ID, D=Notes, E=Tab_Name, F=Data_Type
     const [fcReg, wfReg] = await Promise.all([
       sheets.spreadsheets.values.get({ spreadsheetId: '1B7m7DOSLCXj9vMHTwuXAjLVkuw0i3f0aUrbYweAj6xU', range: 'A:F' }),
       sheets.spreadsheets.values.get({ spreadsheetId: '169w2PQ22gt1ItcQTOXQP-F9XHVocY17OLv3fzoA1_3E', range: 'A:F' }),
     ]);
 
     const parseReg = r => r.data.values ? r.data.values.slice(1) : [];
-    const allRows  = [...parseReg(fcReg), ...parseReg(wfReg)];
+    const fcRows = parseReg(fcReg);
+    const wfRows = parseReg(wfReg);
+    const allRows = [...fcRows, ...wfRows];
 
-    // col C (index 2) = Spreadsheet_ID, col E (index 4) = Tab_Name, col F (index 5) = Data_Type
-    // Only fetch Summary tabs that are "Latest"
-    const summaryTabs = allRows.filter(row =>
-      row[5] && row[5].trim().toLowerCase() === 'summary' &&
-      row[1] && row[1].trim().toLowerCase() === 'latest'
-    );
+    const cl = v => String(v || '').trim().toLowerCase();
+    const isLatest  = r => cl(r[1]) === 'latest';
+    const isSummary = r => cl(r[5]) === 'summary';
+    const isDetails = r => cl(r[5]) === 'details';
 
-    let dbContext = "\n=== LIVE CLINICAL REVENUE DATASET ===\n";
-    dbContext += `As of: ${summaryTabs[0]?.[0] || 'Current Period'}\n\n`;
+    // ── Step 2: Identify which tabs to fetch ──────────────────────────────────
+    // Always fetch Latest Summary tabs (for financial overview)
+    const summaryTabs = allRows.filter(r => isSummary(r) && isLatest(r));
 
-    for (const row of summaryTabs) {
-      const sheetId = (row[2] || '').trim();   // ✅ Column C = Spreadsheet_ID
-      const tabName = (row[4] || '').trim();   // ✅ Column E = Tab_Name
-      if (!sheetId || !tabName) continue;
+    // Always fetch Latest Details tabs (for study/lead-level queries)
+    const detailTabs  = allRows.filter(r => isDetails(r) && isLatest(r));
 
+    // ── Step 3: Fetch all tabs in parallel ────────────────────────────────────
+    const fetchTab = async (row, rangeOverride) => {
+      const sheetId = String(row[2] || '').trim(); // ✅ Column C = Spreadsheet_ID
+      const tabName = String(row[4] || '').trim(); // ✅ Column E = Tab_Name
+      const date    = String(row[0] || '');
+      const dtype   = String(row[5] || '');
+      if (!sheetId || !tabName) return null;
       try {
-        const sheetData = await sheets.spreadsheets.values.get({
+        const range = rangeOverride || `${tabName}!A1:Z200`;
+        const resp = await sheets.spreadsheets.values.get({
           spreadsheetId: sheetId,
-          range: `${tabName}!A1:Z200`,
+          range,
         });
-        dbContext += `\n--- SOURCE: ${row[0]} | TAB: ${tabName} ---\n`;
-        if (sheetData.data.values) {
-          sheetData.data.values.forEach(r => { dbContext += r.join('\t') + '\n'; });
-        }
+        return { date, tabName, dtype, rows: resp.data.values || [] };
       } catch (e) {
-        console.warn(`Failed to fetch ${tabName} from ${sheetId}: ${e.message}`);
+        console.warn(`Failed ${tabName} from ${sheetId}: ${e.message}`);
+        return null;
       }
+    };
+
+    // Fetch summaries (A1:Z200) and details (A1:AZ3000 for full study list)
+    const [summaryResults, detailResults] = await Promise.all([
+      Promise.all(summaryTabs.map(r => fetchTab(r))),
+      Promise.all(detailTabs.map(r => fetchTab(r, `${String(r[4]).trim()}!A1:AZ3000`))),
+    ]);
+
+    // ── Step 4: Build context string for Claude ───────────────────────────────
+    let dbContext = "=== LIVE DATA FROM GOOGLE SHEETS (via Registry) ===\n";
+    dbContext += `Fetched: ${new Date().toISOString()}\n\n`;
+
+    // Add summary data
+    dbContext += "--- SUMMARY / FINANCIAL DATA ---\n";
+    for (const result of summaryResults) {
+      if (!result || !result.rows.length) continue;
+      dbContext += `\n[${result.date} | ${result.tabName}]\n`;
+      result.rows.forEach(r => { dbContext += r.join('\t') + '\n'; });
     }
 
-    // Also inject the already-loaded study list from the frontend (fast, no extra API call)
-    if (studies && studies.length) {
-      dbContext += `\n\n--- STUDY DATABASE (${studies.length} studies loaded) ---\n`;
-      dbContext += 'LID\tProtocol\tSite\tStatus\tSponsor\tCRO\tIndication\tVax\tFCV\tRev2026\tTotal2026\tActual2026\n';
-      studies.slice(0, 500).forEach(s => {
-        dbContext += `${s.lid}\t${s.protocol}\t${s.site}\t${s.status}\t${s.sponsor}\t${s.cro}\t${s.indication}\t${s.vax}\t${s.fcv}\t${s.rev}\t${s.total2026}\t${s.actual2026}\n`;
-      });
+    // Add detail/study-level data
+    dbContext += "\n--- STUDY & LEAD LEVEL DETAIL DATA ---\n";
+    dbContext += "Columns: LID, ATOM, Protocol, Site, Status, SubStatus, Sponsor, CRO, Indication, TA, ActRando, Goals, TotalPts, BPS, CL, FCV, Rev, Total2026, Actual2026, H1, H2, Q1-Q4, Vax, Priority, PI, LeadName, Active, Monthly\n\n";
+    for (const result of detailResults) {
+      if (!result || !result.rows.length) continue;
+      dbContext += `[${result.date} | ${result.tabName}]\n`;
+      result.rows.forEach(r => { dbContext += r.join('\t') + '\n'; });
     }
 
-    // Inject top-level metrics summary
-    if (sdMetrics) {
-      dbContext += `\n\n--- KEY METRICS SUMMARY ---\n`;
-      dbContext += `Grand Total 2026 Forecast: $${(sdMetrics.fc?.grand || 0).toLocaleString()}\n`;
-      dbContext += `YTD Actual: $${(sdMetrics.fc?.ytd || 0).toLocaleString()}\n`;
-      dbContext += `Baseline Target: $${(sdMetrics.baseline || 85000000).toLocaleString()}\n`;
-      dbContext += `Total Studies: ${sdMetrics.counts?.grand || 0}\n`;
-      dbContext += `Vaccine Studies: ${sdMetrics.counts?.vaxTotal || 0}\n`;
-      dbContext += `Non-Vaccine Studies: ${sdMetrics.counts?.nvaxTotal || 0}\n`;
-      dbContext += `H1 Waterfall: $${(sdMetrics.wf?.h1 || 0).toLocaleString()}\n`;
-      dbContext += `H2 Waterfall: $${(sdMetrics.wf?.h2 || 0).toLocaleString()}\n`;
-    }
-
+    // ── Step 5: Call Claude with full live context ────────────────────────────
     const anthropicResponse = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -103,10 +115,10 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-haiku-4-5-20251001',
         max_tokens: 4096,
-        system: `You are the DM Clinical Revenue Intelligence Agent for DM Clinical Research. 
-You have DIRECT ACCESS to live Google Sheets data injected below. 
-NEVER say you don't have data — the data is in this system prompt.
-Answer concisely and use specific numbers from the data.
+        system: `You are the DM Clinical Revenue Intelligence Agent for DM Clinical Research.
+You have DIRECT ACCESS to live Google Sheets data fetched right now via the registry files.
+NEVER say you don't have data — all data is in this system prompt.
+Answer with specific Lead IDs, ATOM numbers, and exact dollar figures from the data below.
 Format currency as $X.XM or $X.XK with 1 decimal place.
 ${system || ''}
 
@@ -116,7 +128,7 @@ ${dbContext}`,
     });
 
     const data = await anthropicResponse.json();
-    if (!anthropicResponse.ok) return res.status(400).json({ error: data.error ? JSON.stringify(data.error) : 'Anthropic Error' });
+    if (!anthropicResponse.ok) return res.status(400).json({ error: data.error ? JSON.stringify(data.error) : 'Anthropic API Error' });
     return res.status(200).json(data);
 
   } catch (error) {
